@@ -26,7 +26,7 @@ numeroFrames = 0
 segundo = 0
 
 
-velRotacao = 5
+velRotacao = 3
 ultimaDirecaoX = 0
 ultimaDirecaoY = 0
 isRodando = False
@@ -83,19 +83,22 @@ def Update():
     ultimoDraw += deltaTime
 
 
+  
 
     ultimoInput = Input.LerInput(teclado, janela)
+
 
 
     if(time.time() - ultimaRotacao > 0.005):
         if(isRodando):
             
-            VirarJogadorLoop(ultimaDirecaoX, ultimaDirecaoY, jogador)
+            VirarJogadorLoop(ultimaDirecaoX, ultimaDirecaoY)
 
         else:
 
 
             if(ultimoInput == 3):
+                AtualizarDirecaoJogador(ultimoInput)
                 rodandoDirecao = 1
                 isRodando = True
                 ultimaDirecaoX = jogador.dirX
@@ -103,6 +106,7 @@ def Update():
 
 
             elif(ultimoInput == 4):
+                AtualizarDirecaoJogador(ultimoInput)
                 rodandoDirecao = 2
                 isRodando = True
                 ultimaDirecaoX = jogador.dirX
@@ -167,7 +171,6 @@ def Update():
 
     if(segundo > 1):
         print(numeroFrames)
-        print(segundo)
         numeroFrames = 0
         segundo -= 1
 
@@ -252,14 +255,77 @@ def AndarJogador(ultimoInput):
                 return True
 
 
+def AtualizarDirecaoJogador(input):
+    global jogador
+
+    if(input == 3):
+        if(jogador.direcao == Data.direcao["O"]):
+            jogador.direcao = Data.direcao["N"]
+        else:
+            jogador.direcao += 1
+    elif(input == 4):
+        if(jogador.direcao == Data.direcao["N"]):
+            jogador.direcao = Data.direcao["O"]
+        else:
+            jogador.direcao -= 1
+
 #virar aos poucos pra ficar bonitinho
-def VirarJogadorLoop(ultimaDirecaoX, ultimaDirecaoY, jogador):
+def VirarJogadorLoop(ultimaDirecaoX, ultimaDirecaoY):
     global isRodando
     global ultimaRotacao
 
+    # print("Ultima direção X:  " + str(ultimaDirecaoX))
+    # print("jogador.dirX:  " + str(jogador.dirX))
+
+    VirarJogador(rodandoDirecao, ultimaDirecaoX, ultimaDirecaoY)
+
+    ultimaRotacao = time.time()
     
-     #cruzou a linha vertical
-    if(ultimaDirecaoX < 0 and jogador.dirX >= 0 or ultimaDirecaoX > 0 and jogador.dirX <= 0):
+
+
+
+
+    
+
+
+
+
+def VirarJogador(direcao, ultimaDirecaoX, ultimaDirecaoY):
+    #direita
+    global isRodando
+    global ultimaRotacao
+    
+    if(direcao == 1):
+       
+        oldDirX = jogador.dirX
+
+
+        jogador.dirX = jogador.dirX * math.cos(-velRotacao * min(0.1, deltaTime)) - jogador.dirY * math.sin(-velRotacao * min(0.1, deltaTime))
+        jogador.dirY = oldDirX * math.sin(-velRotacao * min(0.1, deltaTime)) + jogador.dirY * math.cos(-velRotacao * min(0.1, deltaTime))
+
+        oldPlaneX = jogador.planeX
+        jogador.planeX = jogador.planeX * math.cos(-velRotacao * min(0.1, deltaTime)) - jogador.planeY * math.sin(-velRotacao * min(0.1, deltaTime))
+        jogador.planeY = oldPlaneX * math.sin(-velRotacao * min(0.1, deltaTime)) + jogador.planeY * math.cos(-velRotacao * min(0.1, deltaTime))
+
+
+
+
+
+
+
+    elif(direcao == 2):
+
+
+        oldDirX = jogador.dirX
+        jogador.dirX = jogador.dirX * math.cos(velRotacao * min(0.1, deltaTime)) - jogador.dirY * math.sin(velRotacao * min(0.1, deltaTime))
+        jogador.dirY = oldDirX * math.sin(velRotacao * min(0.1, deltaTime)) + jogador.dirY * math.cos(velRotacao * min(0.1, deltaTime))
+
+        oldPlaneX = jogador.planeX
+        jogador.planeX = jogador.planeX * math.cos(velRotacao * min(0.1, deltaTime)) - jogador.planeY * math.sin(velRotacao * min(0.1, deltaTime))
+        jogador.planeY = oldPlaneX * math.sin(velRotacao * min(0.1, deltaTime)) + jogador.planeY * math.cos(velRotacao * min(0.1, deltaTime))
+
+    
+    if(abs(ultimaDirecaoX - jogador.dirX) >= 1):
         jogador.dirX = 0
         
         #norte
@@ -277,7 +343,7 @@ def VirarJogadorLoop(ultimaDirecaoX, ultimaDirecaoY, jogador):
         isRodando = False
         ultimaRotacao = time.time() + cooldownRodar
 
-    elif(ultimaDirecaoY < 0 and jogador.dirY >= 0 or ultimaDirecaoY > 0 and jogador.dirY <= 0):
+    elif(abs(ultimaDirecaoY - jogador.dirY) >= 1):
         jogador.dirY = 0
         
         #leste
@@ -296,41 +362,6 @@ def VirarJogadorLoop(ultimaDirecaoX, ultimaDirecaoY, jogador):
         ultimaRotacao = time.time() + cooldownRodar
 
 
-    else:
-        ultimaDirecaoX = jogador.dirX
-        ultimaDirecaoY = jogador.dirY
-
-        VirarJogador(rodandoDirecao)
-        ultimaRotacao = time.time()
-
-
-
-
-def VirarJogador(direcao):
-    if(direcao == 1):
-
-        oldDirX = jogador.dirX
-        jogador.dirX = jogador.dirX * math.cos(-velRotacao * deltaTime) - jogador.dirY * math.sin(-velRotacao * deltaTime)
-        jogador.dirY = oldDirX * math.sin(-velRotacao * deltaTime) + jogador.dirY * math.cos(-velRotacao * deltaTime)
-
-        oldPlaneX = jogador.planeX
-        jogador.planeX = jogador.planeX * math.cos(-velRotacao * deltaTime) - jogador.planeY * math.sin(-velRotacao * deltaTime)
-        jogador.planeY = oldPlaneX * math.sin(-velRotacao * deltaTime) + jogador.planeY * math.cos(-velRotacao * deltaTime)
-
-
-
-
-
-    elif(direcao == 2):
-
-
-        oldDirX = jogador.dirX
-        jogador.dirX = jogador.dirX * math.cos(velRotacao * deltaTime) - jogador.dirY * math.sin(velRotacao * deltaTime)
-        jogador.dirY = oldDirX * math.sin(velRotacao * deltaTime) + jogador.dirY * math.cos(velRotacao * deltaTime)
-
-        oldPlaneX = jogador.planeX
-        jogador.planeX = jogador.planeX * math.cos(velRotacao * deltaTime) - jogador.planeY * math.sin(velRotacao * deltaTime)
-        jogador.planeY = oldPlaneX * math.sin(velRotacao * deltaTime) + jogador.planeY * math.cos(velRotacao * deltaTime)
 
 def DesenharHUD():
     jogadorHUD.background.draw()

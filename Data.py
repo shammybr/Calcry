@@ -4,6 +4,14 @@ direcao = { "N" : 0,
             "O" : 3
 }
 
+coordenadasDirecao = { 0 : (0.0, 1.0),
+                       1 : (1.0, 0.0),
+                       2 : (0.0, -1.0),
+                       3 : (-1.0, 0.0),
+}
+
+
+
 class Jogador():
     def __init__(self, coordenadaX, coordenadaY, angulo, direcao):
         self.x = coordenadaX
