@@ -36,21 +36,21 @@ class ImagensHUD():
 def CriarHUD(janela):
     jogadorHUD = ImagensHUD()
     
-    jogadorHUD.background.Transformar(janela.width, janela.height* 0.25)
-    jogadorHUD.background.set_position(0, janela.height - (janela.height* 0.25))
+    jogadorHUD.background.Transformar(janela.width, janela.height* 0.3)
+    jogadorHUD.background.set_position(0, janela.height - (janela.height* 0.3))
 
-    jogadorHUD.barraHPBackground.Transformar(janela.width * 0.25, janela.height* 0.04)
-    jogadorHUD.barraHPBackground.set_position(janela.width * 0.17, janela.height * 0.835)
+    jogadorHUD.barraHPBackground.Transformar(janela.width * 0.2, janela.height* 0.03)
+    jogadorHUD.barraHPBackground.set_position(janela.width * 0.18, janela.height * 0.925)
 
-    jogadorHUD.barraHP.Transformar(janela.width * 0.25, janela.height* 0.04)
-    jogadorHUD.barraHP.set_position(janela.width * 0.17, janela.height * 0.835)
+    jogadorHUD.barraHP.Transformar(janela.width * 0.2, janela.height* 0.03)
+    jogadorHUD.barraHP.set_position(janela.width * 0.18, janela.height * 0.925)
 
 
-    jogadorHUD.barraEnergiaBackground.Transformar(janela.width * 0.25, janela.height* 0.04)
-    jogadorHUD.barraEnergiaBackground.set_position(janela.width * 0.17, janela.height * 0.925)
+    jogadorHUD.barraEnergiaBackground.Transformar(janela.width * 0.2, janela.height* 0.03)
+    jogadorHUD.barraEnergiaBackground.set_position(janela.width * 0.42, janela.height * 0.925)
 
-    jogadorHUD.barraEnergia.Transformar(janela.width * 0.25, janela.height* 0.04)
-    jogadorHUD.barraEnergia.set_position(janela.width * 0.17, janela.height * 0.925)
+    jogadorHUD.barraEnergia.Transformar(janela.width * 0.2, janela.height* 0.03)
+    jogadorHUD.barraEnergia.set_position(janela.width * 0.42, janela.height * 0.925)
 
 
     return jogadorHUD

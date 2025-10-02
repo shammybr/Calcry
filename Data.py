@@ -27,6 +27,9 @@ class Jogador():
         self.vidaMaxima = 100
         self.energia = 100
         self.energiaMaxima = 100
+
+        self.level = 1
+        self.xp = 0
         
 class Parede():
     def __init__(self, coordenadaX, coordenadaY, direcao):

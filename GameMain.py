@@ -366,16 +366,19 @@ def VirarJogador(direcao, ultimaDirecaoX, ultimaDirecaoY):
 def DesenharHUD():
     jogadorHUD.background.draw()
     jogadorHUD.barraHPBackground.draw()
-    jogadorHUD.barraHP.Transformar((janela.width * 0.25) * max(1, (jogador.vida / jogador.vidaMaxima)), janela.height* 0.04)
+    jogadorHUD.barraHP.Transformar((janela.width * 0.2) * max(1, (jogador.vida / jogador.vidaMaxima)), janela.height* 0.03)
     jogadorHUD.barraHP.draw()
 
     jogadorHUD.barraEnergiaBackground.draw()
-    jogadorHUD.barraHP.Transformar((janela.width * 0.25) * max(1, (jogador.energia / jogador.energiaMaxima)), janela.height* 0.04)
+    jogadorHUD.barraHP.Transformar((janela.width * 0.2) * max(1, (jogador.energia / jogador.energiaMaxima)), janela.height* 0.03)
     jogadorHUD.barraEnergia.draw()
 
 
-    janela.draw_text("Vida:", janela.width * 0.17, janela.height * 0.8, "Sprites/HUD/PressStart2P-Regular.ttf", 20 * int((1280/janela.width)), (255,255,255), )
-    janela.draw_text("Energia:", janela.width * 0.17, janela.height * 0.89, "Sprites/HUD/PressStart2P-Regular.ttf", 20 * int((1280/janela.width)), (255,255,255), )
+    janela.draw_text("Vida:    " + str(jogador.vida) + " / " + str(jogador.vidaMaxima), janela.width * 0.18, janela.height * 0.89, "Sprites/HUD/PressStart2P-Regular.ttf", 10 * int((1280/janela.width)), (255,255,255), )
+    janela.draw_text("Energia: " + str(jogador.energia)+ " / " + str(jogador.energiaMaxima), janela.width * 0.42, janela.height * 0.89, "Sprites/HUD/PressStart2P-Regular.ttf", 10 * int((1280/janela.width)), (255,255,255), )
+
+    janela.draw_text("Level: " + str(jogador.level), janela.width * 0.72, janela.height * 0.9, "Sprites/HUD/PressStart2P-Regular.ttf", 14 * int((1280/janela.width)), (63,78,182), )
+    janela.draw_text("XP: " + str(jogador.xp)+ " / " + str(jogador.energiaMaxima), janela.width * 0.72, janela.height * 0.95, "Sprites/HUD/PressStart2P-Regular.ttf", 10 * int((1280/janela.width)), (255,255,255), )
 
 #não usado
 def UpdateTest():
