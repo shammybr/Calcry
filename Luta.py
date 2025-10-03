@@ -4,6 +4,10 @@ from PPlay.gameimage import *
 from enum import Enum
 import HUD
 
+
+
+
+
 class EEstadoLuta(Enum):
     ANIMACAO = 1
     LUTANDO = 2
@@ -13,6 +17,7 @@ estadoAnimacao = 0
 velocidadeAnimacao = 700
 tempoAnimacao = 1
 tempoPassado = 0
+
 
 class LutaHUD():
     def __init__(self):
@@ -26,42 +31,67 @@ def EntrarLuta(janela, deltaTime):
     global tempoAnimacao
     global tempoPassado
     global estadoAnimacao
+    global janelaSurface
 
     
-    centro = [int(janela.width / 2), int(janela.height / 2)]
-    tempoPassado += min(0.1, deltaTime)
-    progresso = min(1.0, tempoPassado / tempoAnimacao)
-
-    posX = int(progresso * janela.width)
-    posY = int(progresso * janela.height)
+    if(estadoAnimacao == 0):
+        centro = [int(janela.width / 2), int(janela.height / 2)]
+        tempoPassado += min(0.1, deltaTime)
+        progresso = min(1.0, tempoPassado / tempoAnimacao)
 
 
-    novaJanela = pygame.Surface((janela.width, janela.height), pygame.SRCALPHA)
-    corPixel = (0, 0, 0) 
+
+        posX = int(progresso * janela.width)
+        posY = int(progresso * janela.height)
 
 
-    pontosTTL = [ (0, 0), (0, posY), (centro[0], centro[1]) ]
+        novaJanela = pygame.Surface((janela.width, janela.height), pygame.SRCALPHA)
+        corPixel = (0, 0, 0) 
 
 
-    pontosTTR = [ (janela.width, 0), (janela.width - posX, 0), (centro[0], centro[1]) ]
+        pontosTTL = [ (0, 0), (0, posY), (centro[0], centro[1]) ]
 
 
-    pontosTBL = [ (0, janela.height), (posX, janela.height), (centro[0], centro[1]) ]
+        pontosTTR = [ (janela.width, 0), (janela.width - posX, 0), (centro[0], centro[1]) ]
 
 
-    pontosTBR = [ (janela.width, janela.height), (janela.width, janela.height - posY), (centro[0], centro[1]) ]
+        pontosTBL = [ (0, janela.height), (posX, janela.height), (centro[0], centro[1]) ]
 
 
-    pygame.draw.polygon(novaJanela, corPixel, pontosTTL)
-    pygame.draw.polygon(novaJanela, corPixel, pontosTTR)
-    pygame.draw.polygon(novaJanela, corPixel, pontosTBL)
-    pygame.draw.polygon(novaJanela, corPixel, pontosTBR)
-    
+        pontosTBR = [ (janela.width, janela.height), (janela.width, janela.height - posY), (centro[0], centro[1]) ]
 
-    janela.get_screen().blit(novaJanela, (0, 0))
 
-    if(progresso == 1):
-        estadoAnimacao = 1
+        pygame.draw.polygon(novaJanela, corPixel, pontosTTL)
+        pygame.draw.polygon(novaJanela, corPixel, pontosTTR)
+        pygame.draw.polygon(novaJanela, corPixel, pontosTBL)
+        pygame.draw.polygon(novaJanela, corPixel, pontosTBR)
+        
+
+        janela.get_screen().blit(novaJanela, (0, 0))
+
+        if(progresso == 1):
+            estadoAnimacao = 1
+            tempoPassado = 0
+            return 1
+
+
+    elif(estadoAnimacao == 1):
+        if(tempoPassado == 0):
+            janelaSurface = janela.get_screen().copy()
+            janela.get_screen().fill((0, 0, 0)) # cinza
+
+        tempoPassado += min(0.1, deltaTime)
+        progresso = min(1.0, tempoPassado / tempoAnimacao)
+
+        metadeEsquerda = pygame.Rect(0, 0, int(janela.width / 2), janela.height)
+        metadeDireita =  pygame.Rect(int(janela.width / 2), 0, int(janela.width / 2), janela.height)
+
+        janela.get_screen().blit(janelaSurface, (int(progresso * int(janela.width / 2)) - int(janela.width / 2) , 0), metadeEsquerda)
+        janela.get_screen().blit(janelaSurface, (int(janela.width) - int(progresso * int(janela.width / 2)) , 0), metadeDireita)
+
+        if(progresso == 1):
+            estadoAnimacao = 2
+
 
 
 def CriarLutaHUD(janela):

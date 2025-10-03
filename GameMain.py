@@ -159,9 +159,10 @@ def Update():
     elif(estadoJogo == Data.EEstado.LUTA):
 
         if(Luta.estadoLuta == Luta.EEstadoLuta.ANIMACAO):
-            if(Luta.estadoAnimacao == 0):
-                Luta.EntrarLuta(janela, deltaTime)
-
+            if(Luta.estadoAnimacao <= 1):
+                if(Luta.EntrarLuta(janela, deltaTime) == 1):
+                    DesenharLutaHUD()
+                
             else:
                 RenderizarLuta()
         
