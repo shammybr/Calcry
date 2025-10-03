@@ -1,3 +1,5 @@
+from enum import Enum
+
 direcao = { "N" : 0,
             "L" : 1,
             "S" : 2,
@@ -10,6 +12,10 @@ coordenadasDirecao = { 0 : (0.0, 1.0),
                        3 : (-1.0, 0.0),
 }
 
+class EEstado(Enum):
+    MAINMENU = 1
+    ANDANDO = 2
+    LUTA = 3
 
 
 class Jogador():

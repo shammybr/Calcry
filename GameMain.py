@@ -2,17 +2,25 @@ from PPlay.window import *
 from PPlay.sprite import *
 
 from Janela import CriarJanela
+
+janela = CriarJanela()
+
+
 import Sprites
 import Data
 import Input
 import Mapa
 import math
 import HUD
+import Luta
 
-janela = CriarJanela()
+
 Sprites.CarregarTexturas(janela)
 jogadorHUD = HUD.CriarHUD(janela)
+lutaHUD = Luta.CriarLutaHUD(janela)
 
+
+estadoJogo = Data.EEstado.ANDANDO
 
 tempoAgora = time.time()
 tempoUltimoFrame = time.time()
@@ -74,6 +82,7 @@ def Update():
     global andandoDestino
     global inicioJogador
     global andarVelocidade
+    global estadoJogo
 
     deltaTime = time.time() - tempoUltimoFrame
     tempoUltimoFrame = time.time()
@@ -88,55 +97,107 @@ def Update():
     ultimoInput = Input.LerInput(teclado, janela)
 
 
+    if(estadoJogo == Data.EEstado.ANDANDO):
+        if(time.time() - ultimaRotacao > 0.005):
+            if(isRodando):
+                
+                VirarJogadorLoop(ultimaDirecaoX, ultimaDirecaoY)
 
-    if(time.time() - ultimaRotacao > 0.005):
-        if(isRodando):
+            else:
+
+
+                if(ultimoInput == 3):
+                    AtualizarDirecaoJogador(ultimoInput)
+                    rodandoDirecao = 1
+                    isRodando = True
+                    ultimaDirecaoX = jogador.dirX
+                    ultimaDirecaoY = jogador.dirY
+
+
+                elif(ultimoInput == 4):
+                    AtualizarDirecaoJogador(ultimoInput)
+                    rodandoDirecao = 2
+                    isRodando = True
+                    ultimaDirecaoX = jogador.dirX
+                    ultimaDirecaoY = jogador.dirY
+
+
+
+
+        if(time.time() - ultimoMovimento > 0.1):
+
+            if(isAndando):
+                AndarJogadorLoop(jogador, andandoDestino, inicioJogador, andarVelocidade)
+
+                if(abs(andandoDestino[0] - jogador.x) < 0.05 and abs(andandoDestino[1] - jogador.y) < 0.05):
+                    jogador.x = andandoDestino[0]
+                    jogador.y = andandoDestino[1]
+
+                    isAndando = False
+                    ultimoMovimento = time.time()
+
+            elif(AndarJogador(ultimoInput)):
+                
+
+                isAndando = True
+
+        
+
+
+
+
+
+        if(ultimoInput == 9):
             
-            VirarJogadorLoop(ultimaDirecaoX, ultimaDirecaoY)
-
-        else:
-
-
-            if(ultimoInput == 3):
-                AtualizarDirecaoJogador(ultimoInput)
-                rodandoDirecao = 1
-                isRodando = True
-                ultimaDirecaoX = jogador.dirX
-                ultimaDirecaoY = jogador.dirY
+            estadoJogo = Data.EEstado.LUTA
+            Luta.estadoLuta = Luta.EEstadoLuta.ANIMACAO
 
 
-            elif(ultimoInput == 4):
-                AtualizarDirecaoJogador(ultimoInput)
-                rodandoDirecao = 2
-                isRodando = True
-                ultimaDirecaoX = jogador.dirX
-                ultimaDirecaoY = jogador.dirY
+        RenderizarMapa()
 
 
+    elif(estadoJogo == Data.EEstado.LUTA):
+
+        if(Luta.estadoLuta == Luta.EEstadoLuta.ANIMACAO):
+            if(Luta.estadoAnimacao == 0):
+                Luta.EntrarLuta(janela, deltaTime)
+
+            else:
+                RenderizarLuta()
+        
+
+   
+
+ 
 
 
-    if(time.time() - ultimoMovimento > 0.1):
+    numeroFrames += 1
+    janela.update()
 
-        if(isAndando):
-            AndarJogadorLoop(jogador, andandoDestino, inicioJogador, andarVelocidade)
-
-            if(abs(andandoDestino[0] - jogador.x) < 0.05 and abs(andandoDestino[1] - jogador.y) < 0.05):
-                jogador.x = andandoDestino[0]
-                jogador.y = andandoDestino[1]
-
-                isAndando = False
-                ultimoMovimento = time.time()
-
-        elif(AndarJogador(ultimoInput)):
-            
-
-            isAndando = True
+    if(segundo > 1):
+        print(numeroFrames)
+        numeroFrames = 0
+        segundo -= 1
 
 
 
+def RenderizarLuta():
 
 
-    #dar update em 60 frames
+    DesenharLutaHUD()
+    janela.update()
+
+
+def RenderizarMapa():
+    global ultimoDraw
+    global janela
+    global janelaMenor
+    global GAME_HEIGHT
+    global GAME_WIDTH
+    global jogador
+
+
+        #dar update em 60 frames
     if(ultimoDraw > 0.016):
 
         janela.get_screen().fill((100, 100, 100)) # cinza
@@ -160,20 +221,6 @@ def Update():
 
 
         ultimoDraw = 0
-    numeroFrames += 1
-
-
-
-
-
-    janela.update()
-
-
-    if(segundo > 1):
-        print(numeroFrames)
-        numeroFrames = 0
-        segundo -= 1
-
 
 
 
@@ -379,6 +426,10 @@ def DesenharHUD():
 
     janela.draw_text("Level: " + str(jogador.level), janela.width * 0.72, janela.height * 0.9, "Sprites/HUD/PressStart2P-Regular.ttf", 14 * int((1280/janela.width)), (63,78,182), )
     janela.draw_text("XP: " + str(jogador.xp)+ " / " + str(jogador.energiaMaxima), janela.width * 0.72, janela.height * 0.95, "Sprites/HUD/PressStart2P-Regular.ttf", 10 * int((1280/janela.width)), (255,255,255), )
+
+
+def DesenharLutaHUD():
+    lutaHUD.background.draw()
 
 #não usado
 def UpdateTest():

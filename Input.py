@@ -14,7 +14,8 @@ def LerInput(teclado, janela):
         return 3
     if teclado.key_pressed("a"):  # Direcional <-
         return 4
-
+    if teclado.key_pressed("l"):  # teste
+        return 9
 
 
     if teclado.key_pressed("ESC"):  # Esc, escape..
