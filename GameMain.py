@@ -22,6 +22,12 @@ lutaHUD = Luta.CriarLutaHUD(janela)
 
 estadoJogo = Data.EEstado.ANDANDO
 
+inimigosNaLuta = []
+posicoesBotoesLuta = [ (janela.width * 0.075, janela.height - (7 * janela.height / 30)), (janela.width * 0.03, janela.height - (3 * janela.height / 10)),  (janela.width * 0.01, janela.height - (janela.height / 10)), (janela.width * 0.03, janela.height - (janela.height / 6)),]
+botaoSelecionadoLuta = Data.ELuta.ATACAR
+ultimoMovimentoBotao = time.time()
+botaoSolto = True
+
 tempoAgora = time.time()
 tempoUltimoFrame = time.time()
 
@@ -83,6 +89,10 @@ def Update():
     global inicioJogador
     global andarVelocidade
     global estadoJogo
+    global botaoSelecionadoLuta
+    global ultimoMovimentoBotao
+    global botaoSolto
+
 
     deltaTime = time.time() - tempoUltimoFrame
     tempoUltimoFrame = time.time()
@@ -95,6 +105,8 @@ def Update():
   
 
     ultimoInput = Input.LerInput(teclado, janela)
+    if(ultimoInput == 0):
+        botaoSolto = True
 
 
     if(estadoJogo == Data.EEstado.ANDANDO):
@@ -149,6 +161,7 @@ def Update():
 
         if(ultimoInput == 9):
             
+            PrepararLuta()
             estadoJogo = Data.EEstado.LUTA
             Luta.estadoLuta = Luta.EEstadoLuta.ANIMACAO
 
@@ -161,10 +174,65 @@ def Update():
         if(Luta.estadoLuta == Luta.EEstadoLuta.ANIMACAO):
             if(Luta.estadoAnimacao <= 1):
                 if(Luta.EntrarLuta(janela, deltaTime) == 1):
+                    botaoSelecionadoLuta = Data.ELuta.ATACAR
+                    CalcularBotoesLuta()
+                    
                     DesenharLutaHUD()
+                    DesenharInimigos()
+                    DesenharLutaBotoes()
+                    Luta.EntrarLuta(janela, 0.001)
                 
-            else:
-                RenderizarLuta()
+            elif(Luta.estadoAnimacao == 2):
+                Luta.AnimarTrocaBotoesLoop(janela, deltaTime, lutaHUD, botaoSelecionadoLuta, posicoesBotoesLuta)
+
+        elif(Luta.estadoLuta == Luta.EEstadoLuta.LUTANDO):
+            
+
+            if(time.time() - ultimoMovimentoBotao > 0.1 and botaoSolto):
+                if(ultimoInput == 2):
+                    if(botaoSelecionadoLuta == Data.ELuta.ATACAR):
+                        botaoSelecionadoLuta = Data.ELuta.HABILIDADE
+
+
+                    elif(botaoSelecionadoLuta == Data.ELuta.HABILIDADE):
+                        botaoSelecionadoLuta = Data.ELuta.ITEM
+
+
+                    elif(botaoSelecionadoLuta == Data.ELuta.ITEM):
+                        botaoSelecionadoLuta = Data.ELuta.FUGIR
+
+
+                    elif(botaoSelecionadoLuta == Data.ELuta.FUGIR):
+                        botaoSelecionadoLuta = Data.ELuta.ATACAR
+
+                    Luta.AnimarTrocaBotoes(lutaHUD)
+
+                    ultimoMovimentoBotao = time.time()
+                    botaoSolto = False
+
+                elif(ultimoInput == 1):
+                    if(botaoSelecionadoLuta == Data.ELuta.ATACAR):
+                        botaoSelecionadoLuta = Data.ELuta.FUGIR
+
+
+                    elif(botaoSelecionadoLuta == Data.ELuta.FUGIR):
+                        botaoSelecionadoLuta = Data.ELuta.ITEM
+
+
+                    elif(botaoSelecionadoLuta == Data.ELuta.ITEM):
+                        botaoSelecionadoLuta = Data.ELuta.HABILIDADE
+
+
+                    elif(botaoSelecionadoLuta == Data.ELuta.HABILIDADE):
+                        botaoSelecionadoLuta = Data.ELuta.ATACAR
+
+                    Luta.AnimarTrocaBotoes(lutaHUD)
+
+                    ultimoMovimentoBotao = time.time()
+                    botaoSolto = False
+
+            RenderizarLuta()
+
         
 
    
@@ -184,8 +252,10 @@ def Update():
 
 def RenderizarLuta():
 
-
+    
     DesenharLutaHUD()
+    DesenharInimigos()
+    DesenharLutaBotoes()
     janela.update()
 
 
@@ -226,7 +296,6 @@ def RenderizarMapa():
 
 
 def ChecarColisao(novaPosicaoX, novaPosicaoY):
-    direcao = 0
 
     if(novaPosicaoX - jogador.x > 0):
         if(Mapa.GetMapaAtual()[int(novaPosicaoY)][int(novaPosicaoX)].oeste):
@@ -429,8 +498,68 @@ def DesenharHUD():
     janela.draw_text("XP: " + str(jogador.xp)+ " / " + str(jogador.energiaMaxima), janela.width * 0.72, janela.height * 0.95, "Sprites/HUD/PressStart2P-Regular.ttf", 10 * int((1280/janela.width)), (255,255,255), )
 
 
+
 def DesenharLutaHUD():
     lutaHUD.background.draw()
+   
+               
+def DesenharLutaBotoes():
+    
+    lutaHUD.bAtacar.draw()
+    lutaHUD.bHabilidade.draw()
+    lutaHUD.bItem.draw()
+    lutaHUD.bFugir.draw()
+
+def CalcularBotoesLuta():
+
+    lutaHUD.bItem.set_position(posicoesBotoesLuta[(botaoSelecionadoLuta.value) % 4][0], posicoesBotoesLuta[(botaoSelecionadoLuta.value) % 4][1])
+    lutaHUD.bFugir.set_position(posicoesBotoesLuta[(botaoSelecionadoLuta.value + 1) % 4][0], posicoesBotoesLuta[(botaoSelecionadoLuta.value + 1) % 4][1] )
+    lutaHUD.bHabilidade.set_position(posicoesBotoesLuta[(botaoSelecionadoLuta.value + 2) % 4][0],posicoesBotoesLuta[(botaoSelecionadoLuta.value + 2) % 4][1] )
+    lutaHUD.bAtacar.set_position(posicoesBotoesLuta[(botaoSelecionadoLuta.value + 3) % 4][0], posicoesBotoesLuta[(botaoSelecionadoLuta.value + 3) % 4][1])
+
+
+
+
+def DesenharInimigos():
+    global inimigosNaLuta
+   
+    i = 0
+
+    ordemDesenhar = []
+    for inimigo in inimigosNaLuta:
+       if(inimigo.tipo == Data.tipoInimigo["Limite"]):
+            inimigo.sprite.Transformar(int(317 * (janela.width/1920)), int(497 * (janela.height/1080)))
+            largura = (inimigo.sprite.largura / 2)
+            altura = (inimigo.sprite.altura / 2)
+
+            if(i == 0):
+                inimigo.sprite.set_position( int( (0.40 * janela.width)  - largura), int( 0.65 * janela.height - altura )    )
+            
+            elif(i == 1):
+                inimigo.sprite.set_position( int( (0.60 * janela.width) - largura), int( 0.65 * janela.height  - altura)    )
+
+            elif(i == 2):
+                inimigo.sprite.set_position( int( (0.25 * janela.width) - largura), int( 0.55 * janela.height - altura )    )
+            
+            elif(i == 3):
+                inimigo.sprite.set_position( int( (0.75 * janela.width) - largura), int( 0.55 * janela.height - altura )    )
+
+
+            ordemDesenhar.insert(0, inimigo)
+            i += 1
+
+    for inimigo in ordemDesenhar:
+        inimigo.sprite.draw()
+
+
+def PrepararLuta():
+    global inimigosNaLuta
+
+    inimigosNaLuta.clear()
+    inimigosNaLuta = Luta.CalcularInimigos(Data.EANDAR.EANDAR1)
+
+
+
 
 #não usado
 def UpdateTest():

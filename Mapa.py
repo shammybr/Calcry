@@ -26,6 +26,7 @@ class Parede():
         self.textura = textura
 
 mapaAtual = [[0]]
+mapaObjetos = [[0]]
 
 texturaTeto = 0
 texturaChao = 0
@@ -54,6 +55,18 @@ def GerarMapa(mapaID):
     #[l, O, o, o, o],
     #[s, s, s, s, s]
     #]
+
+    mapaObjetos = [
+    [O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O],
+    [O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O],
+    [O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O],
+    [O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O],
+    [O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O],
+    [O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O],
+    [O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O],
+    [O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O],
+    ]
+
 
     game_map = [
     [O, O, O, O, O, O, O, O, O, O, O, O, n, n, n, O, O, O, O, O, O, O, O, O, O],
@@ -101,6 +114,10 @@ def GerarMapa(mapaID):
 def GetMapaAtual():
 
     return mapaAtual
+
+def GetMapaObjetos():
+
+    return mapaObjetos
 
 def RenderizarMapa3D(janela, jogador):
     global tilesVisiveis
@@ -295,7 +312,7 @@ def RenderizarMapa3D(janela, jogador):
         pedacoDaTextura = textura.subsurface(texX, 0, 1, textura.get_height())
         
             # Clamp the height to be within the cache's bounds
-        if(alturaDaLinha > janela.height * 3):
+        if(alturaDaLinha > janela.height * 2):
             print(alturaDaLinha)
             pedacoEscalado = pygame.transform.scale(pedacoDaTextura, (1, alturaDaLinha)) 
         else:

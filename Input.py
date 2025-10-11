@@ -18,5 +18,8 @@ def LerInput(teclado, janela):
         return 9
 
 
+
     if teclado.key_pressed("ESC"):  # Esc, escape..
         janela.close()  # Fecha o programa
+
+    return 0

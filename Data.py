@@ -1,4 +1,6 @@
 from enum import Enum
+from PPlay.sprite import *
+import HUD
 
 direcao = { "N" : 0,
             "L" : 1,
@@ -12,11 +14,29 @@ coordenadasDirecao = { 0 : (0.0, 1.0),
                        3 : (-1.0, 0.0),
 }
 
+tipoInimigo = { "Limite" : 0,
+         #   "Derivada" : 1,
+          #  "Integral" : 2,
+}
+
+
+class EANDAR(Enum):
+    EANDAR1 = 1
+    EANDAR2 = 2
+    EANDAR3 = 3
+
+
+
 class EEstado(Enum):
     MAINMENU = 1
     ANDANDO = 2
     LUTA = 3
 
+class ELuta(Enum):
+    ATACAR = 1
+    HABILIDADE = 2
+    ITEM = 3
+    FUGIR = 4
 
 class Jogador():
     def __init__(self, coordenadaX, coordenadaY, angulo, direcao):
@@ -36,9 +56,22 @@ class Jogador():
 
         self.level = 1
         self.xp = 0
-        
+
+class Inimigo():
+    def __init__(self, tipo, vida, vidaMaxima, energia, energiaMaxima, sprite):
+        self.tipo = tipo
+        self.vida = vida
+        self.vidaMaxima = vidaMaxima
+        self.energia = energia
+        self.energiaMaxima = energiaMaxima
+        self.sprite = sprite
+
 class Parede():
     def __init__(self, coordenadaX, coordenadaY, direcao):
         self.x = coordenadaX
         self.y = coordenadaY
         self.direcao = direcao
+
+class ILimite(Inimigo):
+     def __init__(self):
+        super().__init__(tipoInimigo["Limite"], 100, 100, 100, 100, HUD.GameImageMelhor('Sprites/Inimigos/ILimite.png', 0, 0))

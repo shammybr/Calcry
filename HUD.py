@@ -13,7 +13,9 @@ class GameImageMelhor(PPlay.gameimage.GameImage):
         self.rect = self.image.get_rect()
         self.coordenadas = (x,y)
         self.set_position(x, y)
-    
+        self.largura = self.rect.width
+        self.altura = self.rect.height
+
     def Transformar(self, largura, altura):
 
         centroOriginal = self.rect.center
@@ -21,6 +23,9 @@ class GameImageMelhor(PPlay.gameimage.GameImage):
         self.rect = imagemCopia.get_rect()
         self.rect.center = centroOriginal
         self.image = imagemCopia
+        self.largura = self.rect.width
+        self.altura = self.rect.height
+        
 
 
 

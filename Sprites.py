@@ -83,6 +83,7 @@ class Imagem3D(PPlay.gameimage.GameImage):
 
 def CarregarTexturas(janela):
     global texturasCache
+
     parede1 = pygame.image.load('Sprites/parede1.png').convert()
     texturas.append(parede1)
     parede1Cache = EscalarTextura(parede1, janela.height)
@@ -110,8 +111,8 @@ def EscalarTextura(textura, janelaAltura):
         
         pedacoDaColunaEscalado = {}
 
-        # calcular slice para toda possível altura da parede (altura dividido peka distancia)
-        for altura in range(1, int(janelaAltura * 3) + 1):
+        
+        for altura in range(1, int(janelaAltura * 2) + 1):
             pedacoDaColunaEscalado[altura] = pygame.transform.scale(slice, (1, altura))
             
         cache.append(pedacoDaColunaEscalado)
