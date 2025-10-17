@@ -1,3 +1,4 @@
+from PPlay.window import *
 from PPlay.sprite import *
 from PPlay.gameimage import *
 import PPlay
@@ -18,6 +19,12 @@ texturasDic = { "parede1" : 1,
 texturas = [None]
 spriteList = []
 texturasCache = {}
+
+contador_do_loading=0
+tempo_inicial_pro_loading=time.time()
+ja_passou_pelo_loading=False
+loading=Sprite(f'Sprites/Loading{contador_do_loading%8}.png')
+loading.set_position(320, 180)
 
 #classe sprite expandida para guardar imagem original e transformar se necessário
 class Imagem3D(PPlay.gameimage.GameImage):
@@ -78,44 +85,68 @@ class Imagem3D(PPlay.gameimage.GameImage):
             self.rect.topleft = shapeFinal.topleft
 
 
+def Tela_de_Loading(janela):
+    global contador_do_loading
+    global tempo_inicial_pro_loading
+    global loading
+    if (time.time()-tempo_inicial_pro_loading>0.5):
+        tempo_inicial_pro_loading=time.time()
+        contador_do_loading+=1
+        loading=Sprite(f'Sprites/Loading{contador_do_loading%8}.png')
+        loading.set_position(320, 180)
     
+    janela.set_background_color((0, 0, 0))
+    loading.draw()
+    janela.update()
+
+
 
 
 def CarregarTexturas(janela):
     global texturasCache
 
+    Tempo_inicial_para_entender_codigo=time.time()
+
     parede1 = pygame.image.load('Sprites/parede1.png').convert()
     texturas.append(parede1)
-    parede1Cache = EscalarTextura(parede1, janela.height)
-
+    parede1Cache = EscalarTextura(parede1, janela.height, janela)
 
     chao1 = pygame.image.load('Sprites/chao1.png').convert()
     texturas.append(chao1)
-    chao1Cache = EscalarTextura(chao1, janela.height)
+    chao1Cache = EscalarTextura(chao1, janela.height, janela)
+
+
 
     teto1 = pygame.image.load('Sprites/teto1.png').convert()
     texturas.append(teto1)
-    teto1Cache = EscalarTextura(teto1, janela.height)
+    teto1Cache = EscalarTextura(teto1, janela.height, janela)
+
+
 
     texturasCache = { 1: parede1Cache, 2:chao1Cache, 3:teto1Cache }
 
-def EscalarTextura(textura, janelaAltura):
+
+def EscalarTextura(textura, janelaAltura, janela):
     cache = []
     texturaLargura = textura.get_width()
     texturaAltura = textura.get_height()
     
     
     for coluna in range(texturaLargura):
+        
 
         slice = textura.subsurface(coluna, 0, 1, texturaAltura)
         
         pedacoDaColunaEscalado = {}
-
+        
+        Tela_de_Loading(janela)
         
         for altura in range(1, int(janelaAltura * 2) + 1):
+
             pedacoDaColunaEscalado[altura] = pygame.transform.scale(slice, (1, altura))
-            
+
         cache.append(pedacoDaColunaEscalado)
+
     return cache
 
 
