@@ -33,9 +33,9 @@ class EEstado(Enum):
     LUTA = 3
 
 class ELuta(Enum):
-    ATACAR = 1
-    HABILIDADE = 2
-    ITEM = 3
+    ITEM = 1
+    ATACAR = 2
+    HABILIDADE = 3
     FUGIR = 4
 
 class Jogador():

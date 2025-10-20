@@ -128,14 +128,14 @@ def Update():
 
 
                     elif(jogo.botaoSelecionadoLuta == Data.ELuta.HABILIDADE):
-                        jogo.botaoSelecionadoLuta = Data.ELuta.ITEM
-
-
-                    elif(jogo.botaoSelecionadoLuta == Data.ELuta.ITEM):
                         jogo.botaoSelecionadoLuta = Data.ELuta.FUGIR
 
 
                     elif(jogo.botaoSelecionadoLuta == Data.ELuta.FUGIR):
+                        jogo.botaoSelecionadoLuta = Data.ELuta.ITEM
+
+
+                    elif(jogo.botaoSelecionadoLuta == Data.ELuta.ITEM):
                         jogo.botaoSelecionadoLuta = Data.ELuta.ATACAR
 
                     luta.AnimarTrocaBotoes(jogo.lutaHUD, jogo.botaoAntigo, jogo.botaoSelecionadoLuta)
@@ -147,14 +147,14 @@ def Update():
                     jogo.botaoAntigo = jogo.botaoSelecionadoLuta
 
                     if(jogo.botaoSelecionadoLuta == Data.ELuta.ATACAR):
-                        jogo.botaoSelecionadoLuta = Data.ELuta.FUGIR
-
-
-                    elif(jogo.botaoSelecionadoLuta == Data.ELuta.FUGIR):
                         jogo.botaoSelecionadoLuta = Data.ELuta.ITEM
 
 
                     elif(jogo.botaoSelecionadoLuta == Data.ELuta.ITEM):
+                        jogo.botaoSelecionadoLuta = Data.ELuta.FUGIR
+
+
+                    elif(jogo.botaoSelecionadoLuta == Data.ELuta.FUGIR):
                         jogo.botaoSelecionadoLuta = Data.ELuta.HABILIDADE
 
 
@@ -165,6 +165,7 @@ def Update():
 
                     jogo.ultimoMovimentoBotao = time.time()
                     jogo.botaoSolto = False
+
 
             RenderizarLuta()
 
@@ -430,23 +431,29 @@ def DesenharLutaBotoes():
 
     #não olhe...
     ultimoDraw = 0
-    if jogo.botaoSelecionadoLuta.value == 3 and jogo.botaoAntigo.value == 4:
+    if jogo.botaoSelecionadoLuta.value == 1 and jogo.botaoAntigo.value == 4:
         ultimoDraw = 2
     elif jogo.botaoSelecionadoLuta.value == 1 and jogo.botaoAntigo.value == 2:
-        ultimoDraw = 0
-    elif jogo.botaoSelecionadoLuta.value == 4 and jogo.botaoAntigo.value == 1:
         ultimoDraw = 3
+    elif jogo.botaoSelecionadoLuta.value == 2 and jogo.botaoAntigo.value == 1:
+        ultimoDraw = 3
+    elif jogo.botaoSelecionadoLuta.value == 2 and jogo.botaoAntigo.value == 3:
+        ultimoDraw = 0
     elif jogo.botaoSelecionadoLuta.value == 3 and jogo.botaoAntigo.value == 2:
+        ultimoDraw = 0
+    elif jogo.botaoSelecionadoLuta.value == 3 and jogo.botaoAntigo.value == 4:
         ultimoDraw = 1
     elif jogo.botaoSelecionadoLuta.value == 4 and jogo.botaoAntigo.value == 3:
+        ultimoDraw = 1
+    elif jogo.botaoSelecionadoLuta.value == 4 and jogo.botaoAntigo.value == 1:
         ultimoDraw = 2
-    else:
-        ultimoDraw = max(0, jogo.botaoAntigo.value - jogo.botaoSelecionadoLuta.value)
+
 
     jogo.botoesLuta[ultimoDraw].draw()
 
-
     for i, button in enumerate(jogo.botoesLuta):
+
+
         if i != ultimoDraw:
             button.draw()
 
@@ -456,10 +463,12 @@ def DesenharLutaBotoes():
 
 def CalcularBotoesLuta():
 
-    jogo.lutaHUD.bItem.set_position(jogo.posicoesBotoesLuta[(jogo.botaoSelecionadoLuta.value) % 4][0], jogo.posicoesBotoesLuta[(jogo.botaoSelecionadoLuta.value) % 4][1])
-    jogo.lutaHUD.bFugir.set_position(jogo.posicoesBotoesLuta[(jogo.botaoSelecionadoLuta.value + 1) % 4][0], jogo.posicoesBotoesLuta[(jogo.botaoSelecionadoLuta.value + 1) % 4][1] )
-    jogo.lutaHUD.bHabilidade.set_position(jogo.posicoesBotoesLuta[(jogo.botaoSelecionadoLuta.value + 2) % 4][0],jogo.posicoesBotoesLuta[(jogo.botaoSelecionadoLuta.value + 2) % 4][1] )
-    jogo.lutaHUD.bAtacar.set_position(jogo.posicoesBotoesLuta[(jogo.botaoSelecionadoLuta.value + 3) % 4][0], jogo.posicoesBotoesLuta[(jogo.botaoSelecionadoLuta.value + 3) % 4][1])
+    jogo.lutaHUD.bItem.set_position(jogo.posicoesBotoesLuta[(jogo.botaoSelecionadoLuta.value + 3) % 4][0], jogo.posicoesBotoesLuta[(jogo.botaoSelecionadoLuta.value + 3) % 4][1])
+    jogo.lutaHUD.bAtacar.set_position(jogo.posicoesBotoesLuta[(jogo.botaoSelecionadoLuta.value + 2) % 4][0], jogo.posicoesBotoesLuta[(jogo.botaoSelecionadoLuta.value + 2) % 4][1])
+    jogo.lutaHUD.bHabilidade.set_position(jogo.posicoesBotoesLuta[(jogo.botaoSelecionadoLuta.value + 1) % 4][0],jogo.posicoesBotoesLuta[(jogo.botaoSelecionadoLuta.value + 1) % 4][1] )
+    jogo.lutaHUD.bFugir.set_position(jogo.posicoesBotoesLuta[(jogo.botaoSelecionadoLuta.value) % 4][0], jogo.posicoesBotoesLuta[(jogo.botaoSelecionadoLuta.value) % 4][1] )
+   
+   
 
 
 

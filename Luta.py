@@ -170,13 +170,13 @@ class Luta():
         lutaHUD.bFugir.MudarImagem(lutaHUD.bFugirN)
 
         if(botaoSelecionadoLuta.value == 1):
-            lutaHUD.bAtacar.MudarImagem(lutaHUD.bAtacarSelecionado)
-        elif(botaoSelecionadoLuta.value == 2):
-            lutaHUD.bHabilidade.MudarImagem(lutaHUD.bHabilidadeSelecionado)
-        elif(botaoSelecionadoLuta.value == 3):
-            lutaHUD.bFugir.MudarImagem(lutaHUD.bFugirSelecionado)
-        elif(botaoSelecionadoLuta.value == 4):
             lutaHUD.bItem.MudarImagem(lutaHUD.bItemSelecionado)
+        elif(botaoSelecionadoLuta.value == 2):
+            lutaHUD.bAtacar.MudarImagem(lutaHUD.bAtacarSelecionado)   
+        elif(botaoSelecionadoLuta.value == 3):
+            lutaHUD.bHabilidade.MudarImagem(lutaHUD.bHabilidadeSelecionado)   
+        elif(botaoSelecionadoLuta.value == 4):
+            lutaHUD.bFugir.MudarImagem(lutaHUD.bFugirSelecionado)
             
 
         self.botaoAntigo = botaoAntigo
@@ -189,41 +189,60 @@ class Luta():
 
         progresso = min(1.0, self.tempoPassado / self.tempoAnimacaoBotoes)
 
-        bItemAntigoX = posicoesBotoesLuta[(self.botaoAntigo.value) % 4][0]
-        bFugirAntigoX = posicoesBotoesLuta[(self.botaoAntigo.value + 1) % 4][0]
-        bHabilidadeAntigoX = posicoesBotoesLuta[(self.botaoAntigo.value + 2) % 4][0]
-        bAtacarAntigoX = posicoesBotoesLuta[(self.botaoAntigo.value + 3) % 4][0]
+        bItemAntigoX = posicoesBotoesLuta[(self.botaoAntigo.value + 3) % 4][0]
+        bAtacarAntigoX = posicoesBotoesLuta[(self.botaoAntigo.value + 2) % 4][0]
+        bHabilidadeAntigoX = posicoesBotoesLuta[(self.botaoAntigo.value + 1) % 4][0]
+        bFugirAntigoX = posicoesBotoesLuta[(self.botaoAntigo.value) % 4][0]
 
-        bItemNovoX = posicoesBotoesLuta[(botaoSelecionadoLuta.value) % 4][0]
-        bFugirNovoX = posicoesBotoesLuta[(botaoSelecionadoLuta.value + 1) % 4][0]
-        bHabilidadeNovoX = posicoesBotoesLuta[(botaoSelecionadoLuta.value + 2) % 4][0]
-        bAtacarNovoX = posicoesBotoesLuta[(botaoSelecionadoLuta.value + 3) % 4][0]
+        
 
-        bItemAntigoY = posicoesBotoesLuta[(self.botaoAntigo.value) % 4][1]
-        bFugirAntigoY = posicoesBotoesLuta[(self.botaoAntigo.value + 1) % 4][1]
-        bHabilidadeAntigoY = posicoesBotoesLuta[(self.botaoAntigo.value + 2) % 4][1]
-        bAtacarAntigoY = posicoesBotoesLuta[(self.botaoAntigo.value + 3) % 4][1]
+        bItemNovoX = posicoesBotoesLuta[(botaoSelecionadoLuta.value + 3) % 4][0]
+        bAtacarNovoX = posicoesBotoesLuta[(botaoSelecionadoLuta.value + 2) % 4][0]
+        bHabilidadeNovoX = posicoesBotoesLuta[(botaoSelecionadoLuta.value + 1) % 4][0]
+        bFugirNovoX = posicoesBotoesLuta[(botaoSelecionadoLuta.value) % 4][0]
+       
+     
 
-        bItemNovoY = posicoesBotoesLuta[(botaoSelecionadoLuta.value) % 4][1]
-        bFugirNovoY = posicoesBotoesLuta[(botaoSelecionadoLuta.value + 1) % 4][1]
-        bHabilidadeNovoY = posicoesBotoesLuta[(botaoSelecionadoLuta.value + 2) % 4][1]
-        bAtacarNovoY = posicoesBotoesLuta[(botaoSelecionadoLuta.value + 3) % 4][1]
+        bItemAntigoY = posicoesBotoesLuta[(self.botaoAntigo.value + 3) % 4][1]
+        bAtacarAntigoY = posicoesBotoesLuta[(self.botaoAntigo.value + 2) % 4][1]
+        bHabilidadeAntigoY = posicoesBotoesLuta[(self.botaoAntigo.value + 1) % 4][1]
+        bFugirAntigoY = posicoesBotoesLuta[(self.botaoAntigo.value) % 4][1]
+        
+        
+
+        bItemNovoY = posicoesBotoesLuta[(botaoSelecionadoLuta.value + 3) % 4][1]
+        bAtacarNovoY = posicoesBotoesLuta[(botaoSelecionadoLuta.value + 2) % 4][1]
+        bHabilidadeNovoY = posicoesBotoesLuta[(botaoSelecionadoLuta.value + 1) % 4][1]
+        bFugirNovoY = posicoesBotoesLuta[(botaoSelecionadoLuta.value) % 4][1]
+        
+        
 
         if(progresso < 1):
             lutaHUD.bItem.set_position(bItemAntigoX + ((bItemNovoX - bItemAntigoX) * progresso), bItemAntigoY + ((bItemNovoY - bItemAntigoY) * progresso))
-            lutaHUD.bFugir.set_position(bFugirAntigoX + ((bFugirNovoX - bFugirAntigoX) * progresso), bFugirAntigoY + ((bFugirNovoY - bFugirAntigoY) * progresso) )
-            lutaHUD.bHabilidade.set_position(bHabilidadeAntigoX + ((bHabilidadeNovoX - bHabilidadeAntigoX) * progresso),bHabilidadeAntigoY + ((bHabilidadeNovoY - bHabilidadeAntigoY) * progresso) )
             lutaHUD.bAtacar.set_position(bAtacarAntigoX + ((bAtacarNovoX - bAtacarAntigoX) * progresso), bAtacarAntigoY + ((bAtacarNovoY - bAtacarAntigoY) * progresso))
+            lutaHUD.bHabilidade.set_position(bHabilidadeAntigoX + ((bHabilidadeNovoX - bHabilidadeAntigoX) * progresso),bHabilidadeAntigoY + ((bHabilidadeNovoY - bHabilidadeAntigoY) * progresso) )
+            lutaHUD.bFugir.set_position(bFugirAntigoX + ((bFugirNovoX - bFugirAntigoX) * progresso), bFugirAntigoY + ((bFugirNovoY - bFugirAntigoY) * progresso) )
+           
+
+
+
+            
             self.tempoPassado += deltaTime
         
         
         else:
-            lutaHUD.bItem.set_position(posicoesBotoesLuta[(botaoSelecionadoLuta.value) % 4][0], posicoesBotoesLuta[(botaoSelecionadoLuta.value) % 4][1])
-            lutaHUD.bFugir.set_position(posicoesBotoesLuta[(botaoSelecionadoLuta.value + 1) % 4][0], posicoesBotoesLuta[(botaoSelecionadoLuta.value + 1) % 4][1] )
-            lutaHUD.bHabilidade.set_position(posicoesBotoesLuta[(botaoSelecionadoLuta.value + 2) % 4][0],posicoesBotoesLuta[(botaoSelecionadoLuta.value + 2) % 4][1] )
-            lutaHUD.bAtacar.set_position(posicoesBotoesLuta[(botaoSelecionadoLuta.value + 3) % 4][0], posicoesBotoesLuta[(botaoSelecionadoLuta.value + 3) % 4][1])
+            lutaHUD.bItem.set_position(posicoesBotoesLuta[(botaoSelecionadoLuta.value + 3) % 4][0], posicoesBotoesLuta[(botaoSelecionadoLuta.value + 3) % 4][1])
+            lutaHUD.bAtacar.set_position(posicoesBotoesLuta[(botaoSelecionadoLuta.value + 2) % 4][0], posicoesBotoesLuta[(botaoSelecionadoLuta.value + 2) % 4][1])
+            lutaHUD.bHabilidade.set_position(posicoesBotoesLuta[(botaoSelecionadoLuta.value + 1) % 4][0],posicoesBotoesLuta[(botaoSelecionadoLuta.value + 1) % 4][1] )
+            lutaHUD.bFugir.set_position(posicoesBotoesLuta[(botaoSelecionadoLuta.value) % 4][0], posicoesBotoesLuta[(botaoSelecionadoLuta.value) % 4][1] )
+
 
             self.estadoLuta = self.EEstadoLuta.LUTANDO
+
+        lutaHUD.bItem.image.set_alpha(max(0, 255 - abs(lutaHUD.bItem.y - posicoesBotoesLuta[0][1])))
+        lutaHUD.bAtacar.image.set_alpha(max(0, 255 - abs(lutaHUD.bAtacar.y - posicoesBotoesLuta[0][1])))
+        lutaHUD.bHabilidade.image.set_alpha(max(0, 255 - abs(lutaHUD.bHabilidade.y - posicoesBotoesLuta[0][1])))
+        lutaHUD.bFugir.image.set_alpha(max(0, 255 - abs(lutaHUD.bFugir.y - posicoesBotoesLuta[0][1])))
 
 
     
