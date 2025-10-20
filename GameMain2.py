@@ -1,5 +1,6 @@
 from PPlay.window import *
 from PPlay.sprite import *
+from functools import cmp_to_key
 
 from Janela import CriarJanela
 
@@ -107,6 +108,8 @@ def Update():
                     luta.ResetarBotoes(jogo.lutaHUD, jogo.botaoSelecionadoLuta, jogo.posicoesBotoesLuta)
                     CalcularBotoesLuta()
                     
+                    
+                    
                     DesenharLutaHUD()
                     DesenharInimigos()
                     DesenharLutaBotoes()
@@ -114,6 +117,10 @@ def Update():
                 
             elif(luta.estadoAnimacao == 2):
                 luta.AnimarTrocaBotoesLoop(janela, jogo.deltaTime, jogo.lutaHUD, jogo.botaoSelecionadoLuta, jogo.posicoesBotoesLuta)
+                RenderizarLuta()
+
+            elif(luta.estadoAnimacao == 3):
+                luta.AnimarDanoLoop(janela, jogo.inimigosNaLuta[jogo.alvoLutaAnimacao], jogo.deltaTime)
                 RenderizarLuta()
 
         elif(luta.estadoLuta == luta.EEstadoLuta.LUTANDO):
@@ -166,8 +173,73 @@ def Update():
                     jogo.ultimoMovimentoBotao = time.time()
                     jogo.botaoSolto = False
 
+                elif(jogo.ultimoInput == 5):
+
+                    if(jogo.botaoSelecionadoLuta == Data.ELuta.ATACAR):
+                        jogo.alvoLuta = 0
+                        jogo.lutaHUD.setaSelecionarAlvo.Transformar(janela.width * 0.05, janela.height* 0.05)
+                        CalcularSelecionarAlvo(0)
+                        luta.estadoLuta = luta.EEstadoLuta.ESCOLHENDOALVO
+
+
+                    elif(jogo.botaoSelecionadoLuta == Data.ELuta.ITEM):
+                        pass
+
+
+                    elif(jogo.botaoSelecionadoLuta == Data.ELuta.FUGIR):
+                        pass
+
+
+                    elif(jogo.botaoSelecionadoLuta == Data.ELuta.HABILIDADE):
+                        pass
+
+                    jogo.botaoSolto = False
+            RenderizarLuta()
+
+        elif(luta.estadoLuta == luta.EEstadoLuta.ESCOLHENDOALVO):
+            if(time.time() - jogo.ultimoMovimentoBotao > 0.1 and jogo.botaoSolto):
+                if(jogo.ultimoInput == 3):
+
+                    CalcularSelecionarAlvo(1)
+                    jogo.botaoSolto = False
+                    jogo.ultimoMovimentoBotao = time.time()
+
+                elif(jogo.ultimoInput == 4):
+                    
+                    CalcularSelecionarAlvo(-1)
+                    jogo.botaoSolto = False
+                    jogo.ultimoMovimentoBotao = time.time()
+
+                elif(jogo.ultimoInput == 5):
+                    inimigosVivos = []
+                    for i, inimigo in enumerate(jogo.inimigosNaLuta):
+                        if(inimigo.vida > 0):
+                            inimigosVivos.append(i)
+
+                    inimigosVivos.sort(key=cmp_to_key(ComparaInimigos))
+
+                    #alvoTransformado = int(((jogo.alvoLuta - 1)**2 + (jogo.alvoLuta - 1)) / 2 + abs((jogo.alvoLuta - 1)) - (jogo.alvoLuta - 1))
+                    alvoTransformado = inimigosVivos[min(len(inimigosVivos) - 1, jogo.alvoLuta)]
+                    
+                    if(alvoTransformado < len(jogo.inimigosNaLuta)):
+                        luta.Atacar(jogo.inimigosNaLuta[alvoTransformado], 10)
+                        luta.AnimarDano(jogo.inimigosNaLuta[alvoTransformado].sprite.x, jogo.inimigosNaLuta[alvoTransformado].sprite.y)
+                        jogo.alvoLuta = 0
+                        jogo.alvoLutaAnimacao = alvoTransformado
+
+                        #if(jogo.inimigosNaLuta[alvoTransformado].vida == 0):
+                        #    CalcularSelecionarAlvo(0)
+
+                    jogo.botaoSolto = False
+                    jogo.ultimoMovimentoBotao = time.time()
 
             RenderizarLuta()
+            DesenharAlvoHUD()
+
+
+
+
+         
 
         
 
@@ -186,13 +258,15 @@ def Update():
 
 
 
+
+
 def RenderizarLuta():
 
     
     DesenharLutaHUD()
     DesenharInimigos()
     DesenharLutaBotoes()
-    janela.update()
+    
 
 
 def RenderizarMapa():
@@ -406,11 +480,11 @@ def VirarJogador(direcao, ultimaDirecaoX, ultimaDirecaoY):
 def DesenharHUD():
     jogo.jogadorHUD.background.draw()
     jogo.jogadorHUD.barraHPBackground.draw()
-    jogo.jogadorHUD.barraHP.Transformar((janela.width * 0.2) * max(1, (jogo.jogador.vida / jogo.jogador.vidaMaxima)), janela.height* 0.03)
+    jogo.jogadorHUD.barraHP.Transformar((janela.width * 0.2) * min(1, (jogo.jogador.vida / jogo.jogador.vidaMaxima)), janela.height* 0.03)
     jogo.jogadorHUD.barraHP.draw()
 
     jogo.jogadorHUD.barraEnergiaBackground.draw()
-    jogo.jogadorHUD.barraHP.Transformar((janela.width * 0.2) * max(1, (jogo.jogador.energia / jogo.jogador.energiaMaxima)), janela.height* 0.03)
+    jogo.jogadorHUD.barraHP.Transformar((janela.width * 0.2) * min(1, (jogo.jogador.energia / jogo.jogador.energiaMaxima)), janela.height* 0.03)
     jogo.jogadorHUD.barraEnergia.draw()
 
 
@@ -424,8 +498,86 @@ def DesenharHUD():
 
 def DesenharLutaHUD():
     jogo.lutaHUD.background.draw()
-   
-               
+
+
+    for inimigo in jogo.inimigosNaLuta:
+        if(inimigo.vida > 0):
+            inimigo.barraHPBackground.Transformar(janela.width * 0.1, janela.height* 0.02)
+            inimigo.barraHPBackground.set_position(inimigo.sprite.x + (inimigo.barraHPBackground.largura / 2), inimigo.sprite.y - inimigo.barraHPBackground.altura)
+            inimigo.barraHPBackground.draw()
+
+            inimigo.barraHP.Transformar((janela.width * 0.1) * min(1, (inimigo.vida / inimigo.vidaMaxima)), janela.height* 0.02)
+            inimigo.barraHP.set_position(inimigo.sprite.x + (inimigo.barraHPBackground.largura / 2), inimigo.sprite.y - inimigo.barraHP.altura)
+            inimigo.barraHP.draw()
+
+
+    jogo.jogadorHUD.barraHPBackground.Transformar(janela.width * 0.1, janela.height* 0.02)
+    jogo.jogadorHUD.barraHPBackground.set_position(janela.width * 0.3, janela.height * 0.95)
+
+    jogo.jogadorHUD.barraHP.Transformar((janela.width * 0.1) * min(1, (jogo.jogador.vida / jogo.jogador.vidaMaxima)), janela.height* 0.02)
+    jogo.jogadorHUD.barraHP.set_position(janela.width * 0.3, janela.height * 0.95)
+
+
+    jogo.jogadorHUD.barraEnergiaBackground.Transformar(janela.width * 0.1, janela.height* 0.02)
+    jogo.jogadorHUD.barraEnergiaBackground.set_position(janela.width * 0.6, janela.height * 0.95)
+
+    jogo.jogadorHUD.barraHP.Transformar((janela.width * 0.1) * min(1, (jogo.jogador.energia / jogo.jogador.energiaMaxima)), janela.height* 0.02)
+    jogo.jogadorHUD.barraEnergia.set_position(janela.width * 0.6, janela.height * 0.95)
+
+    jogo.jogadorHUD.barraHPBackground.draw()
+    jogo.jogadorHUD.barraHP.draw()
+    jogo.jogadorHUD.barraEnergiaBackground.draw()
+    jogo.jogadorHUD.barraEnergia.draw()
+
+
+    janela.draw_text("Vida: " + str(jogo.jogador.vida) + " / " + str(jogo.jogador.vidaMaxima), janela.width * 0.3, janela.height * 0.94, "Sprites/HUD/PressStart2P-Regular.ttf", 8 * int((1280/janela.width)), (255,255,255), )
+    janela.draw_text("Energia: " + str(jogo.jogador.energia)+ " / " + str(jogo.jogador.energiaMaxima), janela.width * 0.6, janela.height * 0.94, "Sprites/HUD/PressStart2P-Regular.ttf", 8 * int((1280/janela.width)), (255,255,255), )
+
+def ComparaInimigos(a, b):
+    if(a == 2):
+        return -1
+    elif(a == 0 and b != 2):
+        return -1
+    elif(a == 1 and b != 0 and b != 2):
+        return -1
+    elif(a == 3):
+        return 1
+
+    return 1
+
+def CalcularSelecionarAlvo(passo):
+    inimigosVivos = []
+    for i, inimigo in enumerate(jogo.inimigosNaLuta):
+        if(inimigo.vida > 0):
+            inimigosVivos.append(i)
+
+    inimigosVivos.sort(key=cmp_to_key(ComparaInimigos))
+
+    alvoLuta = jogo.alvoLuta
+    
+    if(passo != 0):
+        if(passo > 0):
+            alvoLuta = min(len(inimigosVivos) - 1, jogo.alvoLuta + 1)
+        else:
+            alvoLuta = max(0, jogo.alvoLuta - 1)
+    else:
+        alvoLuta = min(len(inimigosVivos) - 1, 0)
+
+    alvoTransformado = inimigosVivos[min(len(inimigosVivos) - 1, alvoLuta)]
+
+    if(alvoTransformado < len(jogo.inimigosNaLuta)):
+        if(jogo.inimigosNaLuta[alvoTransformado].vida > 0):
+            jogo.alvoLuta = alvoLuta
+
+            jogo.lutaHUD.setaSelecionarAlvo.set_position(jogo.inimigosNaLuta[alvoTransformado].barraHPBackground.x + (jogo.inimigosNaLuta[alvoTransformado].barraHPBackground.largura / 2) - (jogo.lutaHUD.setaSelecionarAlvo.largura / 2), jogo.inimigosNaLuta[alvoTransformado].sprite.y - jogo.lutaHUD.setaSelecionarAlvo.altura * 2)
+
+
+
+def DesenharAlvoHUD():
+    jogo.lutaHUD.setaSelecionarAlvo.draw()
+
+
+
 def DesenharLutaBotoes():
 
 
@@ -475,30 +627,15 @@ def CalcularBotoesLuta():
 
 def DesenharInimigos():
    
-    i = 0
+
 
     ordemDesenhar = []
     for inimigo in jogo.inimigosNaLuta:
-       if(inimigo.tipo == Data.tipoInimigo["Limite"]):
-            inimigo.sprite.Transformar(int(317 * (janela.width/1920)), int(497 * (janela.height/1080)))
-            largura = (inimigo.sprite.largura / 2)
-            altura = (inimigo.sprite.altura / 2)
+        if(inimigo.vida > 0):
+            if(inimigo.tipo == Data.tipoInimigo["Limite"]):
 
-            if(i == 0):
-                inimigo.sprite.set_position( int( (0.40 * janela.width)  - largura), int( 0.65 * janela.height - altura )    )
-            
-            elif(i == 1):
-                inimigo.sprite.set_position( int( (0.60 * janela.width) - largura), int( 0.65 * janela.height  - altura)    )
+                    ordemDesenhar.insert(0, inimigo)
 
-            elif(i == 2):
-                inimigo.sprite.set_position( int( (0.25 * janela.width) - largura), int( 0.55 * janela.height - altura )    )
-            
-            elif(i == 3):
-                inimigo.sprite.set_position( int( (0.75 * janela.width) - largura), int( 0.55 * janela.height - altura )    )
-
-
-            ordemDesenhar.insert(0, inimigo)
-            i += 1
 
     for inimigo in ordemDesenhar:
         inimigo.sprite.draw()
@@ -509,6 +646,29 @@ def PrepararLuta():
 
     jogo.inimigosNaLuta.clear()
     jogo.inimigosNaLuta = luta.CalcularInimigos(Data.EANDAR.EANDAR1)
+
+    i = 0
+
+    for inimigo in jogo.inimigosNaLuta:
+        if(inimigo.vida > 0):
+            if(inimigo.tipo == Data.tipoInimigo["Limite"]):
+                    inimigo.sprite.Transformar(int(317 * (janela.width/1920)), int(497 * (janela.height/1080)))
+                    largura = (inimigo.sprite.largura / 2)
+                    altura = (inimigo.sprite.altura / 2)
+
+                    if(i == 0):
+                        inimigo.sprite.set_position( int( (0.40 * janela.width)  - largura), int( 0.65 * janela.height - altura )    )
+                    
+                    elif(i == 1):
+                        inimigo.sprite.set_position( int( (0.60 * janela.width) - largura), int( 0.65 * janela.height  - altura)    )
+
+                    elif(i == 2):
+                        inimigo.sprite.set_position( int( (0.25 * janela.width) - largura), int( 0.55 * janela.height - altura )    )
+                    
+                    elif(i == 3):
+                        inimigo.sprite.set_position( int( (0.75 * janela.width) - largura), int( 0.55 * janela.height - altura )    )
+        i += 1
+
 
 
 

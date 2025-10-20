@@ -1,3 +1,4 @@
+import math
 import pygame
 import HUD
 import Data
@@ -13,13 +14,17 @@ class Luta():
         self.velocidadeAnimacao = 700
         self.tempoAnimacao = 1
         self.tempoAnimacaoBotoes = 0.3
+        
         self.tempoPassado = 0
         self.botaoAntigo = 0
 
+        self.tempoAnimacaoDano = 0.4
+        self.posicaoOriginalDano = (0, 0)
 
     class EEstadoLuta(Enum):
         ANIMACAO = 1
         LUTANDO = 2
+        ESCOLHENDOALVO = 3
 
 
 
@@ -40,6 +45,9 @@ class Luta():
             self.bItemSelecionado = 'Sprites/Luta/BItemHL.png'
             self.bFugirSelecionado = 'Sprites/Luta/BFugirHL.png'    
             self.bHabilidadeSelecionado = 'Sprites/Luta/BHabilidadeHL.png'
+
+
+            self.setaSelecionarAlvo = HUD.GameImageMelhor('Sprites/Luta/selecionarAlvo.png', 0, 0)
 
 
 
@@ -147,15 +155,22 @@ class Luta():
         
     def ResetarBotoes(self, lutaHUD, botaoSelecionadoLuta, posicoesBotoesLuta):
 
-        lutaHUD.bItem.set_position(posicoesBotoesLuta[(1) % 4][0], posicoesBotoesLuta[(botaoSelecionadoLuta.value) % 4][1])
-        lutaHUD.bFugir.set_position(posicoesBotoesLuta[(1 + 1) % 4][0], posicoesBotoesLuta[(botaoSelecionadoLuta.value + 1) % 4][1] )
-        lutaHUD.bHabilidade.set_position(posicoesBotoesLuta[(1 + 2) % 4][0],posicoesBotoesLuta[(botaoSelecionadoLuta.value + 2) % 4][1] )
-        lutaHUD.bAtacar.set_position(posicoesBotoesLuta[(1 + 3) % 4][0], posicoesBotoesLuta[(botaoSelecionadoLuta.value + 3) % 4][1])
+        lutaHUD.bItem.set_position(posicoesBotoesLuta[(1) % 4][0], posicoesBotoesLuta[(1) % 4][1])
+        lutaHUD.bFugir.set_position(posicoesBotoesLuta[(1 + 1) % 4][0], posicoesBotoesLuta[(1 + 1) % 4][1] )
+        lutaHUD.bHabilidade.set_position(posicoesBotoesLuta[(1 + 2) % 4][0],posicoesBotoesLuta[(1 + 2) % 4][1] )
+        lutaHUD.bAtacar.set_position(posicoesBotoesLuta[(1 + 3) % 4][0], posicoesBotoesLuta[(1 + 3) % 4][1])
         
+
+
         lutaHUD.bAtacar.MudarImagem(lutaHUD.bAtacarSelecionado)
         lutaHUD.bHabilidade.MudarImagem(lutaHUD.bHabilidadeN)
         lutaHUD.bItem.MudarImagem(lutaHUD.bItemN)
         lutaHUD.bFugir.MudarImagem(lutaHUD.bFugirN)
+
+        lutaHUD.bItem.image.set_alpha(max(0, 255 - abs(lutaHUD.bItem.y - posicoesBotoesLuta[0][1])))
+        lutaHUD.bAtacar.image.set_alpha(max(0, 255 - abs(lutaHUD.bAtacar.y - posicoesBotoesLuta[0][1])))
+        lutaHUD.bHabilidade.image.set_alpha(max(0, 255 - abs(lutaHUD.bHabilidade.y - posicoesBotoesLuta[0][1])))
+        lutaHUD.bFugir.image.set_alpha(max(0, 255 - abs(lutaHUD.bFugir.y - posicoesBotoesLuta[0][1])))
 
 
             
@@ -245,7 +260,30 @@ class Luta():
         lutaHUD.bFugir.image.set_alpha(max(0, 255 - abs(lutaHUD.bFugir.y - posicoesBotoesLuta[0][1])))
 
 
-    
+
+    def Atacar(self, alvoLuta, dano):
+        alvoLuta.TomarDano(dano)
+
+
+    def AnimarDano(self, posicaoOriginalDanoX, posicaoOriginalDanoY):
+        self.posicaoOriginalDano = (posicaoOriginalDanoX, posicaoOriginalDanoY)
+        self.estadoLuta = self.EEstadoLuta.ANIMACAO
+        self.estadoAnimacao = 3
+        self.tempoPassado = 0
+
+    def AnimarDanoLoop(self, janela, alvoluta, deltaTime):
+
+        progresso = min(1.0, self.tempoPassado / self.tempoAnimacaoDano)
+
+        if(progresso < 1):
+            alvoluta.sprite.set_position(self.posicaoOriginalDano[0] + ((janela.width * 0.02) * math.sin(progresso * 6 * math.pi)), alvoluta.sprite.y)
+            alvoluta.sprite.draw()
+            self.tempoPassado += deltaTime
+
+        else:
+            alvoluta.sprite.set_position(self.posicaoOriginalDano[0], self.posicaoOriginalDano[1])
+            self.estadoLuta = self.EEstadoLuta.LUTANDO
+
 
     # def get_line_pixels_bresenham(x0, y0, x1, y1):
     # """

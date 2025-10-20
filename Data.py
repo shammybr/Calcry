@@ -38,8 +38,22 @@ class ELuta(Enum):
     HABILIDADE = 3
     FUGIR = 4
 
-class Jogador():
+
+class Entidade():
+    def __init__(self, vida, vidaMaxima, energia, energiaMaxima):
+        self.vida = vida
+        self.vidaMaxima = vidaMaxima
+        self.energia = energia
+        self.energiaMaxima = energiaMaxima
+
+
+    def TomarDano(self, dano):
+        self.vida = max(0, self.vida - dano)
+
+        
+class Jogador(Entidade):
     def __init__(self, coordenadaX, coordenadaY, angulo, direcao):
+        super().__init__(100, 100, 100, 100)
         self.x = coordenadaX
         self.y = coordenadaY
         self.angulo = angulo
@@ -49,22 +63,17 @@ class Jogador():
         self.planeX = 0.66 # The camera plane vector
         self.planeY = 0.0
 
-        self.vida = 100
-        self.vidaMaxima = 100
-        self.energia = 100
-        self.energiaMaxima = 100
-
         self.level = 1
         self.xp = 0
 
-class Inimigo():
+class Inimigo(Entidade):
     def __init__(self, tipo, vida, vidaMaxima, energia, energiaMaxima, sprite):
+        super().__init__(vida, vidaMaxima, energia, energiaMaxima)
         self.tipo = tipo
-        self.vida = vida
-        self.vidaMaxima = vidaMaxima
-        self.energia = energia
-        self.energiaMaxima = energiaMaxima
         self.sprite = sprite
+        self.barraHPBackground = HUD.GameImageMelhor('Sprites/HUD/BarraVidaVazia.png', 0, 0)
+        self.barraHP = HUD.GameImageMelhor('Sprites/HUD/BarraVida.png', 0, 0)
+
 
 class Parede():
     def __init__(self, coordenadaX, coordenadaY, direcao):
