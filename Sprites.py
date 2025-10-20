@@ -106,6 +106,7 @@ def CarregarTexturas(janela):
     global texturasCache
 
     Tempo_inicial_para_entender_codigo=time.time()
+    agora1 = time.time()
 
     parede1 = pygame.image.load('Sprites/parede1.png').convert()
     texturas.append(parede1)
@@ -120,7 +121,9 @@ def CarregarTexturas(janela):
     teto1 = pygame.image.load('Sprites/teto1.png').convert()
     texturas.append(teto1)
     teto1Cache = EscalarTextura(teto1, janela.height, janela)
-
+    
+    agora2 = time.time() - agora1 
+    print("Demorou " + str(agora2))
 
 
     texturasCache = { 1: parede1Cache, 2:chao1Cache, 3:teto1Cache }
@@ -139,8 +142,9 @@ def EscalarTextura(textura, janelaAltura, janela):
         
         pedacoDaColunaEscalado = {}
         
-        Tela_de_Loading(janela)
-        
+        if(coluna % 3 == 0):
+            Tela_de_Loading(janela)
+    
         for altura in range(1, int(janelaAltura * 2) + 1):
 
             pedacoDaColunaEscalado[altura] = pygame.transform.scale(slice, (1, altura))

@@ -25,6 +25,14 @@ class GameImageMelhor(PPlay.gameimage.GameImage):
         self.image = imagemCopia
         self.largura = self.rect.width
         self.altura = self.rect.height
+    
+    def MudarImagem(self, novaImagem):
+
+        imagemOG = pygame.image.load(novaImagem).convert_alpha()
+        self.image = pygame.transform.scale(imagemOG, (self.largura, self.altura))
+        self.rect = self.image.get_rect()
+        self.imagemOriginal = self.image
+
         
 
 

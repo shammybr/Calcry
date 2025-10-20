@@ -12,12 +12,12 @@ import Input
 import Mapa
 import math
 import HUD
-import Luta
+import luta
 
 
 Sprites.CarregarTexturas(janela)
 jogadorHUD = HUD.CriarHUD(janela)
-lutaHUD = Luta.CriarLutaHUD(janela)
+lutaHUD = luta.CriarLutaHUD(janela)
 
 
 estadoJogo = Data.EEstado.ANDANDO
@@ -163,7 +163,7 @@ def Update():
             
             PrepararLuta()
             estadoJogo = Data.EEstado.LUTA
-            Luta.estadoLuta = Luta.EEstadoLuta.ANIMACAO
+            luta.self.estadoLuta = luta.EEstadoLuta.ANIMACAO
 
 
         RenderizarMapa()
@@ -171,21 +171,21 @@ def Update():
 
     elif(estadoJogo == Data.EEstado.LUTA):
 
-        if(Luta.estadoLuta == Luta.EEstadoLuta.ANIMACAO):
-            if(Luta.estadoAnimacao <= 1):
-                if(Luta.EntrarLuta(janela, deltaTime) == 1):
+        if(luta.self.estadoLuta == luta.EEstadoLuta.ANIMACAO):
+            if(luta.self.estadoAnimacao <= 1):
+                if(luta.EntrarLuta(janela, deltaTime) == 1):
                     botaoSelecionadoLuta = Data.ELuta.ATACAR
                     CalcularBotoesLuta()
                     
                     DesenharLutaHUD()
                     DesenharInimigos()
                     DesenharLutaBotoes()
-                    Luta.EntrarLuta(janela, 0.001)
+                    luta.EntrarLuta(janela, 0.001)
                 
-            elif(Luta.estadoAnimacao == 2):
-                Luta.AnimarTrocaBotoesLoop(janela, deltaTime, lutaHUD, botaoSelecionadoLuta, posicoesBotoesLuta)
+            elif(luta.self.estadoAnimacao == 2):
+                luta.AnimarTrocaBotoesLoop(janela, deltaTime, lutaHUD, botaoSelecionadoLuta, posicoesBotoesLuta)
 
-        elif(Luta.estadoLuta == Luta.EEstadoLuta.LUTANDO):
+        elif(luta.self.estadoLuta == luta.EEstadoLuta.LUTANDO):
             
 
             if(time.time() - ultimoMovimentoBotao > 0.1 and botaoSolto):
@@ -205,7 +205,7 @@ def Update():
                     elif(botaoSelecionadoLuta == Data.ELuta.FUGIR):
                         botaoSelecionadoLuta = Data.ELuta.ATACAR
 
-                    Luta.AnimarTrocaBotoes(lutaHUD)
+                    luta.AnimarTrocaBotoes(lutaHUD)
 
                     ultimoMovimentoBotao = time.time()
                     botaoSolto = False
@@ -226,7 +226,7 @@ def Update():
                     elif(botaoSelecionadoLuta == Data.ELuta.HABILIDADE):
                         botaoSelecionadoLuta = Data.ELuta.ATACAR
 
-                    Luta.AnimarTrocaBotoes(lutaHUD)
+                    luta.AnimarTrocaBotoes(lutaHUD)
 
                     ultimoMovimentoBotao = time.time()
                     botaoSolto = False
@@ -556,7 +556,7 @@ def PrepararLuta():
     global inimigosNaLuta
 
     inimigosNaLuta.clear()
-    inimigosNaLuta = Luta.CalcularInimigos(Data.EANDAR.EANDAR1)
+    inimigosNaLuta = luta.CalcularInimigos(Data.EANDAR.EANDAR1)
 
 
 
