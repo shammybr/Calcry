@@ -14,9 +14,10 @@ coordenadasDirecao = { 0 : (0.0, 1.0),
                        3 : (-1.0, 0.0),
 }
 
-tipoInimigo = { "Limite" : 0,
+tipoEntidade = { "Limite" : 0,
          #   "Derivada" : 1,
           #  "Integral" : 2,
+          "Jogador" : 99,
 }
 
 
@@ -40,20 +41,22 @@ class ELuta(Enum):
 
 
 class Entidade():
-    def __init__(self, vida, vidaMaxima, energia, energiaMaxima):
+    def __init__(self, tipo, vida, vidaMaxima, energia, energiaMaxima, velocidade, dano):
+        self.tipo = tipo
         self.vida = vida
         self.vidaMaxima = vidaMaxima
         self.energia = energia
         self.energiaMaxima = energiaMaxima
-
+        self.velocidade = velocidade
+        self.dano = dano
 
     def TomarDano(self, dano):
         self.vida = max(0, self.vida - dano)
 
         
 class Jogador(Entidade):
-    def __init__(self, coordenadaX, coordenadaY, angulo, direcao):
-        super().__init__(100, 100, 100, 100)
+    def __init__(self, coordenadaX, coordenadaY, angulo, direcao, velocidade):
+        super().__init__(tipoEntidade["Jogador"], 100, 100, 100, 100, velocidade, 80)
         self.x = coordenadaX
         self.y = coordenadaY
         self.angulo = angulo
@@ -67,9 +70,8 @@ class Jogador(Entidade):
         self.xp = 0
 
 class Inimigo(Entidade):
-    def __init__(self, tipo, vida, vidaMaxima, energia, energiaMaxima, sprite):
-        super().__init__(vida, vidaMaxima, energia, energiaMaxima)
-        self.tipo = tipo
+    def __init__(self, tipo, vida, vidaMaxima, energia, energiaMaxima, sprite, velocidade, dano):
+        super().__init__(tipo, vida, vidaMaxima, energia, energiaMaxima, velocidade, dano)
         self.sprite = sprite
         self.barraHPBackground = HUD.GameImageMelhor('Sprites/HUD/BarraVidaVazia.png', 0, 0)
         self.barraHP = HUD.GameImageMelhor('Sprites/HUD/BarraVida.png', 0, 0)
@@ -83,4 +85,4 @@ class Parede():
 
 class ILimite(Inimigo):
      def __init__(self):
-        super().__init__(tipoInimigo["Limite"], 100, 100, 100, 100, HUD.GameImageMelhor('Sprites/Inimigos/ILimite.png', 0, 0))
+        super().__init__(tipoEntidade["Limite"], 100, 100, 100, 100, HUD.GameImageMelhor('Sprites/Inimigos/ILimite.png', 0, 0), 100, 5)

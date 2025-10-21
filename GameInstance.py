@@ -52,7 +52,7 @@ class Jogo():
         self.andarVelocidade = 10
         self.inicioJogador = [0,0]
 
-        self.jogador = Data.Jogador(1.5 , 6.5, 0, Data.direcao["N"])
+        self.jogador = Data.Jogador(1.5 , 6.5, 0, Data.direcao["N"], 110)
         self.teclado = Window.get_keyboard()
         self.mapaAtual = Mapa.GerarMapa(0)
 

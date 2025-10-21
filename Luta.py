@@ -21,10 +21,16 @@ class Luta():
         self.tempoAnimacaoDano = 0.4
         self.posicaoOriginalDano = (0, 0)
 
+        self.ordemTurno = []
+        self.iTurno = 0
+        self.ultimoTurno = 0
+
     class EEstadoLuta(Enum):
         ANIMACAO = 1
         LUTANDO = 2
         ESCOLHENDOALVO = 3
+        PROCESSANDOTURNO = 4
+        FIM = 5
 
 
 
@@ -112,8 +118,48 @@ class Luta():
 
             if(progresso == 1):
                 self.estadoAnimacao = -1
-                self.estadoLuta = self.EEstadoLuta.LUTANDO
+                self.estadoLuta = self.EEstadoLuta.PROCESSANDOTURNO
 
+    def GetVelocidade(self, entidade):
+        return entidade.velocidade
+    
+    def CriarTurno(self, inimigos, jogador):
+        self.ordemTurno.clear()
+        for inimigo in inimigos:
+            self.ordemTurno.append(inimigo)
+
+        self.ordemTurno.append(jogador)
+
+        self.ordemTurno.sort(key=self.GetVelocidade, reverse=True)
+        self.iTurno = 0
+
+
+    def PassoTurno(self):
+        
+        if((self.iTurno) > (len(self.ordemTurno) - 1)):
+            self.iTurno = 0
+        
+
+        for i , entidade in enumerate(self.ordemTurno[self.iTurno:], start = self.iTurno):
+            if(entidade.vida > 0):
+                print("Turno de: " + str(entidade.tipo))
+                self.iTurno = i
+                break
+
+
+            if(i == (len(self.ordemTurno) - 1)):
+                self.iTurno = 0
+                break
+    
+    def ProcessarTurno(self, jogador):
+        if(self.ordemTurno[self.iTurno].tipo == Data.tipoEntidade["Jogador"]):
+            self.estadoLuta = self.EEstadoLuta.LUTANDO
+        else:
+            if(self.ordemTurno[self.iTurno].tipo == Data.tipoEntidade["Limite"]):
+                print("Atacando player...")
+                self.Atacar(jogador, self.ordemTurno[self.iTurno].dano)
+        
+        self.iTurno += 1
 
 
     def CriarLutaHUD(self,janela):
@@ -138,14 +184,25 @@ class Luta():
 
     def CalcularInimigos(self, lugar):
         if(lugar == Data.EANDAR.EANDAR1):
-            nInimigos = random.randint(1, 4)
+            nInimigos = random.randint(1, 100)
             inimigosLuta = []
-            nInimigos = 4
-            for i in range(0, nInimigos):
-                inimigo = Data.Inimigo(0, 0, 0, 0, 0, HUD.GameImageMelhor('Sprites/Inimigos/Erro.png', 0, 0))
+            
+            if(nInimigos < 50):
+                nInimigos = 1
+            elif(nInimigos < 80):
+                nInimigos = 2
+            elif(nInimigos < 90):
+                nInimigos = 3
+            else:
+                nInimigos = 4
 
-                tipoInimigo = random.choice(list(Data.tipoInimigo.values()))
-                if(tipoInimigo == Data.tipoInimigo["Limite"]):
+            for i in range(0, nInimigos):
+                inimigo = Data.Inimigo(0, 0, 0, 0, 0, HUD.GameImageMelhor('Sprites/Inimigos/Erro.png', 0, 0), 0 ,0)
+
+                lInimigos = [value for value in Data.tipoEntidade.values() if value != 99]
+
+                tipoInimigo = random.choice(list(lInimigos))
+                if(tipoInimigo == Data.tipoEntidade["Limite"]):
                     inimigo = Data.ILimite()
                     print("Foi")
 
@@ -282,7 +339,74 @@ class Luta():
 
         else:
             alvoluta.sprite.set_position(self.posicaoOriginalDano[0], self.posicaoOriginalDano[1])
-            self.estadoLuta = self.EEstadoLuta.LUTANDO
+            self.estadoLuta = self.EEstadoLuta.PROCESSANDOTURNO
+
+    def AcabarLuta(self):
+        self.estadoLuta = self.EEstadoLuta.ANIMACAO
+        self.estadoAnimacao = 99
+        self.tempoPassado = 0
+    
+    def SairLutaLoop(self, janela, deltaTime):
+
+        if(self.estadoAnimacao == 99):
+            centro = [int(janela.width / 2), int(janela.height / 2)]
+            self.tempoPassado += min(0.1, deltaTime)
+            progresso = min(1.0, self.tempoPassado / self.tempoAnimacao)
+
+
+
+            posX = int(progresso * janela.width)
+            posY = int(progresso * janela.height)
+
+
+            novaJanela = pygame.Surface((janela.width, janela.height), pygame.SRCALPHA)
+            corPixel = (0, 0, 0) 
+
+
+            pontosTTL = [ (0, 0), (0, posY), (centro[0], centro[1]) ]
+
+
+            pontosTTR = [ (janela.width, 0), (janela.width - posX, 0), (centro[0], centro[1]) ]
+
+
+            pontosTBL = [ (0, janela.height), (posX, janela.height), (centro[0], centro[1]) ]
+
+
+            pontosTBR = [ (janela.width, janela.height), (janela.width, janela.height - posY), (centro[0], centro[1]) ]
+
+
+            pygame.draw.polygon(novaJanela, corPixel, pontosTTL)
+            pygame.draw.polygon(novaJanela, corPixel, pontosTTR)
+            pygame.draw.polygon(novaJanela, corPixel, pontosTBL)
+            pygame.draw.polygon(novaJanela, corPixel, pontosTBR)
+            
+
+            janela.get_screen().blit(novaJanela, (0, 0))
+
+            if(progresso == 1):
+                self.estadoAnimacao = 100
+                self.tempoPassado = 0
+                return 1
+
+
+        elif(self.estadoAnimacao == 100):
+            if(self.tempoPassado == 0):
+                self.janelaSurface = janela.get_screen().copy()
+                janela.get_screen().fill((0, 0, 0)) # cinza
+
+            self.tempoPassado += min(0.1, deltaTime)
+            progresso = min(1.0, self.tempoPassado / self.tempoAnimacao)
+
+            metadeEsquerda = pygame.Rect(0, 0, int(janela.width / 2), janela.height)
+            metadeDireita =  pygame.Rect(int(janela.width / 2), 0, int(janela.width / 2), janela.height)
+
+            janela.get_screen().blit(self.janelaSurface, (int(progresso * int(janela.width / 2)) - int(janela.width / 2) , 0), metadeEsquerda)
+            janela.get_screen().blit(self.janelaSurface, (int(janela.width) - int(progresso * int(janela.width / 2)) , 0), metadeDireita)
+
+            if(progresso == 1):
+                self.tempoPassado = 0
+                self.estadoAnimacao = -1
+                self.estadoLuta = self.EEstadoLuta.FIM
 
 
     # def get_line_pixels_bresenham(x0, y0, x1, y1):
