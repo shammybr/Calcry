@@ -25,12 +25,16 @@ class Luta():
         self.iTurno = 0
         self.ultimoTurno = 0
 
+        self.mensagem = []
+        self.esperandoInput = False
+
     class EEstadoLuta(Enum):
         ANIMACAO = 1
         LUTANDO = 2
         ESCOLHENDOALVO = 3
         PROCESSANDOTURNO = 4
         FIM = 5
+        RESULTADO = 6
 
 
 
@@ -52,6 +56,7 @@ class Luta():
             self.bFugirSelecionado = 'Sprites/Luta/BFugirHL.png'    
             self.bHabilidadeSelecionado = 'Sprites/Luta/BHabilidadeHL.png'
 
+            self.logBG = HUD.GameImageMelhor('Sprites/Luta/logBG.png', 0, 0)
 
             self.setaSelecionarAlvo = HUD.GameImageMelhor('Sprites/Luta/selecionarAlvo.png', 0, 0)
 
@@ -152,12 +157,17 @@ class Luta():
                 break
     
     def ProcessarTurno(self, jogador):
+        self.mensagem.clear()
+
         if(self.ordemTurno[self.iTurno].tipo == Data.tipoEntidade["Jogador"]):
             self.estadoLuta = self.EEstadoLuta.LUTANDO
         else:
             if(self.ordemTurno[self.iTurno].tipo == Data.tipoEntidade["Limite"]):
                 print("Atacando player...")
+                self.mensagem.append(self.ordemTurno[self.iTurno].nome + " Ataca!")
                 self.Atacar(jogador, self.ordemTurno[self.iTurno].dano)
+                self.mensagem.append("Causou " + str(self.ordemTurno[self.iTurno].dano) + " de dano!")
+                self.esperandoInput = True
         
         self.iTurno += 1
 
@@ -179,6 +189,9 @@ class Luta():
         lutaHUD.bFugir.Transformar(388 * (janela.width/1920) , 103 * (janela.height/1080) )
         lutaHUD.bFugir.set_position(janela.width * 0.01, janela.height - (janela.height / 10))
 
+        lutaHUD.logBG.Transformar(835 * (janela.width/1920) , 136 * (janela.height/1080) )
+        lutaHUD.logBG.set_position(janela.width * 0.5 - (lutaHUD.logBG.largura / 2), janela.height * 0.05)
+
         return lutaHUD
 
 
@@ -196,14 +209,15 @@ class Luta():
             else:
                 nInimigos = 4
 
+            nInimigos = 4
             for i in range(0, nInimigos):
-                inimigo = Data.Inimigo(0, 0, 0, 0, 0, HUD.GameImageMelhor('Sprites/Inimigos/Erro.png', 0, 0), 0 ,0)
+                inimigo = Data.Inimigo("",0, 0, 0, 0, 0, HUD.GameImageMelhor('Sprites/Inimigos/Erro.png', 0, 0), 0 ,0, 0)
 
                 lInimigos = [value for value in Data.tipoEntidade.values() if value != 99]
 
                 tipoInimigo = random.choice(list(lInimigos))
                 if(tipoInimigo == Data.tipoEntidade["Limite"]):
-                    inimigo = Data.ILimite()
+                    inimigo = Data.ILimite("Limite " + chr(65 + i))
                     print("Foi")
 
                 inimigosLuta.append(inimigo)
@@ -339,7 +353,7 @@ class Luta():
 
         else:
             alvoluta.sprite.set_position(self.posicaoOriginalDano[0], self.posicaoOriginalDano[1])
-            self.estadoLuta = self.EEstadoLuta.PROCESSANDOTURNO
+            self.esperandoInput = True
 
     def AcabarLuta(self):
         self.estadoLuta = self.EEstadoLuta.ANIMACAO

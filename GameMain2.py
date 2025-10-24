@@ -31,7 +31,7 @@ def Update():
 
     jogo.ultimoDraw += jogo.deltaTime
 
-
+    
   
 
     jogo.ultimoInput = Input.LerInput(jogo.teclado, janela)
@@ -123,6 +123,15 @@ def Update():
             elif(luta.estadoAnimacao == 3):
                 luta.AnimarDanoLoop(janela, jogo.inimigosNaLuta[jogo.alvoLutaAnimacao], jogo.deltaTime)
                 RenderizarLuta()
+                DesenharLutaLog()
+                EscreverLutaLog(luta.mensagem)
+
+                if(luta.esperandoInput and time.time() - jogo.ultimoMovimentoBotao > 0.1 and jogo.botaoSolto):
+                    if(jogo.ultimoInput == 5):
+                        luta.esperandoInput = False
+                        jogo.botaoSolto = False
+                        jogo.ultimoMovimentoBotao = time.time()
+                        luta.estadoLuta = luta.EEstadoLuta.PROCESSANDOTURNO
 
             elif(luta.estadoAnimacao <= 100):
                 if(luta.SairLutaLoop(janela, jogo.deltaTime) == 1):
@@ -187,6 +196,8 @@ def Update():
                         jogo.alvoLuta = 0
                         jogo.lutaHUD.setaSelecionarAlvo.Transformar(janela.width * 0.05, janela.height* 0.05)
                         CalcularSelecionarAlvo(0)
+                        luta.mensagem.clear()
+                        luta.mensagem.append(jogo.inimigosNaLuta[jogo.alvoLuta].nome)
                         luta.estadoLuta = luta.EEstadoLuta.ESCOLHENDOALVO
 
 
@@ -201,22 +212,29 @@ def Update():
                     elif(jogo.botaoSelecionadoLuta == Data.ELuta.HABILIDADE):
                         pass
 
+                    jogo.ultimoMovimentoBotao = time.time()
                     jogo.botaoSolto = False
+
             RenderizarLuta()
 
         elif(luta.estadoLuta == luta.EEstadoLuta.ESCOLHENDOALVO):
+
             if(time.time() - jogo.ultimoMovimentoBotao > 0.1 and jogo.botaoSolto):
                 if(jogo.ultimoInput == 3):
 
                     CalcularSelecionarAlvo(1)
                     jogo.botaoSolto = False
                     jogo.ultimoMovimentoBotao = time.time()
+                    luta.mensagem.clear()
+                    luta.mensagem.append(jogo.inimigosNaLuta[jogo.alvoLuta].nome)
 
                 elif(jogo.ultimoInput == 4):
                     
                     CalcularSelecionarAlvo(-1)
                     jogo.botaoSolto = False
                     jogo.ultimoMovimentoBotao = time.time()
+                    luta.mensagem.clear()
+                    luta.mensagem.append(jogo.inimigosNaLuta[jogo.alvoLuta].nome)
 
                 elif(jogo.ultimoInput == 5):
                     inimigosVivos = []
@@ -232,9 +250,10 @@ def Update():
                     if(alvoTransformado < len(jogo.inimigosNaLuta)):
                         luta.Atacar(jogo.inimigosNaLuta[alvoTransformado], jogo.jogador.dano)
                         luta.AnimarDano(jogo.inimigosNaLuta[alvoTransformado].sprite.x, jogo.inimigosNaLuta[alvoTransformado].sprite.y)
-                        jogo.alvoLuta = 0
                         jogo.alvoLutaAnimacao = alvoTransformado
-
+                        luta.mensagem.clear()
+                        luta.mensagem.append("Jogador atacou " + jogo.inimigosNaLuta[jogo.alvoLuta].nome + "!")
+                        luta.mensagem.append("Causou " + str(jogo.jogador.dano) + " de dano!")
                         #if(jogo.inimigosNaLuta[alvoTransformado].vida == 0):
                         #    CalcularSelecionarAlvo(0)
 
@@ -243,9 +262,13 @@ def Update():
 
             RenderizarLuta()
             DesenharAlvoHUD()
+            DesenharLutaLog()
+            EscreverLutaLog(luta.mensagem)
 
         elif(luta.estadoLuta == luta.EEstadoLuta.PROCESSANDOTURNO):
-            if(time.time() - luta.ultimoTurno > 1):
+
+            if(time.time() - luta.ultimoTurno > 1 and not luta.esperandoInput):
+                luta.mensagem.clear()
                 end = True
                 for inimigo in jogo.inimigosNaLuta:
                     if(inimigo.vida > 0):
@@ -256,11 +279,43 @@ def Update():
                     luta.ProcessarTurno(jogo.jogador)
                     luta.ultimoTurno = time.time()
                 else:
-                    luta.AcabarLuta()
+                    luta.mensagem.clear()
+                    jogo.botaoSolto = False
+                    jogo.ultimoMovimentoBotao = time.time()
+                    luta.mensagem.append("Vitória!")
+                    xp = 0
+                    for inimigo in jogo.inimigosNaLuta:
+                        xp += inimigo.xpDado
+
+                    luta.mensagem.append("Ganhou " + str(xp) + " de XP!")
+                    jogo.jogador.xp += xp
+                    luta.estadoLuta = luta.EEstadoLuta.RESULTADO
                     
 
             RenderizarLuta()
+            DesenharLutaLog()
+            EscreverLutaLog(luta.mensagem)
+
+            if(luta.esperandoInput and time.time() - jogo.ultimoMovimentoBotao > 0.2 and jogo.botaoSolto):
+                if(jogo.ultimoInput == 5):
+                    luta.esperandoInput = False
+                    jogo.botaoSolto = False
+                    jogo.ultimoMovimentoBotao = time.time()
+                    luta.ultimoTurno = 0
+
+        elif(luta.estadoLuta == luta.EEstadoLuta.RESULTADO):
+
+            if(time.time() - jogo.ultimoMovimentoBotao > 0.1 and jogo.botaoSolto):
+                if(jogo.ultimoInput == 5):
+                    luta.AcabarLuta()
+    
+
+            RenderizarLuta()
+            DesenharLutaLog()
+            EscreverLutaLog(luta.mensagem)
+
         elif(luta.estadoLuta == luta.EEstadoLuta.FIM):
+            
             jogo.estadoJogo = Data.EEstado.ANDANDO
 
 
@@ -276,6 +331,7 @@ def Update():
 
 
     jogo.numeroFrames += 1
+    
     janela.update()
 
     if(jogo.segundo > 1):
@@ -576,7 +632,6 @@ def DesenharLutaHUD():
     jogo.jogadorHUD.barraEnergiaBackground.draw()
     jogo.jogadorHUD.barraEnergia.draw()
 
-
     janela.draw_text("Vida: " + str(jogo.jogador.vida) + " / " + str(jogo.jogador.vidaMaxima), janela.width * 0.3, janela.height * 0.94, "Sprites/HUD/PressStart2P-Regular.ttf", 8 * int((1280/janela.width)), (255,255,255), )
     janela.draw_text("Energia: " + str(jogo.jogador.energia)+ " / " + str(jogo.jogador.energiaMaxima), janela.width * 0.6, janela.height * 0.94, "Sprites/HUD/PressStart2P-Regular.ttf", 8 * int((1280/janela.width)), (255,255,255), )
 
@@ -622,6 +677,14 @@ def CalcularSelecionarAlvo(passo):
 
 def DesenharAlvoHUD():
     jogo.lutaHUD.setaSelecionarAlvo.draw()
+
+
+def DesenharLutaLog():
+    jogo.lutaHUD.logBG.draw()
+
+def EscreverLutaLog(mensagens):
+    for i, mensagem in enumerate(mensagens):
+        janela.draw_text(mensagem,  jogo.lutaHUD.logBG.x + (jogo.lutaHUD.logBG.width * 0.01),  jogo.lutaHUD.logBG.y + (janela.height * 0.03 + (i * janela.height * 0.03)), "Sprites/HUD/PressStart2P-Regular.ttf", 20 * int((1280/janela.width)), (255,255,255), )
 
 
 

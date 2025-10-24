@@ -41,7 +41,8 @@ class ELuta(Enum):
 
 
 class Entidade():
-    def __init__(self, tipo, vida, vidaMaxima, energia, energiaMaxima, velocidade, dano):
+    def __init__(self, nome, tipo, vida, vidaMaxima, energia, energiaMaxima, velocidade, dano):
+        self.nome = nome
         self.tipo = tipo
         self.vida = vida
         self.vidaMaxima = vidaMaxima
@@ -56,7 +57,7 @@ class Entidade():
         
 class Jogador(Entidade):
     def __init__(self, coordenadaX, coordenadaY, angulo, direcao, velocidade):
-        super().__init__(tipoEntidade["Jogador"], 100, 100, 100, 100, velocidade, 80)
+        super().__init__("Jogador", tipoEntidade["Jogador"], 100, 100, 100, 100, velocidade, 80)
         self.x = coordenadaX
         self.y = coordenadaY
         self.angulo = angulo
@@ -70,8 +71,9 @@ class Jogador(Entidade):
         self.xp = 0
 
 class Inimigo(Entidade):
-    def __init__(self, tipo, vida, vidaMaxima, energia, energiaMaxima, sprite, velocidade, dano):
-        super().__init__(tipo, vida, vidaMaxima, energia, energiaMaxima, velocidade, dano)
+    def __init__(self, nome, tipo, vida, vidaMaxima, energia, energiaMaxima, sprite, velocidade, dano, xp):
+        super().__init__(nome, tipo, vida, vidaMaxima, energia, energiaMaxima, velocidade, dano)
+        self.xpDado = xp
         self.sprite = sprite
         self.barraHPBackground = HUD.GameImageMelhor('Sprites/HUD/BarraVidaVazia.png', 0, 0)
         self.barraHP = HUD.GameImageMelhor('Sprites/HUD/BarraVida.png', 0, 0)
@@ -84,5 +86,5 @@ class Parede():
         self.direcao = direcao
 
 class ILimite(Inimigo):
-     def __init__(self):
-        super().__init__(tipoEntidade["Limite"], 100, 100, 100, 100, HUD.GameImageMelhor('Sprites/Inimigos/ILimite.png', 0, 0), 100, 5)
+     def __init__(self, nome):
+        super().__init__(nome, tipoEntidade["Limite"], 100, 100, 100, 100, HUD.GameImageMelhor('Sprites/Inimigos/ILimite.png', 0, 0), 100, 5, 10)
