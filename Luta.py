@@ -209,7 +209,7 @@ class Luta():
             else:
                 nInimigos = 4
 
-            nInimigos = 4
+            nInimigos = 1
             for i in range(0, nInimigos):
                 inimigo = Data.Inimigo("",0, 0, 0, 0, 0, HUD.GameImageMelhor('Sprites/Inimigos/Erro.png', 0, 0), 0 ,0, 0)
 
@@ -421,6 +421,12 @@ class Luta():
                 self.tempoPassado = 0
                 self.estadoAnimacao = -1
                 self.estadoLuta = self.EEstadoLuta.FIM
+
+    def TentarFugir(self, inimigos):
+        nInimigos = len(inimigos)
+        if(random.randint(0, 100) > nInimigos * 100):
+            return True
+        return False
 
 
     # def get_line_pixels_bresenham(x0, y0, x1, y1):

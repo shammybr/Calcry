@@ -16,6 +16,8 @@ def LerInput(teclado, janela):
         return 4
     if teclado.key_pressed("z"):  # confirmar
         return 5
+    if teclado.key_pressed("x"):  # voltar
+        return 6
     if teclado.key_pressed("l"):  # teste
         return 9
 

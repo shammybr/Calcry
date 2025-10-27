@@ -206,6 +206,19 @@ def Update():
 
 
                     elif(jogo.botaoSelecionadoLuta == Data.ELuta.FUGIR):
+                        jogo.botaoSolto = False
+                        jogo.ultimoMovimentoBotao = time.time()
+                        if(luta.TentarFugir(jogo.inimigosNaLuta)):
+                            luta.mensagem.clear()
+                            luta.mensagem.append("O jogador fugiu da luta!")
+                            luta.estadoLuta = luta.EEstadoLuta.RESULTADO
+                        else:
+                            luta.mensagem.clear()
+                            luta.mensagem.append("O jogador não conseguiu")
+                            luta.mensagem.append("fugir da luta!")
+                            luta.estadoLuta = luta.EEstadoLuta.PROCESSANDOTURNO
+                            luta.esperandoInput = True
+                            luta.ultimoTurno = time.time()
                         pass
 
 
@@ -260,6 +273,11 @@ def Update():
                     jogo.botaoSolto = False
                     jogo.ultimoMovimentoBotao = time.time()
 
+                elif(jogo.ultimoInput == 6):
+                    jogo.botaoSolto = False
+                    jogo.ultimoMovimentoBotao = time.time()
+                    luta.estadoLuta = luta.EEstadoLuta.LUTANDO
+
             RenderizarLuta()
             DesenharAlvoHUD()
             DesenharLutaLog()
@@ -288,7 +306,9 @@ def Update():
                         xp += inimigo.xpDado
 
                     luta.mensagem.append("Ganhou " + str(xp) + " de XP!")
-                    jogo.jogador.xp += xp
+                    if(jogo.jogador.GanharXP(xp)):
+                        luta.mensagem.append("Subiu para o level " + str(jogo.jogador.level) + "!")
+                    
                     luta.estadoLuta = luta.EEstadoLuta.RESULTADO
                     
 
@@ -307,7 +327,13 @@ def Update():
 
             if(time.time() - jogo.ultimoMovimentoBotao > 0.1 and jogo.botaoSolto):
                 if(jogo.ultimoInput == 5):
-                    luta.AcabarLuta()
+                    if(len(luta.mensagem) <= 2):
+                        luta.AcabarLuta()
+                    else:
+                        luta.mensagem.pop(0)
+                        luta.mensagem.pop(0)
+                        jogo.ultimoMovimentoBotao = time.time()
+                        jogo.botaoSolto = False
     
 
             RenderizarLuta()
@@ -578,7 +604,7 @@ def DesenharHUD():
     janela.draw_text("Energia: " + str(jogo.jogador.energia)+ " / " + str(jogo.jogador.energiaMaxima), janela.width * 0.42, janela.height * 0.89, "Sprites/HUD/PressStart2P-Regular.ttf", 10 * int((1280/janela.width)), (255,255,255), )
 
     janela.draw_text("Level: " + str(jogo.jogador.level), janela.width * 0.72, janela.height * 0.9, "Sprites/HUD/PressStart2P-Regular.ttf", 14 * int((1280/janela.width)), (63,78,182), )
-    janela.draw_text("XP: " + str(jogo.jogador.xp)+ " / " + str(jogo.jogador.energiaMaxima), janela.width * 0.72, janela.height * 0.95, "Sprites/HUD/PressStart2P-Regular.ttf", 10 * int((1280/janela.width)), (255,255,255), )
+    janela.draw_text("XP: " + str(jogo.jogador.xp)+ " / " + str(Data.xpProximoLevel[jogo.jogador.level]), janela.width * 0.72, janela.height * 0.95, "Sprites/HUD/PressStart2P-Regular.ttf", 10 * int((1280/janela.width)), (255,255,255), )
 
 def AtualizarHUD():
     jogo.jogadorHUD.background.Transformar(janela.width, janela.height* 0.3)
@@ -683,7 +709,7 @@ def DesenharLutaLog():
     jogo.lutaHUD.logBG.draw()
 
 def EscreverLutaLog(mensagens):
-    for i, mensagem in enumerate(mensagens):
+    for i, mensagem in enumerate(mensagens[:2]):
         janela.draw_text(mensagem,  jogo.lutaHUD.logBG.x + (jogo.lutaHUD.logBG.width * 0.01),  jogo.lutaHUD.logBG.y + (janela.height * 0.03 + (i * janela.height * 0.03)), "Sprites/HUD/PressStart2P-Regular.ttf", 20 * int((1280/janela.width)), (255,255,255), )
 
 

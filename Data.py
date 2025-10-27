@@ -20,6 +20,19 @@ tipoEntidade = { "Limite" : 0,
           "Jogador" : 99,
 }
 
+xpProximoLevel = { 1 : 100,
+                       2 : 120,
+                       3 : 150,
+                       4 : 200,
+}
+
+statusPorLevel = { 1: [10, 30, 10],
+                   2: [10, 30, 10],
+                   3: [10, 30, 10],
+                   4: [10, 30, 10],
+
+
+}
 
 class EANDAR(Enum):
     EANDAR1 = 1
@@ -68,7 +81,27 @@ class Jogador(Entidade):
         self.planeY = 0.0
 
         self.level = 1
-        self.xp = 0
+        self.xp = 99
+
+    def GanharXP(self, xp):
+        self.xp = self.xp + xp
+        if(self.xp >= xpProximoLevel[self.level]):
+            self.UparDeLevel()
+            return True
+        return False
+    
+
+    def UparDeLevel(self):
+        self.xp = self.xp - xpProximoLevel[self.level]
+        self.level += 1
+        self.dano += statusPorLevel[self.level][0]
+        self.vidaMaxima += statusPorLevel[self.level][1]
+        self.energiaMaxima += statusPorLevel[self.level][2]
+        self.Curar(self.vidaMaxima, self.energiaMaxima)
+
+    def Curar(self, hp, energia):
+        self.vida = min(self.vidaMaxima, self.vida + hp)
+        self.energia = min(self.energiaMaxima, self.energia + energia)
 
 class Inimigo(Entidade):
     def __init__(self, nome, tipo, vida, vidaMaxima, energia, energiaMaxima, sprite, velocidade, dano, xp):
