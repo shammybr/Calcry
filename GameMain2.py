@@ -384,14 +384,18 @@ def RenderizarMapa():
     if(jogo.ultimoDraw > 0.016):
 
         janela.get_screen().fill((100, 100, 100)) # cinza
-        jogo.janelaMenor.fill((100, 100, 100))
+        pygame.draw.rect(janela.get_screen(), (214, 211, 209), (0, 0, janela.width, janela.height/2)) #teto
+        pygame.draw.rect(janela.get_screen(), (130, 120, 109), (0, janela.height, janela.width, janela.height)) #chão
 
 
-        Mapa.RenderizarMapa3DLowPoly(jogo.janelaMenor,jogo.GAME_HEIGHT, jogo.GAME_WIDTH, jogo.jogador)
-        scaled_surface = pygame.transform.scale(jogo.janelaMenor, (janela.width, janela.height))
+
+        Mapa.RenderizarMapa3DLowPoly2(jogo.janelaMenor, jogo.GAME_HEIGHT, jogo.GAME_WIDTH, jogo.jogador)
+        scaled_surface = pygame.transform.scale(jogo.janelaMenor, (janela.width , janela.height))
     
 
         janela.get_screen().blit(scaled_surface, (0, 0))
+
+
         Mapa.RenderizarMapa3D(janela, jogo.jogador)
 
 
@@ -431,9 +435,9 @@ def ChecarColisao(novaPosicaoX, novaPosicaoY):
 def AndarJogadorLoop(jogador, andandoDestino, inicioJogador, velocidade):
     
     if(andandoDestino[1] == jogador.y):
-        jogador.x += (andandoDestino[0] - inicioJogador.x) * velocidade * jogo.deltaTime
+        jogador.x += (andandoDestino[0] - inicioJogador.x) * velocidade * min(0.1, jogo.deltaTime)
     elif(andandoDestino[0] == jogador.x):
-        jogador.y += (andandoDestino[1] - inicioJogador.y) * velocidade * jogo.deltaTime
+        jogador.y += (andandoDestino[1] - inicioJogador.y) * velocidade * min(0.1, jogo.deltaTime)
 
 def AndarJogador(ultimoInput):
 
@@ -597,7 +601,7 @@ def DesenharHUD():
     jogo.jogadorHUD.barraEnergia.Transformar((janela.width * 0.2) * min(1, (jogo.jogador.energia / jogo.jogador.energiaMaxima)), janela.height* 0.03)
     jogo.jogadorHUD.barraEnergia.draw()
 
-
+    jogo.jogadorHUD.jogadorSprite.draw()
 
 
     janela.draw_text("Vida:    " + str(jogo.jogador.vida) + " / " + str(jogo.jogador.vidaMaxima), janela.width * 0.18, janela.height * 0.89, "Sprites/HUD/PressStart2P-Regular.ttf", 10 * int((1280/janela.width)), (255,255,255), )

@@ -209,7 +209,6 @@ class Luta():
             else:
                 nInimigos = 4
 
-            nInimigos = 1
             for i in range(0, nInimigos):
                 inimigo = Data.Inimigo("",0, 0, 0, 0, 0, HUD.GameImageMelhor('Sprites/Inimigos/Erro.png', 0, 0), 0 ,0, 0)
 

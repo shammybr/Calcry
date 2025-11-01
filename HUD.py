@@ -45,6 +45,7 @@ class ImagensHUD():
         self.barraHP = GameImageMelhor('Sprites/HUD/BarraVida.png', 0, 0)
         self.barraEnergiaBackground = GameImageMelhor('Sprites/HUD/BarraVidaVazia.png', 0, 0)
         self.barraEnergia = GameImageMelhor('Sprites/HUD/BarraEnergia.png', 0, 0)
+        self.jogadorSprite = GameImageMelhor('Sprites/HUD/jogadorSprite.png', 0, 0)
 
 def CriarHUD(janela):
     jogadorHUD = ImagensHUD()
@@ -65,5 +66,7 @@ def CriarHUD(janela):
     jogadorHUD.barraEnergia.Transformar(janela.width * 0.2, janela.height* 0.03)
     jogadorHUD.barraEnergia.set_position(janela.width * 0.42, janela.height * 0.925)
 
+    jogadorHUD.jogadorSprite.Transformar(278 * (janela.width/1920), 346 * (janela.height/1080))
+    jogadorHUD.jogadorSprite.set_position(0, janela.height - (janela.height* 0.3))
 
     return jogadorHUD

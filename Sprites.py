@@ -1,10 +1,11 @@
+import numpy as np
 from PPlay.window import *
 from PPlay.sprite import *
 from PPlay.gameimage import *
 import PPlay
 import Data
 import pygame
-
+import functools
 
 modoParede = { "frente" : 1,
                "esquerda" : 2,
@@ -17,6 +18,7 @@ texturasDic = { "parede1" : 1,
                 "teto1" : 3, }
 
 texturas = [None]
+teto1_cache_generators = []
 spriteList = []
 texturasCache = {}
 
@@ -25,6 +27,13 @@ tempo_inicial_pro_loading=time.time()
 ja_passou_pelo_loading=False
 loading=Sprite(f'Sprites/Loading{contador_do_loading%8}.png')
 loading.set_position(320, 180)
+chao_w = 0
+chao_h = 0
+teto_w = 0
+teto_h = 0
+texturaChao_array = []
+texturaTeto_array = []
+y_indices_full = 0
 
 #classe sprite expandida para guardar imagem original e transformar se necessário
 class Imagem3D(PPlay.gameimage.GameImage):
@@ -89,6 +98,8 @@ def Tela_de_Loading(janela):
     global contador_do_loading
     global tempo_inicial_pro_loading
     global loading
+
+
     if (time.time()-tempo_inicial_pro_loading>0.5):
         tempo_inicial_pro_loading=time.time()
         contador_do_loading+=1
@@ -104,29 +115,106 @@ def Tela_de_Loading(janela):
 
 def CarregarTexturas(janela):
     global texturasCache
+    global teto_w
+    global teto_h
+    global chao_w
+    global chao_h 
+    global floor_buffer
+    global texturaChao_array
+    global texturaTeto_array
+    global y_indices_full
 
     Tempo_inicial_para_entender_codigo=time.time()
     agora1 = time.time()
 
     parede1 = pygame.image.load('Sprites/parede1.png').convert()
     texturas.append(parede1)
-    parede1Cache = EscalarTextura(parede1, janela.height, janela)
+    #parede1Cache = EscalarTextura(parede1, janela.height, janela)
 
     chao1 = pygame.image.load('Sprites/chao1.png').convert()
     texturas.append(chao1)
-    chao1Cache = EscalarTextura(chao1, janela.height, janela)
+    #chao1Cache = EscalarTextura(chao1, janela.height, janela)
+
 
 
 
     teto1 = pygame.image.load('Sprites/teto1.png').convert()
     texturas.append(teto1)
-    teto1Cache = EscalarTextura(teto1, janela.height, janela)
+    #teto1Cache = EscalarTextura(teto1, janela.height, janela)
+
+
+    chao_w, chao_h = chao1.get_size()
+    teto_w, teto_h = teto1.get_size()
+
+    floor_buffer = pygame.Surface(janela.get_screen().get_size())
     
+
+    parede1_fatias = PrepararFatias(parede1)
+
+
+    # 3. Create a "cache generator" FOR EACH COLUMN
+    for fatia in parede1_fatias:
+        
+        # This function creates *another* function
+        def create_scaler_for_slice(slice_to_scale):
+            """
+            A closure to capture the specific 'slice_to_scale'.
+            """
+            
+            # --- THIS IS THE MAGIC ---
+            # We attach the LRU cache to this inner function.
+            # It will store up to 512 *different heights* for this *one column*.
+            @functools.lru_cache(maxsize=700) 
+            def get_scaled_slice(altura):
+                """
+                Generates and caches a scaled slice.
+                """
+                # This is the "slow" part, but it only runs
+                # if the (altura) isn't in this column's cache.
+                return pygame.transform.scale(slice_to_scale, (1, altura))
+            
+            return get_scaled_slice
+
+        # Add the newly created generator (with its own private cache) to our list
+        teto1_cache_generators.append(create_scaler_for_slice(fatia))
+    
+
+
+
+    texturaChao = pygame.image.load('Sprites/chao1.png').convert()
+    texturaTeto = pygame.image.load('Sprites/teto1.png').convert()
+
+
+    texturaChao_array = pygame.surfarray.array3d(texturaChao)
+    texturaTeto_array = pygame.surfarray.array3d(texturaTeto)
+
+    chao_w, chao_h = texturaChao.get_size()
+    teto_w, teto_h = texturaTeto.get_size()
+
+    y_indices_full = np.arange(janela.height, dtype=np.int32)
+
+
+
     agora2 = time.time() - agora1 
     print("Demorou " + str(agora2))
 
+    
 
-    texturasCache = { 1: parede1Cache, 2:chao1Cache, 3:teto1Cache }
+
+    #texturasCache = { 1: parede1Cache, 2:chao1Cache, 3:teto1Cache }
+
+def PrepararFatias(textura):
+
+    fatias = []
+    textura_largura = textura.get_width()
+    textura_altura = textura.get_height()
+
+    for coluna in range(textura_largura):
+        
+        fatia = textura.subsurface(coluna, 0, 1, textura_altura).copy()
+        fatias.append(fatia)
+        
+    return fatias
 
 
 def EscalarTextura(textura, janelaAltura, janela):
@@ -145,13 +233,14 @@ def EscalarTextura(textura, janelaAltura, janela):
         if(coluna % 3 == 0):
             Tela_de_Loading(janela)
     
-        for altura in range(1, int(janelaAltura * 2) + 1):
+        for altura in range(1, int(janelaAltura) + 1):
 
             pedacoDaColunaEscalado[altura] = pygame.transform.scale(slice, (1, altura))
 
         cache.append(pedacoDaColunaEscalado)
 
     return cache
+
 
 
 def CriarImagens():
