@@ -40,6 +40,7 @@ def Update():
 
 
     if(jogo.estadoJogo == Data.EEstado.ANDANDO):
+
         if(time.time() - jogo.ultimaRotacao > 0.005):
             if(jogo.isRodando):
                 

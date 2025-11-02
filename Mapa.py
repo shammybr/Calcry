@@ -18,15 +18,25 @@ class MapaDungeon():
         return self.paredes
     
 class Parede():
-     def __init__(self, norte, sul, leste, oeste, textura):
+    def __init__(self, norte, sul, leste, oeste, textura):
         self.norte = norte
         self.sul = sul
         self.leste = leste
         self.oeste = oeste
         self.textura = textura
 
+    def __eq__(self, other):
+        if not isinstance(other, Parede):
+            return False
+            
+        return (self.norte == other.norte and
+                self.sul == other.sul and
+                self.leste == other.leste and
+                self.oeste == other.oeste)
+
 mapaAtual = [[0]]
-mapaObjetos = [[0]]
+mapaObjetosAtual = [[0]]
+mapaTexturasAtual = [[0]]
 
 texturaTeto = 0
 texturaChao = 0
@@ -36,13 +46,21 @@ def GerarMapa(mapaID):
     global mapaAtual
     global texturaTeto
     global texturaChao
+    global mapaObjetosAtual
+    global mapaTexturasAtual
 
-    n = Parede(1, 0, 0, 0, Sprites.texturas[1])
-    s = Parede(0, 1, 0, 0, Sprites.texturas[1])
-    l = Parede(0, 0, 1, 0, Sprites.texturas[1])
-    o = Parede(0, 0, 0, 1, Sprites.texturas[1])
-    O = Parede(0, 0, 0, 0, Sprites.texturas[1])
+    T = Parede(1, 0, 0, 0, 1)
+    _ = Parede(0, 1, 0, 0, 1)
+    d = Parede(0, 0, 1, 0, 1)
+    b = Parede(0, 0, 0, 1, 1)
+    ר = Parede(1, 0, 1, 0, 1)
+    J = Parede(0, 1, 1, 0, 1)
+    Г = Parede(1, 0, 0, 1, 1)
+    L = Parede(0, 1, 0, 1, 1)
+    O = Parede(0, 0, 0, 0, 1)
 
+    T2 = Parede(1, 0, 0, 0, 2)
+    
     texturaTeto = Sprites.texturas[Sprites.texturasDic["teto1"]]
     texturaChao = Sprites.texturas[Sprites.texturasDic["chao1"]]
 
@@ -56,28 +74,61 @@ def GerarMapa(mapaID):
     #[s, s, s, s, s]
     #]
 
-    mapaObjetos = [
-    [O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O],
-    [O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O],
-    [O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O],
-    [O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O],
-    [O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O],
-    [O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O],
-    [O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O],
-    [O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O],
+    pd = Parede(0, 0, 1, 0, 3)
+    pT = Parede(1, 0, 0, 0, 3)
+
+    mapaObjetosInvertido = [
+    [O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O],
+    [O, O, O, O,pd, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,pd, O, O, O, O, O, O, O, O, O, O],
+    [O, O, O, O, O, O,pT, O, O, O,pT, O, O, O, O,pT, O, O, O, O, O, O, O, O, O, O, O, O, O, O,pT, O, O, O,pT, O, O, O, O, O, O, O, O, O, O, O, O, O],
+    [O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O],
+    [O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O],
+    [O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O],
+    [O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O],
+    [O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O],
+    [O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O],
+    [O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O],
+    [O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O],
+    [O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O]
     ]
 
 
-    game_map = [
-    [l, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, o],
-    [l, O, O, O, O, O, O, O, O, n, n, O, o, O, l, O, O, O, O, O, O, O, O, O, o],
-    [l, O, O, O, O, O, O, O, O, o, l, n, o, O, l, O, O, O, O, O, O, O, O, O, o],
-    [l, O, O, O, O, O, O, O, O, o, O, O, O, O, l, O, O, O, O, O, O, O, O, O, o],
-    [l, n, O, O, O, O, O, O, O, s, s, s, o, l, s, n, O, O, O, O, O, O, O, n, o],
-    [l, l, l, s, o, l, s, o, l, s, o, O, o, l, l, l, O, l, s, o, l, s, o, o, o],
-    [l, O, s, O, s, s, O, s, s, O, s, s, O, O, s, O, s, s, O, s, s, O, s, O, o],
-    [s, s, s, s, s, s, s, s, s, s, s, s, s, s, s, s, s, s, s, s, s, s, s, s, s]
+    game_map = []
+
+    game_mapInvertido = [
+    [d, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, b],
+    [d, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, b, O, O, O, O, O, b],
+    [d, O, O, O, Г, ר, O, T, T, ר, O, T, T, ר, T, T, b, Г, b, Г, ר, O, O, O, Г, b, Г, b, Г, ר, O, T, T, ר, O, T, T, ר, O, O, O, b, O, O, O, O, O, b],
+    [d, O, O, O, b, d, O, O, O, d, b, O, O, d, b, O, b, b, b, b, d, O, O, O, b, b, b, b, b, O, b, O, O, d, b, O, O, d, O, O, O, b, O, O, O, O, O, b],
+    [d, O, O, O, b, d, O, O, O, d, b, O, O, d, b, O, T, T, T, b, d, O, O, O, b, T, b, T, b, O, b, O, O, d, b, O, O, d, O, O, O, b, O, O, O, O, O, b],
+    [d, T, T, T, b, d, _, _, _, J, _, _, _, J, J, J, T, T, T, T, T, O, O, O, b, b, O, d, d, O, L, _, _, J, _, _, _, J, T, T, T, T, O, O, O, O, O, b],
+    [d, O, O, O, O, O, O, O, O, O, O, O, O, d, _, J, O, Г, b, T, ר, O, O, O, b, b, O, O, O, O, O, O, O, O, O, O, O, b, O, O, O, O, O, O, O, O, O, b],
+    [d, O, O, O, O, O, O, O, O, O, O, O, O, d, T, O, O, b, b, O, d, O, O, O, b, b, O, O, O, O, O, O, O, O, O, O, O, b, O, O, O, O, O, O, O, O, O, b],
+    [d, O, O, O, O, O, O, O, O, O, O, O, O, d, T, O, O, b, Г, O, d, O, O, O, b, b, O, O, O, O, O, O, O, O, O, O, O, b, O, O, O, O, O, O, O, O, O, b],
+    [d, O, O, O, O, O, O, O, O, O, O, O, O, d, T, O, O, b, Г, O, d, T, T, T, b, b, O, O, O, O, O, O, O, O, O, O, O, b, O, O, O, O, O, O, O, O, O, b],
+    [d, O, O, O, O, O, O, O, O, O, O, O, O, d, T, O, O, b, T, T, ר, O, O, O, b, b, O, O, O, O, O, O, O, O, O, O, O, b, O, O, O, O, O, O, O, O, O, b],
+    [d, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, b]
     ]
+
+    game_mapTexturasInvertido = [
+    [2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0],
+    [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0],
+    [2, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0],
+    [2, 0, 0, 0, 2, 2, 0, 0, 0, 2, 2, 0, 0, 2, 2, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 2, 0, 0, 0, 2, 2, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0],
+    [2, 0, 0, 0, 2, 2, 0, 0, 0, 2, 2, 0, 0, 2, 2, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 2, 0, 0, 0, 2, 2, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0],
+    [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0],
+    [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0]
+    ]
+
+
+    game_map = game_mapInvertido[::-1]
+    mapaObjetos = mapaObjetosInvertido[::-1]
+    mapaTexturas = game_mapTexturasInvertido[::-1]
 
     mapCopy = []
 
@@ -89,7 +140,7 @@ def GerarMapa(mapaID):
             novaParede.sul = game_map[i][k].sul
             novaParede.leste = game_map[i][k].leste
             novaParede.oeste = game_map[i][k].oeste
-            novaParede.textura = game_map[i][k].textura
+            novaParede.textura = mapaTexturas[i][k]
 
             mapCopy[i].append(novaParede)
 
@@ -99,15 +150,58 @@ def GerarMapa(mapaID):
             if(game_map[i][k] != 0):
                 if(game_map[i][k].leste and k+1 < len(game_map[i])):
                     mapCopy[i][k+1].oeste = 1
+                    if mapCopy[i][k + 1].textura == 0:
+                        mapCopy[i][k+1].textura = mapCopy[i][k].textura
                 if(k+1 < len(game_map[i]) and game_map[i][k+1].oeste):
                     mapCopy[i][k].leste = 1
-
+                    if mapCopy[i][k].textura == 0:
+                        mapCopy[i][k].textura = mapCopy[i][k+1].textura
                 if(game_map[i][k].norte and i+1 < len(game_map)):
                     mapCopy[i + 1][k].sul = 1
+                    if mapCopy[i + 1][k].textura == 0:
+                        mapCopy[i + 1][k].textura = mapCopy[i][k].textura
                 if(i+1 < len(game_map) and game_map[i + 1][k].sul):
                     mapCopy[i][k].norte = 1
+                    if mapCopy[i ][k].textura == 0:
+                        mapCopy[i][k].textura = mapCopy[i + 1][k].textura
 
     mapaAtual = mapCopy
+
+    mapaObjetosCopy = []
+    
+    for i in range(len(mapaObjetos)):
+        mapaObjetosCopy.append([])
+        for k in range(len(mapaObjetos[i])): 
+            novaParede = Parede(0,0,0,0,0)
+            novaParede.norte = mapaObjetos[i][k].norte
+            novaParede.sul = mapaObjetos[i][k].sul
+            novaParede.leste = mapaObjetos[i][k].leste
+            novaParede.oeste = mapaObjetos[i][k].oeste
+            novaParede.textura = mapaObjetos[i][k].textura
+
+            mapaObjetosCopy[i].append(novaParede)
+
+    for i in range(len(mapaObjetos)):
+        for k in range(len(mapaObjetos[i])):
+            if(mapaObjetos[i][k] != 0):
+                if(mapaObjetos[i][k].leste and k+1 < len(mapaObjetos[i])):
+                    mapaObjetosCopy[i][k+1].oeste = 1
+                    mapaObjetosCopy[i][k+1].textura = mapaObjetos[i][k].textura
+                if(k+1 < len(mapaObjetos[i]) and mapaObjetos[i][k+1].oeste):
+                    mapaObjetosCopy[i][k].leste = 1
+                    mapaObjetosCopy[i][k].textura = mapaObjetos[i][k+1].textura
+                if(mapaObjetos[i][k].norte and i+1 < len(mapaObjetos)):
+                    mapaObjetosCopy[i + 1][k].sul = 1
+                    mapaObjetosCopy[i + 1][k].textura = mapaObjetos[i][k].textura
+                if(i+1 < len(mapaObjetos) and mapaObjetos[i + 1][k].sul):
+                    mapaObjetosCopy[i][k].norte = 1
+                    mapaObjetosCopy[i][k].textura = mapaObjetos[i + 1][k].textura
+                    
+
+
+    mapaObjetosAtual = mapaObjetosCopy
+
+
 
     return mapaAtual
 
@@ -117,15 +211,16 @@ def GetMapaAtual():
 
 def GetMapaObjetos():
 
-    return mapaObjetos
+    return mapaObjetosAtual
+
+
 
 def RenderizarMapa3D(janela, jogador):
     global tilesVisiveis
     tilesVisiveis = []
 
     game_map = GetMapaAtual()
-
-
+    mapaObjetos = GetMapaObjetos()
 
     for coluna in range(janela.width):
         #de 0 a 1, onde a coluna está
@@ -210,9 +305,13 @@ def RenderizarMapa3D(janela, jogador):
                 if(mapaX < tamanhoMapaX and mapaX >= 0):
                     tile = game_map[mapaY][mapaX]
                     if(tile != 0):
-
                         if (passoX > 0 and tile.oeste) or (passoX < 0 and tile.leste):
-                            hit = 1
+                            hit = tile.textura
+                        else:
+                            tile = mapaObjetos[mapaY][mapaX]
+                            if(tile != 0):
+                                if (passoX > 0 and tile.oeste) or (passoX < 0 and tile.leste):
+                                    hit = tile.textura
                 else:
                     break
 
@@ -230,7 +329,14 @@ def RenderizarMapa3D(janela, jogador):
                     if(tile != 0):
 
                         if (passoY > 0 and tile.sul) or (passoY < 0 and tile.norte):
-                            hit = 1
+                            hit = tile.textura
+
+                        else:
+                            tile = mapaObjetos[mapaY][mapaX]
+                            if(tile != 0):
+                                if (passoY > 0 and tile.sul) or (passoY < 0 and tile.norte):
+                                    hit = tile.textura
+
                 else:
                     break
                 #se tem parede, acerta (o mapa sempre tem que ser cercado de paredes)
@@ -290,12 +396,15 @@ def RenderizarMapa3D(janela, jogador):
 
         # --- This is the new, smart-caching logic ---
                 # acha a coluna da textura para desenhar (porcentagem de onde está na parede * largura da imagem)
-        textura = Sprites.texturas[1]
+        textura = Sprites.texturas[hit]
+
         texX = int(wallX * float(textura.get_width()))
+        
         try:
             # 1. Get the correct generator for this column (based on texX)
-            get_slice_from_cache = Sprites.teto1_cache_generators[texX]
-            
+
+            get_slice_from_cache = Sprites.geradoresCache[hit][texX]
+
             # 2. Ask it for the slice.
             #    The @lru_cache automatically does all the work:
             #    - Is (altura_key) in memory? If YES, return it instantly.

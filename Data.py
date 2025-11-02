@@ -75,10 +75,10 @@ class Jogador(Entidade):
         self.y = coordenadaY
         self.angulo = angulo
         self.direcao = direcao
-        self.dirX = 0.0
-        self.dirY = 1.0  # Direction vector
-        self.planeX = 0.66 # The camera plane vector
-        self.planeY = 0.0
+        self.dirX = 1.0
+        self.dirY = 0.0  # Direction vector
+        self.planeX = 0.0 # The camera plane vector
+        self.planeY = -0.66
 
         self.level = 1
         self.xp = 99
@@ -117,6 +117,8 @@ class Parede():
         self.x = coordenadaX
         self.y = coordenadaY
         self.direcao = direcao
+
+
 
 class ILimite(Inimigo):
      def __init__(self, nome):
