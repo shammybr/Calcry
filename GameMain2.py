@@ -773,7 +773,7 @@ def DesenharInimigos():
     ordemDesenhar = []
     for inimigo in jogo.inimigosNaLuta:
         if(inimigo.vida > 0):
-            if(inimigo.tipo == Data.tipoEntidade["Limite"]):
+            if(inimigo.tipo == Data.tipoEntidade["Limite"] or inimigo.tipo == Data.tipoEntidade["Derivada"]):
 
                     ordemDesenhar.insert(0, inimigo)
 
@@ -794,6 +794,24 @@ def PrepararLuta():
         if(inimigo.vida > 0):
             if(inimigo.tipo == Data.tipoEntidade["Limite"]):
                     inimigo.sprite.Transformar(int(317 * (janela.width/1920)), int(497 * (janela.height/1080)))
+                    largura = (inimigo.sprite.largura / 2)
+                    altura = (inimigo.sprite.altura / 2)
+
+                    if(i == 0):
+                        inimigo.sprite.set_position( int( (0.40 * janela.width)  - largura), int( 0.65 * janela.height - altura )    )
+                    
+                    elif(i == 1):
+                        inimigo.sprite.set_position( int( (0.60 * janela.width) - largura), int( 0.65 * janela.height  - altura)    )
+
+                    elif(i == 2):
+                        inimigo.sprite.set_position( int( (0.25 * janela.width) - largura), int( 0.55 * janela.height - altura )    )
+                    
+                    elif(i == 3):
+                        inimigo.sprite.set_position( int( (0.75 * janela.width) - largura), int( 0.55 * janela.height - altura )    )
+
+
+            elif(inimigo.tipo == Data.tipoEntidade["Derivada"]):
+                    inimigo.sprite.Transformar(int(415 * (janela.width/1920)), int(547 * (janela.height/1080)))
                     largura = (inimigo.sprite.largura / 2)
                     altura = (inimigo.sprite.altura / 2)
 

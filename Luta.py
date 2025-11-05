@@ -168,6 +168,13 @@ class Luta():
                 self.Atacar(jogador, self.ordemTurno[self.iTurno].dano)
                 self.mensagem.append("Causou " + str(self.ordemTurno[self.iTurno].dano) + " de dano!")
                 self.esperandoInput = True
+
+            elif(self.ordemTurno[self.iTurno].tipo == Data.tipoEntidade["Limite"]):
+                print("Atacando player...")
+                self.mensagem.append(self.ordemTurno[self.iTurno].nome + " Ataca!")
+                self.Atacar(jogador, self.ordemTurno[self.iTurno].dano)
+                self.mensagem.append("Causou " + str(self.ordemTurno[self.iTurno].dano) + " de dano!")
+                self.esperandoInput = True
         
         self.iTurno += 1
 
@@ -209,14 +216,30 @@ class Luta():
             else:
                 nInimigos = 4
 
+
             for i in range(0, nInimigos):
                 inimigo = Data.Inimigo("",0, 0, 0, 0, 0, HUD.GameImageMelhor('Sprites/Inimigos/Erro.png', 0, 0), 0 ,0, 0)
 
                 lInimigos = [value for value in Data.tipoEntidade.values() if value != 99]
 
                 tipoInimigo = random.choice(list(lInimigos))
+
                 if(tipoInimigo == Data.tipoEntidade["Limite"]):
-                    inimigo = Data.ILimite("Limite " + chr(65 + i))
+                    nlimite = 0
+                    for i in range(0, len(inimigosLuta)):
+                        if(inimigosLuta[i].tipo == Data.tipoEntidade["Limite"]):
+                            nlimite += 1
+
+                    inimigo = Data.ILimite("Limite " + chr(65 + nlimite))
+                    print("Foi")
+
+                elif(tipoInimigo == Data.tipoEntidade["Derivada"]):
+                    nderivada = 0
+                    for i in range(0, len(inimigosLuta)):
+                        if(inimigosLuta[i].tipo == Data.tipoEntidade["Derivada"]):
+                            nderivada += 1
+
+                    inimigo = Data.IDerivada("Derivada " + chr(65 + nderivada))
                     print("Foi")
 
                 inimigosLuta.append(inimigo)
@@ -423,8 +446,9 @@ class Luta():
 
     def TentarFugir(self, inimigos):
         nInimigos = len(inimigos)
-        if(random.randint(0, 100) > nInimigos * 100):
+        if(random.randint(0, 100) > nInimigos * 10):
             return True
+        
         return False
 
 
