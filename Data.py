@@ -15,9 +15,9 @@ coordenadasDirecao = { 0 : (0.0, 1.0),
 }
 
 tipoEntidade = { "Limite" : 0,
-                "Derivada" : 1,
-          #  "Integral" : 2,
-          "Jogador" : 99,
+                 "Derivada" : 1,
+                 "Integral" : 2,
+                 "Jogador" : 99,
 }
 
 xpProximoLevel = { 1 : 100,
@@ -127,3 +127,7 @@ class ILimite(Inimigo):
 class IDerivada(Inimigo):
      def __init__(self, nome):
         super().__init__(nome, tipoEntidade["Derivada"], 100, 100, 100, 100, HUD.GameImageMelhor('Sprites/Inimigos/IDerivada.png', 0, 0), 100, 5, 10)
+
+class IIntegral(Inimigo):
+     def __init__(self, nome):
+        super().__init__(nome, tipoEntidade["Integral"], 100, 100, 100, 100, HUD.GameImageMelhor('Sprites/Inimigos/IIntegral.png', 0, 0), 100, 5, 10)

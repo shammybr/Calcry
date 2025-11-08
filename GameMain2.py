@@ -196,9 +196,9 @@ def Update():
                     if(jogo.botaoSelecionadoLuta == Data.ELuta.ATACAR):
                         jogo.alvoLuta = 0
                         jogo.lutaHUD.setaSelecionarAlvo.Transformar(janela.width * 0.05, janela.height* 0.05)
-                        CalcularSelecionarAlvo(0)
+                        alvoTransformado = CalcularSelecionarAlvo(0)
                         luta.mensagem.clear()
-                        luta.mensagem.append(jogo.inimigosNaLuta[jogo.alvoLuta].nome)
+                        luta.mensagem.append(jogo.inimigosNaLuta[alvoTransformado].nome)
                         luta.estadoLuta = luta.EEstadoLuta.ESCOLHENDOALVO
 
 
@@ -236,19 +236,19 @@ def Update():
             if(time.time() - jogo.ultimoMovimentoBotao > 0.1 and jogo.botaoSolto):
                 if(jogo.ultimoInput == 3):
 
-                    CalcularSelecionarAlvo(1)
+                    alvoTransformado = CalcularSelecionarAlvo(1)
                     jogo.botaoSolto = False
                     jogo.ultimoMovimentoBotao = time.time()
                     luta.mensagem.clear()
-                    luta.mensagem.append(jogo.inimigosNaLuta[jogo.alvoLuta].nome)
+                    luta.mensagem.append(jogo.inimigosNaLuta[alvoTransformado].nome)
 
                 elif(jogo.ultimoInput == 4):
                     
-                    CalcularSelecionarAlvo(-1)
+                    alvoTransformado = CalcularSelecionarAlvo(-1)
                     jogo.botaoSolto = False
                     jogo.ultimoMovimentoBotao = time.time()
                     luta.mensagem.clear()
-                    luta.mensagem.append(jogo.inimigosNaLuta[jogo.alvoLuta].nome)
+                    luta.mensagem.append(jogo.inimigosNaLuta[alvoTransformado].nome)
 
                 elif(jogo.ultimoInput == 5):
                     inimigosVivos = []
@@ -266,7 +266,7 @@ def Update():
                         luta.AnimarDano(jogo.inimigosNaLuta[alvoTransformado].sprite.x, jogo.inimigosNaLuta[alvoTransformado].sprite.y)
                         jogo.alvoLutaAnimacao = alvoTransformado
                         luta.mensagem.clear()
-                        luta.mensagem.append("Jogador atacou " + jogo.inimigosNaLuta[jogo.alvoLuta].nome + "!")
+                        luta.mensagem.append("Jogador atacou " + jogo.inimigosNaLuta[alvoTransformado].nome + "!")
                         luta.mensagem.append("Causou " + str(jogo.jogador.dano) + " de dano!")
                         #if(jogo.inimigosNaLuta[alvoTransformado].vida == 0):
                         #    CalcularSelecionarAlvo(0)
@@ -704,6 +704,7 @@ def CalcularSelecionarAlvo(passo):
 
             jogo.lutaHUD.setaSelecionarAlvo.set_position(jogo.inimigosNaLuta[alvoTransformado].barraHPBackground.x + (jogo.inimigosNaLuta[alvoTransformado].barraHPBackground.largura / 2) - (jogo.lutaHUD.setaSelecionarAlvo.largura / 2), jogo.inimigosNaLuta[alvoTransformado].sprite.y - jogo.lutaHUD.setaSelecionarAlvo.altura * 2)
 
+    return alvoTransformado
 
 
 def DesenharAlvoHUD():
@@ -773,7 +774,7 @@ def DesenharInimigos():
     ordemDesenhar = []
     for inimigo in jogo.inimigosNaLuta:
         if(inimigo.vida > 0):
-            if(inimigo.tipo == Data.tipoEntidade["Limite"] or inimigo.tipo == Data.tipoEntidade["Derivada"]):
+            if(inimigo.tipo == Data.tipoEntidade["Limite"] or inimigo.tipo == Data.tipoEntidade["Derivada"] or Data.tipoEntidade["Integral"]):
 
                     ordemDesenhar.insert(0, inimigo)
 
@@ -826,6 +827,25 @@ def PrepararLuta():
                     
                     elif(i == 3):
                         inimigo.sprite.set_position( int( (0.75 * janela.width) - largura), int( 0.55 * janela.height - altura )    )
+
+            elif(inimigo.tipo == Data.tipoEntidade["Integral"]):
+                    inimigo.sprite.Transformar(int(451 * (janela.width/1920)), int(187 * (janela.height/1080)))
+                    largura = (inimigo.sprite.largura / 2)
+                    altura = (inimigo.sprite.altura / 2)
+
+                    if(i == 0):
+                        inimigo.sprite.set_position( int( (0.40 * janela.width)  - largura), int( 0.80 * janela.height - altura )    )
+                    
+                    elif(i == 1):
+                        inimigo.sprite.set_position( int( (0.60 * janela.width) - largura), int( 0.80 * janela.height  - altura)    )
+
+                    elif(i == 2):
+                        inimigo.sprite.set_position( int( (0.25 * janela.width) - largura), int( 0.70 * janela.height - altura )    )
+                    
+                    elif(i == 3):
+                        inimigo.sprite.set_position( int( (0.75 * janela.width) - largura), int( 0.70 * janela.height - altura )    )
+
+                        
         i += 1
 
 

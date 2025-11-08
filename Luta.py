@@ -169,7 +169,14 @@ class Luta():
                 self.mensagem.append("Causou " + str(self.ordemTurno[self.iTurno].dano) + " de dano!")
                 self.esperandoInput = True
 
-            elif(self.ordemTurno[self.iTurno].tipo == Data.tipoEntidade["Limite"]):
+            elif(self.ordemTurno[self.iTurno].tipo == Data.tipoEntidade["Derivada"]):
+                print("Atacando player...")
+                self.mensagem.append(self.ordemTurno[self.iTurno].nome + " Ataca!")
+                self.Atacar(jogador, self.ordemTurno[self.iTurno].dano)
+                self.mensagem.append("Causou " + str(self.ordemTurno[self.iTurno].dano) + " de dano!")
+                self.esperandoInput = True
+
+            elif(self.ordemTurno[self.iTurno].tipo == Data.tipoEntidade["Integral"]):
                 print("Atacando player...")
                 self.mensagem.append(self.ordemTurno[self.iTurno].nome + " Ataca!")
                 self.Atacar(jogador, self.ordemTurno[self.iTurno].dano)
@@ -216,6 +223,7 @@ class Luta():
             else:
                 nInimigos = 4
 
+            nInimigos = 4
 
             for i in range(0, nInimigos):
                 inimigo = Data.Inimigo("",0, 0, 0, 0, 0, HUD.GameImageMelhor('Sprites/Inimigos/Erro.png', 0, 0), 0 ,0, 0)
@@ -223,6 +231,7 @@ class Luta():
                 lInimigos = [value for value in Data.tipoEntidade.values() if value != 99]
 
                 tipoInimigo = random.choice(list(lInimigos))
+
 
                 if(tipoInimigo == Data.tipoEntidade["Limite"]):
                     nlimite = 0
@@ -241,6 +250,17 @@ class Luta():
 
                     inimigo = Data.IDerivada("Derivada " + chr(65 + nderivada))
                     print("Foi")
+
+
+                elif(tipoInimigo == Data.tipoEntidade["Integral"]):
+                    nintegral = 0
+                    for i in range(0, len(inimigosLuta)):
+                        if(inimigosLuta[i].tipo == Data.tipoEntidade["Integral"]):
+                            nintegral += 1
+
+                    inimigo = Data.IIntegral("Integral " + chr(65 + nintegral))
+                    print("Foi")
+
 
                 inimigosLuta.append(inimigo)
 
