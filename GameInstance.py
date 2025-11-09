@@ -16,6 +16,7 @@ class Jogo():
         self.luta = Luta.Luta()
         self.lutaHUD = self.luta.CriarLutaHUD(janela)
         self.alvoLuta = 0
+        self.habilidadeSelecionada = 0
         self.alvoLutaAnimacao = 0
         self.estadoJogo = Data.EEstado.ANDANDO
 

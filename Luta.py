@@ -14,7 +14,7 @@ class Luta():
         self.velocidadeAnimacao = 700
         self.tempoAnimacao = 1
         self.tempoAnimacaoBotoes = 0.3
-        
+        self.habilidadeSelecionada = 0
         self.tempoPassado = 0
         self.botaoAntigo = 0
 
@@ -35,7 +35,7 @@ class Luta():
         PROCESSANDOTURNO = 4
         FIM = 5
         RESULTADO = 6
-
+        ESCOLHENDOHABILIDADE = 7
 
 
     class LutaHUD():
@@ -56,6 +56,12 @@ class Luta():
             self.bFugirSelecionado = 'Sprites/Luta/BFugirHL.png'    
             self.bHabilidadeSelecionado = 'Sprites/Luta/BHabilidadeHL.png'
 
+
+            self.itemMenuBackground = HUD.GameImageMelhor('Sprites/Luta/itemMenu.png', 0, 0)
+            self.habilidadeMenuBackground = HUD.GameImageMelhor('Sprites/Luta/itemMenu.png', 0, 0)
+            self.itemSelecionado = HUD.GameImageMelhor('Sprites/Luta/itemMenuSelect.png', 0, 0)
+            self.itemSelecionadoAparecendo = True
+            
             self.logBG = HUD.GameImageMelhor('Sprites/Luta/logBG.png', 0, 0)
 
             self.setaSelecionarAlvo = HUD.GameImageMelhor('Sprites/Luta/selecionarAlvo.png', 0, 0)
@@ -205,6 +211,17 @@ class Luta():
 
         lutaHUD.logBG.Transformar(835 * (janela.width/1920) , 136 * (janela.height/1080) )
         lutaHUD.logBG.set_position(janela.width * 0.5 - (lutaHUD.logBG.largura / 2), janela.height * 0.05)
+
+        lutaHUD.itemMenuBackground.Transformar(385 * (janela.width/1920) , 502 * (janela.height/1080) )
+        lutaHUD.itemMenuBackground.set_position(janela.width * 0.8, janela.height * 0.52)
+
+        lutaHUD.habilidadeMenuBackground.Transformar(385 * (janela.width/1920) , 502 * (janela.height/1080) )
+        lutaHUD.habilidadeMenuBackground.set_position(janela.width * 0.8, janela.height * 0.52)
+
+        lutaHUD.itemSelecionado.Transformar(349 * (janela.width/1920) , 42 * (janela.height/1080) )
+        lutaHUD.itemSelecionado.set_position(janela.width * 0.85, janela.height * 0.55)
+        lutaHUD.itemSelecionado.image.set_alpha(0)
+        
 
         return lutaHUD
 

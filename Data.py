@@ -53,6 +53,7 @@ class ELuta(Enum):
     FUGIR = 4
 
 
+
 class Entidade():
     def __init__(self, nome, tipo, vida, vidaMaxima, energia, energiaMaxima, velocidade, dano):
         self.nome = nome
@@ -79,7 +80,7 @@ class Jogador(Entidade):
         self.dirY = 0.0  # Direction vector
         self.planeX = 0.0 # The camera plane vector
         self.planeY = -0.66
-
+        self.habilidades = []
         self.level = 1
         self.xp = 99
 
@@ -102,6 +103,9 @@ class Jogador(Entidade):
     def Curar(self, hp, energia):
         self.vida = min(self.vidaMaxima, self.vida + hp)
         self.energia = min(self.energiaMaxima, self.energia + energia)
+
+    def AprenderHabilidade(self, habilidade):
+        self.habilidades.append(habilidade)
 
 class Inimigo(Entidade):
     def __init__(self, nome, tipo, vida, vidaMaxima, energia, energiaMaxima, sprite, velocidade, dano, xp):
@@ -131,3 +135,16 @@ class IDerivada(Inimigo):
 class IIntegral(Inimigo):
      def __init__(self, nome):
         super().__init__(nome, tipoEntidade["Integral"], 100, 100, 100, 100, HUD.GameImageMelhor('Sprites/Inimigos/IIntegral.png', 0, 0), 100, 5, 10)
+
+class Habilidade():
+    def __init__(self, nome, ID, valores, desc):
+        self.nome = nome
+        self.ID = ID
+        self.valores = valores
+        self.desc = desc
+
+habilidadeBD = [ Habilidade("Concentração", 1, [40, 10], ["Concentre-se na tarefa! (40)", "Aumenta o ataque e a defesa em 10"]),
+                 Habilidade("Meditação", 2, [0, 30], ["Controle sua mente! (0)", "Recupera sua energia em 30"]),
+
+
+]

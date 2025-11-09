@@ -19,7 +19,11 @@ import GameInstance
 Sprites.CarregarTexturas(janela)
 jogo = GameInstance.Jogo(janela)
 luta = jogo.luta
-
+jogo.jogador.AprenderHabilidade(Data.habilidadeBD[0])
+jogo.jogador.AprenderHabilidade(Data.habilidadeBD[1])
+jogo.jogador.AprenderHabilidade(Data.habilidadeBD[0])
+jogo.jogador.AprenderHabilidade(Data.habilidadeBD[0])
+jogo.jogador.AprenderHabilidade(Data.habilidadeBD[0])
 
 def Update():
     
@@ -220,11 +224,15 @@ def Update():
                             luta.estadoLuta = luta.EEstadoLuta.PROCESSANDOTURNO
                             luta.esperandoInput = True
                             luta.ultimoTurno = time.time()
-                        pass
+                        
 
 
                     elif(jogo.botaoSelecionadoLuta == Data.ELuta.HABILIDADE):
-                        pass
+                        luta.habilidadeSelecionada = 0
+                        luta.mensagem.clear()
+                        luta.mensagem = jogo.jogador.habilidades[0].desc.copy()
+                        CalcularLutaHabilidadeSelecionada(0)
+                        luta.estadoLuta = luta.EEstadoLuta.ESCOLHENDOHABILIDADE
 
                     jogo.ultimoMovimentoBotao = time.time()
                     jogo.botaoSolto = False
@@ -283,6 +291,61 @@ def Update():
             DesenharAlvoHUD()
             DesenharLutaLog()
             EscreverLutaLog(luta.mensagem)
+
+        elif(luta.estadoLuta == luta.EEstadoLuta.ESCOLHENDOHABILIDADE):
+
+            if(time.time() - jogo.ultimoMovimentoBotao > 0.05 or jogo.botaoSolto):
+                if(jogo.botaoSolto):
+                    
+                        if(jogo.ultimoInput == 1):
+
+                            CalcularLutaHabilidadeSelecionada(1)
+                            luta.mensagem.clear()
+                            luta.mensagem = jogo.jogador.habilidades[luta.habilidadeSelecionada].desc.copy()
+                            jogo.botaoSolto = False
+                            jogo.ultimoMovimentoBotao = time.time()
+
+
+                        elif(jogo.ultimoInput == 2):
+                            
+                            CalcularLutaHabilidadeSelecionada(-1)
+                            luta.mensagem.clear()
+                            luta.mensagem = jogo.jogador.habilidades[luta.habilidadeSelecionada].desc.copy()
+                            jogo.botaoSolto = False
+                            jogo.ultimoMovimentoBotao = time.time()
+
+                        elif(jogo.ultimoInput == 6):
+                            jogo.botaoSolto = False
+                            jogo.ultimoMovimentoBotao = time.time()
+                            luta.estadoLuta = luta.EEstadoLuta.LUTANDO
+                else:
+                    if(time.time() - jogo.ultimoMovimentoBotao > 0.3):
+                        if(jogo.ultimoInput == 1):
+                            CalcularLutaHabilidadeSelecionada(1)
+                            luta.mensagem.clear()
+                            luta.mensagem = jogo.jogador.habilidades[luta.habilidadeSelecionada].desc.copy()
+                            jogo.botaoSolto = False
+                            jogo.ultimoMovimentoBotao = time.time() - 0.25
+
+                        elif(jogo.ultimoInput == 2): 
+                            CalcularLutaHabilidadeSelecionada(-1)
+                            luta.mensagem.clear()
+                            luta.mensagem = jogo.jogador.habilidades[luta.habilidadeSelecionada].desc.copy()
+                            jogo.botaoSolto = False
+                            jogo.ultimoMovimentoBotao = time.time() - 0.25
+                    
+
+
+
+
+            RenderizarLuta()
+            DesenharLutaJanelaHabilidades() 
+            DesenharLutaHabilidadeSelecionada()
+            DesenharHabilidades()
+            DesenharLutaLog()
+            EscreverLutaLog(luta.mensagem)
+
+
 
         elif(luta.estadoLuta == luta.EEstadoLuta.PROCESSANDOTURNO):
 
@@ -377,6 +440,39 @@ def RenderizarLuta():
     DesenharInimigos()
     DesenharLutaBotoes()
     
+def DesenharLutaJanelaHabilidades():
+    jogo.lutaHUD.habilidadeMenuBackground.draw()
+
+def DesenharLutaHabilidadeSelecionada():
+    if(jogo.lutaHUD.itemSelecionadoAparecendo):
+        if(jogo.lutaHUD.itemSelecionado.image.get_alpha() >= 240):
+            jogo.lutaHUD.itemSelecionadoAparecendo = False
+
+        jogo.lutaHUD.itemSelecionado.image.set_alpha(jogo.lutaHUD.itemSelecionado.image.get_alpha() + 500 * jogo.deltaTime)
+    else:
+        if(jogo.lutaHUD.itemSelecionado.image.get_alpha() <= 30):
+            jogo.lutaHUD.itemSelecionadoAparecendo = True
+
+        jogo.lutaHUD.itemSelecionado.image.set_alpha(jogo.lutaHUD.itemSelecionado.image.get_alpha() - 500 * jogo.deltaTime)
+
+    jogo.lutaHUD.itemSelecionado.draw()
+
+def CalcularLutaHabilidadeSelecionada(passo):
+    if(passo == -1):
+        luta.habilidadeSelecionada = min(luta.habilidadeSelecionada + 1, len(jogo.jogador.habilidades) - 1)
+    elif(passo == 1):
+        luta.habilidadeSelecionada = max(luta.habilidadeSelecionada - 1, 0)
+
+    jogo.lutaHUD.itemSelecionado.set_position(janela.width * 0.81, janela.height * 0.54 + (luta.habilidadeSelecionada * janela.height * 0.05))
+
+def DesenharHabilidades():
+    for i in range(0, 10):
+            if i < len(jogo.jogador.habilidades):
+                janela.draw_text(jogo.jogador.habilidades[i].nome, janela.width * 0.82, janela.height * 0.55 + (i * janela.height * 0.05), "Sprites/HUD/PressStart2P-Regular.ttf", 13 * int((1280/janela.width)), (255,255,255), )
+                janela.draw_text(str(jogo.jogador.habilidades[i].valores[0]), janela.width * 0.96, janela.height * 0.55 + (i * janela.height * 0.05), "Sprites/HUD/PressStart2P-Regular.ttf", 13 * int((1280/janela.width)), (255,255,255), )
+            else:
+                janela.draw_text("--------------" , janela.width * 0.82, janela.height * 0.55 + (i * janela.height * 0.05), "Sprites/HUD/PressStart2P-Regular.ttf", 13 * int((1280/janela.width)), (255,255,255), )
+
 
 
 def RenderizarMapa():
@@ -715,8 +811,15 @@ def DesenharLutaLog():
     jogo.lutaHUD.logBG.draw()
 
 def EscreverLutaLog(mensagens):
+    tamanho = 20
+
     for i, mensagem in enumerate(mensagens[:2]):
-        janela.draw_text(mensagem,  jogo.lutaHUD.logBG.x + (jogo.lutaHUD.logBG.width * 0.01),  jogo.lutaHUD.logBG.y + (janela.height * 0.03 + (i * janela.height * 0.03)), "Sprites/HUD/PressStart2P-Regular.ttf", 20 * int((1280/janela.width)), (255,255,255), )
+        if(len(mensagem) > 30):
+            tamanho = 15
+        else:
+            tamanho = 18
+            
+        janela.draw_text(mensagem,  jogo.lutaHUD.logBG.x + (jogo.lutaHUD.logBG.width * 0.01),  jogo.lutaHUD.logBG.y + (janela.height * 0.03 + (i * janela.height * 0.035)), "Sprites/HUD/PressStart2P-Regular.ttf", tamanho * int((1280/janela.width)), (255,255,255), )
 
 
 
