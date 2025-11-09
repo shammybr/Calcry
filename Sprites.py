@@ -22,6 +22,9 @@ geradoresCache = [None]
 parede1_cache_generators = []
 parede2_cache_generators = []
 porta1_cache_generators = []
+porta2_cache_generators = []
+porta3_cache_generators = []
+parede3_cache_generators = []
 spriteList = []
 texturasCache = {}
 
@@ -141,15 +144,24 @@ def CarregarTexturas(janela):
     porta1 = pygame.image.load('Sprites/porta1.png').convert()
     texturas.append(porta1)
 
+    porta2 = pygame.image.load('Sprites/parede1porta.png').convert()
+    texturas.append(porta2)
+
+    porta3 = pygame.image.load('Sprites/parede1porta2.png').convert()
+    texturas.append(porta3)
+
+    parede3 = pygame.image.load('Sprites/parede1janela.png').convert()
+    texturas.append(parede3)
+
     chao1 = pygame.image.load('Sprites/chao1.png').convert()
-    texturas.append(chao1)
+
     #chao1Cache = EscalarTextura(chao1, janela.height, janela)
 
 
 
 
     teto1 = pygame.image.load('Sprites/teto1.png').convert()
-    texturas.append(teto1)
+
     #teto1Cache = EscalarTextura(teto1, janela.height, janela)
 
 
@@ -225,34 +237,84 @@ def CarregarTexturas(janela):
     porta1_fatias = PrepararFatias(porta1)
 
 
-    # 3. Create a "cache generator" FOR EACH COLUMN
+
     for fatia in porta1_fatias:
-        
-        # This function creates *another* function
+
         def create_scaler_for_slice(slice_to_scale):
-            """
-            A closure to capture the specific 'slice_to_scale'.
-            """
             
-            # --- THIS IS THE MAGIC ---
-            # We attach the LRU cache to this inner function.
-            # It will store up to 512 *different heights* for this *one column*.
+
             @functools.lru_cache(maxsize=700) 
             def get_scaled_slice(altura):
-                """
-                Generates and caches a scaled slice.
-                """
-                # This is the "slow" part, but it only runs
-                # if the (altura) isn't in this column's cache.
+
                 return pygame.transform.scale(slice_to_scale, (1, altura))
             
             return get_scaled_slice
 
-        # Add the newly created generator (with its own private cache) to our list
+
         porta1_cache_generators.append(create_scaler_for_slice(fatia))
 
     geradoresCache.append(porta1_cache_generators)
 
+
+    porta2_fatias = PrepararFatias(porta2)
+
+    for fatia in porta2_fatias:
+
+        def create_scaler_for_slice(slice_to_scale):
+            
+
+            @functools.lru_cache(maxsize=700) 
+            def get_scaled_slice(altura):
+
+                return pygame.transform.scale(slice_to_scale, (1, altura))
+            
+            return get_scaled_slice
+
+
+        porta2_cache_generators.append(create_scaler_for_slice(fatia))
+
+    geradoresCache.append(porta2_cache_generators)
+
+
+    
+    porta3_fatias = PrepararFatias(porta3)
+
+    for fatia in porta3_fatias:
+
+        def create_scaler_for_slice(slice_to_scale):
+            
+
+            @functools.lru_cache(maxsize=700) 
+            def get_scaled_slice(altura):
+
+                return pygame.transform.scale(slice_to_scale, (1, altura))
+            
+            return get_scaled_slice
+
+
+        porta3_cache_generators.append(create_scaler_for_slice(fatia))
+
+    geradoresCache.append(porta3_cache_generators)
+
+
+    parede3_fatias = PrepararFatias(parede3)
+
+    for fatia in parede3_fatias:
+
+        def create_scaler_for_slice(slice_to_scale):
+            
+
+            @functools.lru_cache(maxsize=700) 
+            def get_scaled_slice(altura):
+
+                return pygame.transform.scale(slice_to_scale, (1, altura))
+            
+            return get_scaled_slice
+
+
+        parede3_cache_generators.append(create_scaler_for_slice(fatia))
+
+    geradoresCache.append(parede3_cache_generators)
 
     texturaChao = pygame.image.load('Sprites/chao1.png').convert()
     texturaTeto = pygame.image.load('Sprites/teto1.png').convert()
