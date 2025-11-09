@@ -166,27 +166,39 @@ class Luta():
         self.mensagem.clear()
 
         if(self.ordemTurno[self.iTurno].tipo == Data.tipoEntidade["Jogador"]):
-            self.estadoLuta = self.EEstadoLuta.LUTANDO
+            for buff in jogador.buffs:
+                buff.Iturnos += 1
+
+                if(buff.Iturnos >= buff.turnosTotais):
+                    self.mensagem.append(buff.nome + " acabou.")
+                    jogador.buffs.remove(buff)
+                    self.esperandoInput = True             
+
+            if(not self.esperandoInput):
+                self.estadoLuta = self.EEstadoLuta.LUTANDO
+            else:
+                self.iTurno -= 1
+
         else:
             if(self.ordemTurno[self.iTurno].tipo == Data.tipoEntidade["Limite"]):
                 print("Atacando player...")
-                self.mensagem.append(self.ordemTurno[self.iTurno].nome + " Ataca!")
-                self.Atacar(jogador, self.ordemTurno[self.iTurno].dano)
-                self.mensagem.append("Causou " + str(self.ordemTurno[self.iTurno].dano) + " de dano!")
+                self.mensagem.append(self.ordemTurno[self.iTurno].nome + " ataca!")
+                danoCausado = self.Atacar(jogador, self.ordemTurno[self.iTurno].dano)
+                self.mensagem.append("Causou " + str(danoCausado) + " de dano!")
                 self.esperandoInput = True
 
             elif(self.ordemTurno[self.iTurno].tipo == Data.tipoEntidade["Derivada"]):
                 print("Atacando player...")
-                self.mensagem.append(self.ordemTurno[self.iTurno].nome + " Ataca!")
-                self.Atacar(jogador, self.ordemTurno[self.iTurno].dano)
-                self.mensagem.append("Causou " + str(self.ordemTurno[self.iTurno].dano) + " de dano!")
+                self.mensagem.append(self.ordemTurno[self.iTurno].nome + " ataca!")
+                danoCausado = self.Atacar(jogador, self.ordemTurno[self.iTurno].dano)
+                self.mensagem.append("Causou " + str(danoCausado) + " de dano!")
                 self.esperandoInput = True
 
             elif(self.ordemTurno[self.iTurno].tipo == Data.tipoEntidade["Integral"]):
                 print("Atacando player...")
-                self.mensagem.append(self.ordemTurno[self.iTurno].nome + " Ataca!")
-                self.Atacar(jogador, self.ordemTurno[self.iTurno].dano)
-                self.mensagem.append("Causou " + str(self.ordemTurno[self.iTurno].dano) + " de dano!")
+                self.mensagem.append(self.ordemTurno[self.iTurno].nome + " ataca!")
+                danoCausado = self.Atacar(jogador, self.ordemTurno[self.iTurno].dano)
+                self.mensagem.append("Causou " + str(danoCausado) + " de dano!")
                 self.esperandoInput = True
         
         self.iTurno += 1
@@ -243,7 +255,7 @@ class Luta():
             nInimigos = 4
 
             for i in range(0, nInimigos):
-                inimigo = Data.Inimigo("",0, 0, 0, 0, 0, HUD.GameImageMelhor('Sprites/Inimigos/Erro.png', 0, 0), 0 ,0, 0)
+                inimigo = Data.Inimigo("",0, 0, 0, 0, 0, HUD.GameImageMelhor('Sprites/Inimigos/Erro.png', 0, 0), 0 ,0, 0, 0)
 
                 lInimigos = [value for value in Data.tipoEntidade.values() if value != 99]
 
@@ -392,7 +404,7 @@ class Luta():
 
 
     def Atacar(self, alvoLuta, dano):
-        alvoLuta.TomarDano(dano)
+        return alvoLuta.TomarDano(dano)
 
 
     def AnimarDano(self, posicaoOriginalDanoX, posicaoOriginalDanoY):

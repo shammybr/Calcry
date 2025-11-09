@@ -21,9 +21,7 @@ jogo = GameInstance.Jogo(janela)
 luta = jogo.luta
 jogo.jogador.AprenderHabilidade(Data.habilidadeBD[0])
 jogo.jogador.AprenderHabilidade(Data.habilidadeBD[1])
-jogo.jogador.AprenderHabilidade(Data.habilidadeBD[0])
-jogo.jogador.AprenderHabilidade(Data.habilidadeBD[0])
-jogo.jogador.AprenderHabilidade(Data.habilidadeBD[0])
+jogo.jogador.AprenderHabilidade(Data.habilidadeBD[2])
 
 def Update():
     
@@ -270,12 +268,34 @@ def Update():
                     alvoTransformado = inimigosVivos[min(len(inimigosVivos) - 1, jogo.alvoLuta)]
                     
                     if(alvoTransformado < len(jogo.inimigosNaLuta)):
-                        luta.Atacar(jogo.inimigosNaLuta[alvoTransformado], jogo.jogador.dano)
-                        luta.AnimarDano(jogo.inimigosNaLuta[alvoTransformado].sprite.x, jogo.inimigosNaLuta[alvoTransformado].sprite.y)
-                        jogo.alvoLutaAnimacao = alvoTransformado
                         luta.mensagem.clear()
-                        luta.mensagem.append("Jogador atacou " + jogo.inimigosNaLuta[alvoTransformado].nome + "!")
-                        luta.mensagem.append("Causou " + str(jogo.jogador.dano) + " de dano!")
+
+                        modAtaque = 0
+                        modDefesa = 0
+                        for buff in jogo.jogador.buffs:
+                            for i in range(0, len(buff.atributos)):
+                                if(buff.atributos[i] == Data.Datributo["Defesa"]):
+                                    modDefesa += buff.valores[i]
+                                elif(buff.atributos[i] == Data.Datributo["Ataque"]):
+                                    modAtaque += buff.valores[i]
+
+                        if(jogo.jogador.danoGuardado > 0):
+                            luta.mensagem.append("UOOOOOOOOOOOOOOOOO!!!!")
+                            luta.mensagem.append("")
+                            jogo.jogador.danoGuardado *= -1
+                            luta.esperandoInput = True
+
+                        else:
+                            if(jogo.jogador.danoGuardado < 0):
+                                modAtaque += (jogo.jogador.danoGuardado * -1)
+                                jogo.jogador.danoGuardado = 0
+                                
+                            danoCausado = luta.Atacar(jogo.inimigosNaLuta[alvoTransformado], jogo.jogador.dano + modAtaque)
+                            luta.AnimarDano(jogo.inimigosNaLuta[alvoTransformado].sprite.x, jogo.inimigosNaLuta[alvoTransformado].sprite.y)
+                            jogo.alvoLutaAnimacao = alvoTransformado
+                            
+                            luta.mensagem.append("Jogador atacou " + jogo.inimigosNaLuta[alvoTransformado].nome + "!")
+                            luta.mensagem.append("Causou " + str(danoCausado) + " de dano!")
                         #if(jogo.inimigosNaLuta[alvoTransformado].vida == 0):
                         #    CalcularSelecionarAlvo(0)
 
@@ -286,6 +306,14 @@ def Update():
                     jogo.botaoSolto = False
                     jogo.ultimoMovimentoBotao = time.time()
                     luta.estadoLuta = luta.EEstadoLuta.LUTANDO
+
+
+            if(luta.esperandoInput and time.time() - jogo.ultimoMovimentoBotao > 0.2 and jogo.botaoSolto):
+                if(jogo.ultimoInput == 5):
+                    luta.esperandoInput = False
+                    jogo.botaoSolto = False
+                    jogo.ultimoMovimentoBotao = time.time()
+
 
             RenderizarLuta()
             DesenharAlvoHUD()
@@ -313,6 +341,26 @@ def Update():
                             luta.mensagem = jogo.jogador.habilidades[luta.habilidadeSelecionada].desc.copy()
                             jogo.botaoSolto = False
                             jogo.ultimoMovimentoBotao = time.time()
+
+                        elif(jogo.ultimoInput == 5):
+                            jogo.botaoSolto = False
+                            jogo.ultimoMovimentoBotao = time.time()
+                            luta.mensagem.clear()
+
+                            if(jogo.jogador.energia >= jogo.jogador.habilidades[luta.habilidadeSelecionada].valores[0]):
+                                i = 1
+                                for funcao in jogo.jogador.habilidades[luta.habilidadeSelecionada].funcs:
+                                    if(jogo.jogador.habilidades[luta.habilidadeSelecionada].temAlvo):
+                                        pass
+                                    else:
+                                        for mensagem in funcao([jogo.jogador], jogo.jogador.habilidades[luta.habilidadeSelecionada].valores[i]):
+                                            luta.mensagem.append(mensagem)
+
+                                        i += 1
+
+                                jogo.jogador.energia -= jogo.jogador.habilidades[luta.habilidadeSelecionada].valores[0]
+                                luta.estadoLuta = luta.EEstadoLuta.PROCESSANDOTURNO
+                                luta.esperandoInput = True
 
                         elif(jogo.ultimoInput == 6):
                             jogo.botaoSolto = False
@@ -470,6 +518,7 @@ def DesenharHabilidades():
             if i < len(jogo.jogador.habilidades):
                 janela.draw_text(jogo.jogador.habilidades[i].nome, janela.width * 0.82, janela.height * 0.55 + (i * janela.height * 0.05), "Sprites/HUD/PressStart2P-Regular.ttf", 13 * int((1280/janela.width)), (255,255,255), )
                 janela.draw_text(str(jogo.jogador.habilidades[i].valores[0]), janela.width * 0.96, janela.height * 0.55 + (i * janela.height * 0.05), "Sprites/HUD/PressStart2P-Regular.ttf", 13 * int((1280/janela.width)), (255,255,255), )
+           
             else:
                 janela.draw_text("--------------" , janela.width * 0.82, janela.height * 0.55 + (i * janela.height * 0.05), "Sprites/HUD/PressStart2P-Regular.ttf", 13 * int((1280/janela.width)), (255,255,255), )
 
@@ -814,7 +863,9 @@ def EscreverLutaLog(mensagens):
     tamanho = 20
 
     for i, mensagem in enumerate(mensagens[:2]):
-        if(len(mensagem) > 30):
+        if(len(mensagem) > 35):
+            tamanho = 14
+        elif(len(mensagem) > 30):
             tamanho = 15
         else:
             tamanho = 18
