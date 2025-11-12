@@ -31,7 +31,7 @@ texturasCache = {}
 contador_do_loading=0
 tempo_inicial_pro_loading=time.time()
 ja_passou_pelo_loading=False
-loading=Sprite(f'Sprites/Loading{contador_do_loading%8}.png')
+loading=Sprite(f'Sprites/loading/Loading{contador_do_loading%8}.png')
 loading.set_position(320, 180)
 chao_w = 0
 chao_h = 0
