@@ -37,6 +37,7 @@ class Parede():
 mapaAtual = [[0]]
 mapaObjetosAtual = [[0]]
 mapaTexturasAtual = [[0]]
+game_mapInvertido = [[0]]
 
 texturaTeto = 0
 texturaChao = 0
@@ -48,6 +49,7 @@ def GerarMapa(mapaID):
     global texturaChao
     global mapaObjetosAtual
     global mapaTexturasAtual
+    global game_mapInvertido
 
     T = Parede(1, 0, 0, 0, 1)
     _ = Parede(0, 1, 0, 0, 1)
@@ -207,6 +209,39 @@ def GerarMapa(mapaID):
 
 
     return mapaAtual
+
+def GetMinimapaComp():
+    
+    mapa=mapaAtual
+
+    minimapa=[]
+    for i1 in range (len(mapa)):
+        minimapa.append([0]*len(mapa[0]))
+    
+    pilha=[[21, 9]]
+    while pilha != []:
+        quad=pilha[0]
+        if minimapa[quad[1]][quad[0]]==0:
+            minimapa[quad[1]][quad[0]]=1
+            if mapa[quad[1]][quad[0]].norte==0:
+                pilha.append([quad[0], quad[1]+1])
+            if mapa[quad[1]][quad[0]].sul==0:
+                pilha.append([quad[0], quad[1]-1])
+            if mapa[quad[1]][quad[0]].leste==0:
+                pilha.append([quad[0]+1, quad[1]])
+            if mapa[quad[1]][quad[0]].oeste==0:
+                pilha.append([quad[0]-1, quad[1]])
+        del pilha[0]
+    
+    return minimapa
+
+def GetMapaAtual():
+
+    return mapaAtual
+
+def GetMapaObjetos():
+
+    return mapaObjetosAtual
 
 def GetMapaAtual():
 

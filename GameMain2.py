@@ -24,7 +24,7 @@ jogo.jogador.AprenderHabilidade(Data.habilidadeBD[1])
 jogo.jogador.AprenderHabilidade(Data.habilidadeBD[2])
 
 def Update():
-    
+    global minimapa
 
     jogo.deltaTime = time.time() - jogo.tempoUltimoFrame
     jogo.tempoUltimoFrame = time.time()
@@ -80,6 +80,7 @@ def Update():
 
                     jogo.isAndando = False
                     jogo.ultimoMovimento = time.time()
+                    minimapa=GetMinimapa()
 
             elif(AndarJogador(jogo.ultimoInput)):
                 
@@ -458,22 +459,13 @@ def Update():
 
 
 
-
-         
-
-        
-
-   
-
- 
-
-
     jogo.numeroFrames += 1
     
     janela.update()
 
     if(jogo.segundo > 1):
         print(jogo.numeroFrames)
+        print(f"Direção: {jogo.jogador.direcao}")
         jogo.numeroFrames = 0
         jogo.segundo -= 1
 
@@ -546,10 +538,9 @@ def RenderizarMapa():
 
 
         DesenharHUD()
-
+        DesenharMinimapa()
 
         janela.update()
-
 
 
 
@@ -1003,8 +994,88 @@ def PrepararLuta():
         i += 1
 
 
+# Inicio Parte minimapa
+
+minimapa_completo=Mapa.GetMinimapaComp()
+
+def GetMinimapa():
+    
+    #criando o minimapa
+    
+    minimapa=[]
+    for jota in range(5):
+        minimapa.append([0]*5)
+    
+    #definindo os limites máximos do minimapa
+
+    xo_no_completo=int(jogo.jogador.x)-2
+    yo_no_completo=int(jogo.jogador.y)-2
+    xo_minimapa=0
+    yo_minimapa=0
+    xf_no_completo=int(jogo.jogador.x)+2
+    yf_no_completo=int(jogo.jogador.y)+2
+    xf_minimapa=4
+    yf_minimapa=4
+
+    #Atualizando os limites para o máximo real (Caso em bordas do mapa)
+
+    while xo_no_completo<0:
+        xo_no_completo+=1
+        xo_minimapa+=1
+    
+    while yo_no_completo<0:
+        yo_no_completo+=1
+        yo_minimapa+=1
+    
+    while xf_no_completo>len(minimapa_completo[0])-1:
+        xf_no_completo-=1
+        xf_minimapa-=1
+    
+    while yf_no_completo>len(minimapa_completo)-1:
+        yf_no_completo-=1
+        yf_minimapa-=1
+    soma=0
+    
+    # Colocando os sprites nos locais corretos do minimapa
+
+    while xo_minimapa<=xf_minimapa:
+        aux1=yo_minimapa
+        aux2=yo_no_completo
+        while aux1<=yf_minimapa:
+            if (minimapa_completo[aux2][xo_no_completo]==1):
+                soma+=1
+                Sprite_auxiliar=Sprite("Sprites/Minimapa/quadrado_branco.png")
+                Sprite_auxiliar.set_position(1241-34*xo_minimapa, 545+34*aux1)
+                minimapa[aux1][xo_minimapa]=Sprite_auxiliar
+            aux1+=1
+            aux2+=1
+        xo_minimapa+=1
+        xo_no_completo+=1
+    
+    for j1 in range(2):
+        for j2 in range(5):
+            auxiliar=minimapa[j2][j1]
+            minimapa[j2][j1]=minimapa[j2][4-j1]
+            minimapa[j2][4-j1]=auxiliar
+
+    return minimapa
+
+minimapa=GetMinimapa()
+
+def DesenharMinimapa():
+    global minimapa
+
+    for i1 in range(5):
+        for i2 in range(5):
+            if minimapa[i1][i2]!=0:
+                minimapa[i1][i2].draw()
+    sprite_central=Sprite(f"Sprites/minimapa/Seta{jogo.jogador.direcao}.png")
+    sprite_central.set_position(1173, 613)
+    sprite_central.draw()
+    
 
 
+# Fim Parte minimapa
 
 #não usado
 def UpdateTest():
