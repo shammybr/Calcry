@@ -18,12 +18,16 @@ class MapaDungeon():
         return self.paredes
     
 class Parede():
-    def __init__(self, norte, sul, leste, oeste, textura):
+    def __init__(self, norte, sul, leste, oeste, textura, offsetX = 0, offsetY = 0, wAltura=1.0, wLargura=1.0):
         self.norte = norte
         self.sul = sul
         self.leste = leste
         self.oeste = oeste
         self.textura = textura
+        self.offsetX = offsetX
+        self.offsetY = offsetY
+        self.wAltura = wAltura
+        self.wLargura = wLargura 
 
     def __eq__(self, other):
         if not isinstance(other, Parede):
@@ -37,6 +41,7 @@ class Parede():
 mapaAtual = [[0]]
 mapaObjetosAtual = [[0]]
 mapaTexturasAtual = [[0]]
+mapaEventosAtual = [[0]]
 game_mapInvertido = [[0]]
 
 texturaTeto = 0
@@ -50,6 +55,7 @@ def GerarMapa(mapaID):
     global mapaObjetosAtual
     global mapaTexturasAtual
     global game_mapInvertido
+    global mapaEventosAtual
 
     T = Parede(1, 0, 0, 0, 1)
     _ = Parede(0, 1, 0, 0, 1)
@@ -80,60 +86,160 @@ def GerarMapa(mapaID):
     pT = Parede(1, 0, 0, 0, 3)
     pT2 = Parede(1, 0, 0, 0, 4)
     pT3 = Parede(1, 0, 0, 0, 5)
+    pT4 = Parede(0, 0, 1, 0, 11)
+
+    c = Parede(0, 0, 0, 1, 100, 0, 0, 0.6, 1)
+    c2 = Parede(0, 0, 1, 0, 100, 0, 0, 0.6, 1)
+    bb = Parede(0, 1, 0, 0, 101, 0, -0.4, 0.5, 1)
+    pb = Parede(0, 0, 0, 1, 102, 0.4, 0, 1, 1)
+    l = Parede(0, 1, 0, 0, 103, 0, -0.4, 0.5, 1)
+    l2 = Parede(0, 1, 0, 0, 103, 0 , 0.4, 0.5, 1)
+    cm = Parede(0, 0, 0, 1, 104, 0, 0.3, 0.6, 1)
+    i =  Parede(1, 0, 0, 0, 105, -0.5, -0.5, 1, 1)
+    i2 =  Parede(1, 0, 0, 0, 105, 0.5, 0.5, 1, 1)
 
 
-    mapaObjetosInvertido = [
-    [O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,  O, O, O,  O, O, O, O, O, O, O,  O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O],
-    [O, O, O, O,pd, O, O, O, O, O, O, O, O, O, O,  O, O, O,  O, O, O, O, O, O, O,  O, O, O, O, O, O, O, O, O, O, O, O,pd, O, O, O, O, O, O, O, O, O, O],
-    [O, O, O, O, O, O,pT, O, O, O,pT, O, O, O, O,  O,pT2,O,pT3, O, O, O, O, O, O,pT3, O,pT2, O, O,pT, O, O, O,pT, O, O, O, O, O, O, O, O, O, O, O, O, O],
-    [O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,  O, O, O,  O, O, O, O, O, O, O,  O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O],
-    [O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,  O, O, O,  O, O, O, O, O, O, O,  O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O],
-    [O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,  O, O, O,  O, O, O, O, O, O, O,  O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O],
-    [O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,  O, O, O,  O, O, O, O, O, O, O,  O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O],
-    [O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,  O, O, O,  O, O, O, O, O, O, O,  O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O],
-    [O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,  O, O, O,  O, O, O, O, O, O, O,  O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O],
-    [O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,  O, O, O,  O, O, O, O, O, O, O,  O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O],
-    [O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,  O, O, O,  O, O, O, O, O, O, O,  O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O],
-    [O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,  O, O, O,  O, O, O, O, O, O, O,  O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O]
-    ]
+    if(mapaID == 1):
+        mapaObjetosInvertido = [
+        [O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,  O, O, O,  O, O, O, O, O, O, O,  O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O],
+        [O, O, O, O,pd, O, O, O, O, O, O, O, O, O, i2,  i, O, O, O,cm, l,cm, O,cm,bb,  O,cm, O,i2, i, O, O, O, O, O, O, O,pd, O, O, O, O, O, O, O, O, O, O],
+        [O, O, c, c, O, O, O, c, c, c, O, c, c, c, O,  O,pT2,O,pT3, O, O, O, O, O, O,pT3, O,pT2,O, O, O, c, c, c, O, c, c, c, O,c2,c2, O, O, O, O, O, O, O],
+        [O, O, c, c, O, O,pT, c, c, c,pT, c, c, c, O,  O, O, O,  O, O, O, O, O, O, O,  O, O, O, O, O,pT, c, c, c,pT, c, c, c, O,c2,c2, O, O, O, O, O, O, O],
+        [O, O, c, c, O, O, O, c, c, c, O, c, c, c, O,  O, O, O,  O, O, O, O, O, O, O,  O, O, O, O, O, O, c, c, c, O, c, c, c, O,c2,c2, O, O, O, O, O, O, O],
+        [O, O, c, c, O, O, O, c, c, c, O, c, c, c, O,  O, O, O,  O, O, O, O, O, O, O,  O, O, O, O, O, O, c, c, c, O, c, c, c, O,c2,c2, O, O, O, O, O, O, O],
+        [O, O, c, c, O, O, O, c, c, c, O, c, c, c, O,  O, O, O,  O, O, O, O, O, O, O,  O, O, O, O, O, O, c, c, c, O, c, c, c, O,c2,c2, O, O, O, O, O, O, O],
+        [O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,  O,pT3,O,pT3,l2,pb, O, O, O, O,  O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O],
+        [O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,  O, O, O,pT4, O,pb, O, O, O, O,  O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O],
+        [O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,  O, O, O,pT4, O,pb, O, O, O, O,  O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O],
+        [O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,  O, O, O,pT4, O, O, O, O, O, O,  O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O],
+        [O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,  O, O, O,  O, O, O, O, O, O, O,  O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O],
+        [O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,  O, O, O,  O, O, O, O, O, O, O,  O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O]
+        ]
 
 
-    game_map = []
+        game_map = []
 
-    game_mapInvertido = [
-    [d, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, b],
-    [d, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, b, O, O, O, O, O, b],
-    [d, O, O, O, Г, ר, O, T, T, ר, O, T, T, ר, T, T, b, Г, b, Г, ר, O, O, O, Г, b, Г, b, Г, ר, O, T, T, ר, O, T, T, ר, O, O, O, b, O, O, O, O, O, b],
-    [d, O, O, O, b, d, O, O, O, d, b, O, O, d, b, O, b, b, b, b, d, O, O, O, b, b, b, b, b, O, b, O, O, d, b, O, O, d, O, O, O, b, O, O, O, O, O, b],
-    [d, O, O, O, b, d, O, O, O, d, b, O, O, d, b, O, T, T, T, b, d, O, O, O, b, T, b, T, b, O, b, O, O, d, b, O, O, d, O, O, O, b, O, O, O, O, O, b],
-    [d, T, T, T, b, d, _, _, _, J, _, _, _, J, J, J, T, T, T, T, T, O, O, O, b, b, O, d, d, O, L, _, _, J, _, _, _, J, T, T, T, T, O, O, O, O, O, b],
-    [d, O, O, O, O, O, O, O, O, O, O, O, O, d, _, J, O, Г, b, T, ר, O, O, O, b, b, O, O, O, O, O, O, O, O, O, O, O, b, O, O, O, O, O, O, O, O, O, b],
-    [d, O, O, O, O, O, O, O, O, O, O, O, O, d, T, O, O, b, b, O, d, O, O, O, b, b, O, O, O, O, O, O, O, O, O, O, O, b, O, O, O, O, O, O, O, O, O, b],
-    [d, O, O, O, O, O, O, O, O, O, O, O, O, d, T, O, O, b, Г, O, d, O, O, O, b, b, O, O, O, O, O, O, O, O, O, O, O, b, O, O, O, O, O, O, O, O, O, b],
-    [d, O, O, O, O, O, O, O, O, O, O, O, O, d, T, O, O, b, Г, O, d, T, T, T, b, b, O, O, O, O, O, O, O, O, O, O, O, b, O, O, O, O, O, O, O, O, O, b],
-    [d, O, O, O, O, O, O, O, O, O, O, O, O, d, T, O, O, b, T, T, ר, O, O, O, b, b, O, O, O, O, O, O, O, O, O, O, O, b, O, O, O, O, O, O, O, O, O, b],
-    [d, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, b]
-    ]
+        game_mapInvertido = [
+        [d, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, b],
+        [d, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, b, O, O, O, O, b],
+        [d, O, O, O, Г, ר, O, Г, T, ר, O, Г, T, ר, T, T, b, Г, b, Г, ר, O, O, O, Г, b, Г, b, Г, ר, O, Г, T, ר, O, Г, T,ר,ר, O, O, O, b, O, O, O, O, b],
+        [d, O, O, O, b, d, O, O, O, d, b, O, O, d, b, O, b, b, b, b, d, O, O, O, b, b, b, b, b, O, b, O, O, d, b, O, O, d, b, b, O, O, b, O, O, O, O, b],
+        [d, O, O, O, b, d, O, O, O, d, b, O, O, d, b, O, T, T, T, b, d, O, O, O, b, T, b, b, b, O, b, O, O, d, b, O, O, d, b, b, O, O, b, O, O, O, O, b],
+        [d, T, T, T, b, d, O, O, O, d, b, O, O, d, b, O, T, T, T, b, d, O, O, O, b, T, b, T, b, O, b, O, O, d, b, O, O, d, b, T, T, T, b, O, O, O, O, b],
+        [d, T, T, T, b, d, _, _, _, _, b, _, _, _, b, J, T, T, T, T, T, O, O, O, b, b, O, d, d, O, L, _, _, d, b, _, _, d, b, T, T, T, b, O, O, O, O, b],
+        [d, O, O, O, O, O, O, O, O, O, T, O, O, d, _, J, O, Г, b, T, ר, O, O, O, b, b, O, O, O, O, O, O, O, T, T, O, O, T, O, O, O, O, O, O, O, O, O, b],
+        [d, O, O, O, O, O, O, O, O, O, O, O, O, d, T, O, O, b, Г, O, d, b, _, _, b, b, O, O, O, O, O, O, O, O, O, O, O, b, O, O, O, O, O, O, O, O, O, b],
+        [d, O, O, O, O, O, O, O, O, O, O, O, O, d, T, O, O, b, Г, O, d, T, T, T, b, b, O, O, O, O, O, O, O, O, O, O, O, b, O, O, O, O, O, O, O, O, O, b],
+        [d, O, O, O, O, O, O, O, O, O, O, O, O, d, T, O, O, b, Г, O, d, b, T, T, b, b, O, O, O, O, O, O, O, O, O, O, O, b, O, O, O, O, O, O, O, O, O, b],
+        [d, O, O, O, O, O, O, O, O, O, O, O, O, d, T, O, O, b, T, T, ר, O, O, O, b, b, O, O, O, O, O, O, O, O, O, O, O, b, O, O, O, O, O, O, O, O, O, b],
+        [d, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, b]
+        ]
 
-    game_mapTexturasInvertido = [
-    [2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 6, 6, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0],
-    [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0],
-    [2, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0],
-    [2, 0, 0, 0, 2, 2, 0, 0, 0, 2, 2, 0, 0, 2, 2, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 2, 0, 0, 0, 2, 2, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0],
-    [2, 0, 0, 0, 2, 2, 0, 0, 0, 2, 2, 0, 0, 2, 2, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 2, 0, 0, 0, 2, 2, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0],
-    [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0],
-    [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0]
-    ]
+        game_mapTexturasInvertido = [
+        [ 8, 8, 8, 8, 8, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 1, 1, 6, 6, 1, 1, 6, 6, 6, 1, 1, 6, 6, 1, 7, 7, 7, 7, 7, 7, 7, 7, 7, 8, 8, 8, 8, 8, 2, 2, 0, 0, 0],
+        [10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8,10, 0, 0, 0, 0, 0],
+        [ 9, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0,10,9, 0, 0, 0, 0, 0],
+        [10, 0, 0, 0, 2, 8, 2, 2, 2, 8, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 8, 2, 2, 2, 8, 2, 2, 2, 2, 2, 0, 0, 9,10, 0, 0, 0, 0, 0],
+        [ 9, 0, 0, 0, 2,10, 0, 0, 0,10, 2, 0, 0, 2, 2, 1, 1, 1, 1, 1, 1, 0, 0, 0,12, 1, 1, 1, 1,10, 0, 0, 0,10, 2, 0, 0, 2, 2, 0, 0,10,9, 0, 0, 0, 0, 0],
+        [ 8, 7, 7, 7, 2, 9, 0, 0, 0, 9, 2, 0, 0, 2, 2, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 9, 0, 0, 0, 9, 2, 0, 0, 2, 2, 7, 7, 7,8, 0, 0, 0, 0, 0],
+        [ 8, 7, 7, 7, 7, 8, 7, 7, 7, 8, 2, 7, 7, 7, 2, 1, 1, 1, 1, 1, 1, 0, 0, 0,12, 1, 1, 1, 1, 8, 7, 7, 7, 8, 2, 7, 7, 2, 2, 7, 7, 7,8, 0, 0, 0, 0, 0],
+        [ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 7, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 7, 7, 7, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [ 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+        ]
 
+        game_mapEventosInvertido = [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        ]
+    
+    elif(mapaID == 2):
+        mapaObjetosInvertido = [
+        [O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,  O, O, O,  O, O, O, O, O, O, O,  O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O],
+        [O, O, O, O,pd, O, O, O, O, O, O, O, O, O, i2,  i, O, O, O,cm, l,cm, O,cm,bb,  O,cm, O,i2, i, O, O, O, O, O, O, O,pd, O, O, O, O, O, O, O, O, O, O],
+        [O, O, c, c, O, O, O, c, c, c, O, c, c, c, O,  O,pT2,O,pT3, O, O, O, O, O, O,pT3, O,pT2,O, O, O, c, c, c, O, c, c, c, O,c2,c2, O, O, O, O, O, O, O],
+        [O, O, c, c, O, O,pT, c, c, c,pT, c, c, c, O,  O, O, O,  O, O, O, l, O, O, O,  O, O, O, O, O,pT, c, c, c,pT, c, c, c, O,c2,c2, O, O, O, O, O, O, O],
+        [O, O, c, c, O, O, O, c, c, c, O, c, c, c, O,  O, O, O,  O, O, O, O, O, O, O,  O, O, O, O, O, O, c, c, c, O, c, c, c, O,c2,c2, O, O, O, O, O, O, O],
+        [O, O, c, c, O, O, O, c, c, c, O, c, c, c, O,  O, O, O,  O, O, O, O, O, O, O,  O, O, O, O, O, O, c, c, c, O, c, c, c, O,c2,c2, O, O, O, O, O, O, O],
+        [O, O, c, c, O, O, O, c, c, c, O, c, c, c, O,  O, O, O,  O, O, O, O, O, O, O,  O, O, O, O, O, O, c, c, c, O, c, c, c, O,c2,c2, O, O, O, O, O, O, O],
+        [O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,  O,pT3,O,pT3,l2,pb, O, O, O, O,  O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O],
+        [O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,  O, O, O,pT4, O,pb, O, O, O, O,  O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O],
+        [O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,  O, O, O,pT4, O,pb, O, O, O, O,  O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O],
+        [O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,  O, O, O,pT4, O, O, O, O, O, O,  O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O],
+        [O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,  O, O, O,  O, O, O, O, O, O, O,  O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O],
+        [O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,  O, O, O,  O, O, O, O, O, O, O,  O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O]
+        ]
+
+
+        game_map = []
+
+        game_mapInvertido = [
+        [d, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, b],
+        [d, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, b, O, O, O, O, b],
+        [d, O, O, O, Г, ר, O, Г, T, ר, O, Г, T, ר, T, T, b, Г, b, Г, ר, O, O, O, Г, b, Г, b, Г, ר, O, Г, T, ר, O, Г, T,ר,ר, O, O, O, b, O, O, O, O, b],
+        [d, O, O, O, b, d, O, O, O, d, b, O, O, d, b, O, b, b, b, b, d, O, O, O, b, b, b, b, b, O, b, O, O, d, b, O, O, d, b, b, O, O, b, O, O, O, O, b],
+        [d, O, O, O, b, d, O, O, O, d, b, O, O, d, b, O, T, T, T, b, d, O, O, O, b, T, b, b, b, O, b, O, O, d, b, O, O, d, b, b, O, O, b, O, O, O, O, b],
+        [d, T, T, T, b, d, O, O, O, d, b, O, O, d, b, O, T, T, T, b, d, O, O, O, b, T, b, T, b, O, b, O, O, d, b, O, O, d, b, T, T, T, b, O, O, O, O, b],
+        [d, T, T, T, b, d, _, _, _, _, b, _, _, _, b, J, T, T, T, T, T, O, O, O, b, b, O, d, d, O, L, _, _, d, b, _, _, d, b, T, T, T, b, O, O, O, O, b],
+        [d, O, O, O, O, O, O, O, O, O, T, O, O, d, _, J, O, Г, b, T, ר, O, O, O, b, b, O, O, O, O, O, O, O, T, T, O, O, T, O, O, O, O, O, O, O, O, O, b],
+        [d, O, O, O, O, O, O, O, O, O, O, O, O, d, T, O, O, b, Г, O, d, O, O, O, b, b, O, O, O, O, O, O, O, O, O, O, O, b, O, O, O, O, O, O, O, O, O, b],
+        [d, O, O, O, O, O, O, O, O, O, O, O, O, d, T, O, O, b, Г, O, d, T, T, T, b, b, O, O, O, O, O, O, O, O, O, O, O, b, O, O, O, O, O, O, O, O, O, b],
+        [d, O, O, O, O, O, O, O, O, O, O, O, O, d, T, O, O, b, Г, O, d, T, T, T, b, b, O, O, O, O, O, O, O, O, O, O, O, b, O, O, O, O, O, O, O, O, O, b],
+        [d, O, O, O, O, O, O, O, O, O, O, O, O, d, T, O, O, b, T, T, ר, O, O, O, b, b, O, O, O, O, O, O, O, O, O, O, O, b, O, O, O, O, O, O, O, O, O, b],
+        [d, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, b]
+        ]
+
+        game_mapTexturasInvertido = [
+        [ 8, 8, 8, 8, 8, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 1, 1, 6, 6, 1, 1, 6, 6, 6, 1, 1, 6, 6, 1, 7, 7, 7, 7, 7, 7, 7, 7, 7, 8, 8, 8, 8, 8, 2, 2, 0, 0, 0],
+        [10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8,10, 0, 0, 0, 0, 0],
+        [ 9, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0,10,9, 0, 0, 0, 0, 0],
+        [10, 0, 0, 0, 2, 8, 2, 2, 2, 8, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 8, 2, 2, 2, 8, 2, 2, 2, 2, 2, 0, 0, 9,10, 0, 0, 0, 0, 0],
+        [ 9, 0, 0, 0, 2,10, 0, 0, 0,10, 2, 0, 0, 2, 2, 1, 1, 1, 1, 1, 1, 0, 0, 0,12, 1, 1, 1, 1,10, 0, 0, 0,10, 2, 0, 0, 2, 2, 0, 0,10,9, 0, 0, 0, 0, 0],
+        [ 8, 7, 7, 7, 2, 9, 0, 0, 0, 9, 2, 0, 0, 2, 2, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 9, 0, 0, 0, 9, 2, 0, 0, 2, 2, 7, 7, 7,8, 0, 0, 0, 0, 0],
+        [ 8, 7, 7, 7, 7, 8, 7, 7, 7, 8, 2, 7, 7, 7, 2, 1, 1, 1, 1, 1, 1, 0, 0, 0,12, 1, 1, 1, 1, 8, 7, 7, 7, 8, 2, 7, 7, 2, 2, 7, 7, 7,8, 0, 0, 0, 0, 0],
+        [ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 7, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 7, 7, 7, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 6, 6, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [ 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+        ]
+
+        
+        game_mapEventosInvertido = [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        ]
 
     game_map = game_mapInvertido[::-1]
     mapaObjetos = mapaObjetosInvertido[::-1]
     mapaTexturas = game_mapTexturasInvertido[::-1]
+    mapaEventos = game_mapEventosInvertido[::-1]
 
     mapCopy = []
 
@@ -183,42 +289,48 @@ def GerarMapa(mapaID):
             novaParede.leste = mapaObjetos[i][k].leste
             novaParede.oeste = mapaObjetos[i][k].oeste
             novaParede.textura = mapaObjetos[i][k].textura
+            novaParede.offsetX = mapaObjetos[i][k].offsetX
+            novaParede.offsetY = mapaObjetos[i][k].offsetY
+            novaParede.wLargura = mapaObjetos[i][k].wLargura
+            novaParede.wAltura = mapaObjetos[i][k].wAltura
 
             mapaObjetosCopy[i].append(novaParede)
 
     for i in range(len(mapaObjetos)):
         for k in range(len(mapaObjetos[i])):
             if(mapaObjetos[i][k] != 0):
-                if(mapaObjetos[i][k].leste and k+1 < len(mapaObjetos[i])):
-                    mapaObjetosCopy[i][k+1].oeste = 1
-                    mapaObjetosCopy[i][k+1].textura = mapaObjetos[i][k].textura
-                if(k+1 < len(mapaObjetos[i]) and mapaObjetos[i][k+1].oeste):
-                    mapaObjetosCopy[i][k].leste = 1
-                    mapaObjetosCopy[i][k].textura = mapaObjetos[i][k+1].textura
-                if(mapaObjetos[i][k].norte and i+1 < len(mapaObjetos)):
-                    mapaObjetosCopy[i + 1][k].sul = 1
-                    mapaObjetosCopy[i + 1][k].textura = mapaObjetos[i][k].textura
-                if(i+1 < len(mapaObjetos) and mapaObjetos[i + 1][k].sul):
-                    mapaObjetosCopy[i][k].norte = 1
-                    mapaObjetosCopy[i][k].textura = mapaObjetos[i + 1][k].textura
+                if(mapaObjetos[i][k].textura < 100):
+                    if(mapaObjetos[i][k].leste and k+1 < len(mapaObjetos[i])):
+                        mapaObjetosCopy[i][k+1].oeste = 1
+                        mapaObjetosCopy[i][k+1].textura = mapaObjetos[i][k].textura
+                    if(k+1 < len(mapaObjetos[i]) and  mapaObjetos[i][k+1].textura < 100 and  mapaObjetos[i][k+1].oeste ):
+                        mapaObjetosCopy[i][k].leste = 1
+                        mapaObjetosCopy[i][k].textura = mapaObjetos[i][k+1].textura
+                    if(mapaObjetos[i][k].norte and i+1 < len(mapaObjetos)):
+                        mapaObjetosCopy[i + 1][k].sul = 1
+                        mapaObjetosCopy[i + 1][k].textura = mapaObjetos[i][k].textura
+                    if(i+1 < len(mapaObjetos) and  mapaObjetos[i + 1][k].textura < 100 and mapaObjetos[i + 1][k].sul):
+                        mapaObjetosCopy[i][k].norte = 1
+                        mapaObjetosCopy[i][k].textura = mapaObjetos[i + 1][k].textura
                     
 
 
     mapaObjetosAtual = mapaObjetosCopy
 
-
+    
+    mapaEventosAtual = mapaEventos
 
     return mapaAtual
 
-def GetMinimapaComp():
+def GetMinimapaComp(jogador):
     
-    mapa=mapaAtual
+    mapa=GetMapaAtual()
 
     minimapa=[]
     for i1 in range (len(mapa)):
         minimapa.append([0]*len(mapa[0]))
     
-    pilha=[[21, 9]]
+    pilha=[[int(jogador.x), int(jogador.y)]]
     while pilha != []:
         quad=pilha[0]
         if minimapa[quad[1]][quad[0]]==0:
@@ -251,14 +363,229 @@ def GetMapaObjetos():
 
     return mapaObjetosAtual
 
+def GetMapaEventos():
+
+    return mapaEventosAtual
+
+def RenderizarSprites(janela, jogador, zBuffer, mapaObjetos):
+
+
+    sprites_a_renderizar = []
+    
+
+    for tile in tilesVisiveis:
+        objeto = mapaObjetos[tile[0]][tile[1]]
+        tex_index = objeto.textura
+        if tex_index > 99:
+            spriteX = tile[1] + 0.5 + objeto.offsetX
+            spriteY = tile[0] + 0.5 + objeto.offsetY
+            largura = objeto.wLargura
+            altura = objeto.wAltura
+
+            #frente = 0, trás = 1, lado = 2
+            posicao = 0
+
+            distX = jogador.x - spriteX
+            distY = jogador.y - spriteY
+
+
+
+            if abs(distX) >= abs(distY):
+                if distX > 0:
+                    #return "LESTE"    
+                    if(objeto.norte):
+                        posicao = 3
+
+                    elif(objeto.sul):
+                        posicao = 2
+                        
+                    elif(objeto.leste):
+                        posicao = 0
+                        
+                    elif(objeto.oeste):
+                        posicao = 1
+                else:
+                   # return "OESTE"
+                    if(objeto.norte):
+                        posicao = 2
+
+                    elif(objeto.sul):
+                        posicao = 3
+                        
+                    elif(objeto.leste):
+                        posicao = 1
+                        
+                    elif(objeto.oeste):
+                        posicao = 0
+                    
+            # Check if the displacement on the Y-axis is dominant (or equal)
+            else: # abs(rel_y) >= abs(rel_x)
+                if distY > 0:
+                    #return "SUL"
+                    
+                    if(objeto.norte):
+                        posicao = 1
+
+                    elif(objeto.sul):
+                        posicao = 0
+                        
+                    elif(objeto.leste):
+                        posicao = 3
+                        
+                    elif(objeto.oeste):
+                        posicao = 2
+
+                else:
+                   # return "NORTE"
+                    if(objeto.norte):
+                        posicao = 0
+
+                    elif(objeto.sul):
+                        posicao = 1
+                        
+                    elif(objeto.leste):
+                        posicao = 2
+                        
+                    elif(objeto.oeste):
+                        posicao = 3
+
+
+            distancia_sq = ((jogador.x - spriteX)**2 + (jogador.y - spriteY)**2)
+            if(distancia_sq > 0.1):
+                sprites_a_renderizar.append((distancia_sq, spriteX, spriteY, tex_index - 99, posicao, largura, altura))
+
+    # Sort Sprites: Farthest to Closest
+    sprites_a_renderizar.sort(key=lambda item: item[0], reverse=True) 
+
+    # 2. Render Sorted Sprites with Z-Buffer Clipping
+    # Define a small tolerance for the clip check to account for floating point errors
+    EPSILON = 0.1 
+
+    for distancia_sq, spriteX, spriteY, tex_index, posicao, largura, altura in sprites_a_renderizar:
+        
+        # --- A. Transformation Math (World to Camera Space) ---
+        
+        # Vector from player to sprite center
+        relativeX = spriteX - jogador.x
+        relativeY = spriteY - jogador.y
+        
+        # Matrix determinant inverse
+        invDet = 1.0 / (jogador.planeX * jogador.dirY - jogador.dirX * jogador.planeY)
+
+        # Transformed coordinates (Camera Space)
+        # transformX: determines horizontal position (left/right)
+        # transformY: determines distance/depth (forward/back). Must be > 0.
+        transformX = invDet * (jogador.dirY * relativeX - jogador.dirX * relativeY)
+        transformY = invDet * (-jogador.planeY * relativeX + jogador.planeX * relativeY)
+        
+        # --- B. Early Clipping & Size Calculation ---
+        
+        # Clip if sprite is behind camera or too close to avoid division by zero/instability
+        if transformY <= EPSILON:
+            continue
+            
+        # Screen position of the sprite's center (Perspective projection)
+        spriteScreenX = int((janela.width / 2) * (1 + transformX / transformY))
+        
+
+        # Projected Height and Width (with Aspect Ratio)
+ 
+
+
+        original_texture = Sprites.spriteTexturas[tex_index][posicao]
+        TexW, TexH = original_texture.get_size()
+
+        spriteHeight = abs(int((janela.height / transformY) * altura))    
+        spriteWidth = int(spriteHeight * (TexW / TexH))
+        
+        # 1. Calculate projected unit height (World Height 1.0)
+        unit_projected_height = abs(int(janela.height / transformY))
+
+        # 2. Calculate projected sprite height (Scaled by World Height factor)
+        spriteHeight = abs(int(unit_projected_height * altura))
+
+        # 3. Calculate the Y-position of the sprite's top edge.
+        # We anchor the bottom of the sprite to the ground plane (horizon + half unit height) 
+        # and subtract the sprite's full height.
+
+        # Ground plane position on screen (vertical center of the entire world unit):
+        ground_level_y = janela.height // 2 + (unit_projected_height // 2)
+
+        # Start drawing from the top of the sprite, aligned to the ground level:
+        drawStartY = ground_level_y - spriteHeight
+
+        drawStartX = spriteScreenX - spriteWidth // 2
+        drawEndX = drawStartX + spriteWidth
+
+        # --- C. Optimized Caching ---
+        
+        # Assuming you use index 1 as the test generator:
+        get_scaled_sprite = Sprites.geradoresCacheSprites[tex_index][posicao]
+        scaled_sprite = get_scaled_sprite(spriteWidth, spriteHeight)
+
+        # --- D. Z-Buffer and Screen Clipping ---
+        
+        # 1. Define safe screen iteration range (to prevent IndexError)
+        start_loop_x = max(0, drawStartX)
+        end_loop_x = min(janela.width, drawEndX)
+        
+        # 2. Initialize clip boundaries on the SCALED SPRITE's surface (0 to spriteWidth)
+        # This translates the screen clip (start_loop_x) into the sprite texture coordinate.
+        final_clip_start = start_loop_x - drawStartX 
+        final_clip_end = end_loop_x - drawStartX 
+
+        # A. Left-side Z-Buffer Clipping (Find first visible column)
+        for stripe_x in range(start_loop_x, end_loop_x):
+            # Check if sprite distance is less than the wall distance (closer to player)
+            if transformY < zBuffer[stripe_x]:
+                break # Found the first visible column (stripe_x)
+            else:
+                # Wall is closer or at the same depth. Increment sprite coordinate start.
+                final_clip_start += 1 
+
+        # If the entire sprite was clipped on the left, skip drawing
+        if final_clip_start >= final_clip_end:
+             continue
+
+        # B. Right-side Z-Buffer Clipping (Find last visible column)
+        # We only need to check columns from the right edge up to the final_clip_start found above.
+        
+        # We iterate from right to left (end_loop_x - 1) down to (start_loop_x + final_clip_start)
+        for stripe_x in range(end_loop_x - 1, start_loop_x + final_clip_start - 1, -1):
+            
+            if transformY < zBuffer[stripe_x]:
+                # Found the last visible SCREEN column (stripe_x). 
+                # Convert this back to the SCALED SPRITE column index (final_clip_end).
+                final_clip_end = stripe_x - drawStartX + 1 
+                break # Stop searching rightward
+            else:
+                # Wall is closer. Decrement the sprite coordinate end.
+                final_clip_end -= 1
+
+        # --- E. Final Blit ---
+        
+        if final_clip_end > final_clip_start:
+            # Create the visible rectangle on the CACHED scaled surface
+            visible_width = final_clip_end - final_clip_start
+            visible_rect = pygame.Rect(final_clip_start, 0, visible_width, spriteHeight)
+            
+            # Get the visible part
+            visible_sprite_part = scaled_sprite.subsurface(visible_rect)
+            
+            # Calculate the final screen position (adjust drawStartX by the clip offset)
+            final_draw_x = drawStartX + final_clip_start 
+
+            janela.get_screen().blit(visible_sprite_part, (final_draw_x, drawStartY))
+
 
 
 def RenderizarMapa3D(janela, jogador):
     global tilesVisiveis
     tilesVisiveis = []
-
+    tilesVisiveis.append([int(jogador.y), int(jogador.x)]) 
     game_map = GetMapaAtual()
     mapaObjetos = GetMapaObjetos()
+    zBuffer = [float('inf')] * janela.width
 
     for coluna in range(janela.width):
         #de 0 a 1, onde a coluna está
@@ -348,8 +675,9 @@ def RenderizarMapa3D(janela, jogador):
                         else:
                             tile = mapaObjetos[mapaY][mapaX]
                             if(tile != 0):
-                                if (passoX > 0 and tile.oeste) or (passoX < 0 and tile.leste):
-                                    hit = tile.textura
+                                if(tile.textura < 99):
+                                    if (passoX > 0 and tile.oeste) or (passoX < 0 and tile.leste):
+                                        hit = tile.textura
                 else:
                     break
 
@@ -372,8 +700,9 @@ def RenderizarMapa3D(janela, jogador):
                         else:
                             tile = mapaObjetos[mapaY][mapaX]
                             if(tile != 0):
-                                if (passoY > 0 and tile.sul) or (passoY < 0 and tile.norte):
-                                    hit = tile.textura
+                                if(tile.textura < 99):
+                                    if (passoY > 0 and tile.sul) or (passoY < 0 and tile.norte):
+                                        hit = tile.textura
 
                 else:
                     break
@@ -400,7 +729,7 @@ def RenderizarMapa3D(janela, jogador):
             #então desenha a tela inteira (nunca vai acontecer, mas é bom ilustrar)
             alturaDaLinha = janela.height
 
-
+        zBuffer[coluna] = distanciaPerpendicular
 
          # Calcula onde a parede foi acertada
         if horizontal == 0: # vertical 
@@ -464,11 +793,7 @@ def RenderizarMapa3D(janela, jogador):
             # A safety catch for altura_key being 0 or negative
             pass
 
-
-
-
-
-
+    RenderizarSprites(janela, jogador, zBuffer, mapaObjetos)
 
 
 def RenderizarMapa3DLowPoly(janela, janelaAltura, janelaLargura, jogador):
@@ -878,10 +1203,13 @@ def RenderizarMapa3DLowPoly2(janela, janelaAltura, janelaLargura, jogador):
         floor_tex_x = (current_floor_x * tex_width).astype(int) % tex_width
         floor_tex_y = (current_floor_y * tex_height).astype(int) % tex_height
 
+        ceil_tex_x = (current_floor_x * tex_width).astype(int) % texturaTeto_arr.shape[1]
+        ceil_tex_y = (current_floor_y * tex_height).astype(int) % texturaTeto_arr.shape[0]
+
         # 5. Pegue as cores da textura para TODOS os pixels de uma vez
         #    Isso é chamado de "advanced indexing"
         floor_colors = texturaChao_arr[floor_tex_y, floor_tex_x]
-        ceiling_colors = texturaTeto_arr[floor_tex_y, floor_tex_x]
+        ceiling_colors = texturaTeto_arr[ceil_tex_y, ceil_tex_x]
 
         # 6. Escreva TODAS as cores no array da janela de uma vez
         

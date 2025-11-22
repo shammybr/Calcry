@@ -18,13 +18,9 @@ texturasDic = { "parede1" : 1,
                 "teto1" : 3, }
 
 texturas = [None]
+spriteTexturas = [None]
 geradoresCache = [None]
-parede1_cache_generators = []
-parede2_cache_generators = []
-porta1_cache_generators = []
-porta2_cache_generators = []
-porta3_cache_generators = []
-parede3_cache_generators = []
+geradoresCacheSprites = [None]
 spriteList = []
 texturasCache = {}
 
@@ -99,6 +95,30 @@ class Imagem3D(PPlay.gameimage.GameImage):
             #pplay usa o topo esquerdo como origem da imagem
             self.rect.topleft = shapeFinal.topleft
 
+class FadeSprite():
+    def __init__(self, largura, altura):
+        self.surface = pygame.Surface((largura, altura))
+        self.surface.fill((0, 0, 0))
+        self.alpha = 0
+        self.fading = False
+        self.tempo = 0
+
+    def FadeIn(self, passo):
+        self.surface.set_alpha(self.alpha + passo)
+        self.alpha = self.surface.get_alpha()
+        self.tempo = 0
+        print(self.alpha)
+
+
+    def FadeOut(self, passo):
+        self.surface.set_alpha(self.alpha - passo)
+        self.alpha = self.surface.get_alpha()
+        self.tempo = 0
+        print(self.alpha)
+
+    def Cooldown(self, deltatime):
+        self.tempo += deltatime
+
 
 def Tela_de_Loading(janela):
     global contador_do_loading
@@ -117,6 +137,42 @@ def Tela_de_Loading(janela):
     janela.update()
 
 
+def CriarGeradorCache(fatias):
+    cacheGenerators = []
+
+    for fatia in fatias:
+        
+        # This function creates *another* function
+        def create_scaler_for_slice(slice_to_scale):
+            """
+            A closure to capture the specific 'slice_to_scale'.
+            """
+            
+            # --- THIS IS THE MAGIC ---
+            # We attach the LRU cache to this inner function.
+            # It will store up to 512 *different heights* for this *one column*.
+            @functools.lru_cache(maxsize=700) 
+            def get_scaled_slice(altura):
+                """
+                Generates and caches a scaled slice.
+                """
+                # This is the "slow" part, but it only runs
+                # if the (altura) isn't in this column's cache.
+                return pygame.transform.scale(slice_to_scale, (1, altura))
+            
+            return get_scaled_slice
+
+        # Add the newly created generator (with its own private cache) to our list
+        cacheGenerators.append(create_scaler_for_slice(fatia))
+
+    return cacheGenerators
+
+def CriarGeradorCacheSprite(textura):
+    
+    @functools.lru_cache(maxsize=700) 
+    def get_scaled_sprite(largura, altura):
+        return pygame.transform.scale(textura, (largura, altura))
+    return get_scaled_sprite
 
 
 def CarregarTexturas(janela):
@@ -153,6 +209,27 @@ def CarregarTexturas(janela):
     parede3 = pygame.image.load('Sprites/parede1janela.png').convert()
     texturas.append(parede3)
 
+    parede4 = pygame.image.load('Sprites/parede3janela.png').convert()
+    texturas.append(parede4)
+
+    parede5 = pygame.image.load('Sprites/parede3.png').convert()
+    texturas.append(parede5)
+
+    
+    parede6 = pygame.image.load('Sprites/parede3quadro1.png').convert()
+    texturas.append(parede6)
+
+
+
+    parede7 = pygame.image.load('Sprites/parede3quadro2.png').convert()
+    texturas.append(parede7)
+
+    portabanheiro = pygame.image.load('Sprites/portabanheiro.png').convert()
+    texturas.append(portabanheiro)
+
+    parede1Elevador = pygame.image.load('Sprites/parede1Elevador.png').convert()
+    texturas.append(portabanheiro)
+    
     chao1 = pygame.image.load('Sprites/chao1.png').convert()
 
     #chao1Cache = EscalarTextura(chao1, janela.height, janela)
@@ -172,149 +249,50 @@ def CarregarTexturas(janela):
     
 
     parede1_fatias = PrepararFatias(parede1)
-
-
-    # 3. Create a "cache generator" FOR EACH COLUMN
-    for fatia in parede1_fatias:
-        
-        # This function creates *another* function
-        def create_scaler_for_slice(slice_to_scale):
-            """
-            A closure to capture the specific 'slice_to_scale'.
-            """
-            
-            # --- THIS IS THE MAGIC ---
-            # We attach the LRU cache to this inner function.
-            # It will store up to 512 *different heights* for this *one column*.
-            @functools.lru_cache(maxsize=700) 
-            def get_scaled_slice(altura):
-                """
-                Generates and caches a scaled slice.
-                """
-                # This is the "slow" part, but it only runs
-                # if the (altura) isn't in this column's cache.
-                return pygame.transform.scale(slice_to_scale, (1, altura))
-            
-            return get_scaled_slice
-
-        # Add the newly created generator (with its own private cache) to our list
-        parede1_cache_generators.append(create_scaler_for_slice(fatia))
-
-    geradoresCache.append(parede1_cache_generators)
+    geradoresCache.append(CriarGeradorCache(parede1_fatias))
 
     parede2_fatias = PrepararFatias(parede2)
 
 
-    # 3. Create a "cache generator" FOR EACH COLUMN
-    for fatia in parede2_fatias:
-        
-        # This function creates *another* function
-        def create_scaler_for_slice(slice_to_scale):
-            """
-            A closure to capture the specific 'slice_to_scale'.
-            """
-            
-            # --- THIS IS THE MAGIC ---
-            # We attach the LRU cache to this inner function.
-            # It will store up to 512 *different heights* for this *one column*.
-            @functools.lru_cache(maxsize=700) 
-            def get_scaled_slice(altura):
-                """
-                Generates and caches a scaled slice.
-                """
-                # This is the "slow" part, but it only runs
-                # if the (altura) isn't in this column's cache.
-                return pygame.transform.scale(slice_to_scale, (1, altura))
-            
-            return get_scaled_slice
 
-        # Add the newly created generator (with its own private cache) to our list
-        parede2_cache_generators.append(create_scaler_for_slice(fatia))
-
-    geradoresCache.append(parede2_cache_generators)
-
+    geradoresCache.append(CriarGeradorCache(parede2_fatias))
 
     porta1_fatias = PrepararFatias(porta1)
+    geradoresCache.append(CriarGeradorCache(porta1_fatias))
 
-
-
-    for fatia in porta1_fatias:
-
-        def create_scaler_for_slice(slice_to_scale):
-            
-
-            @functools.lru_cache(maxsize=700) 
-            def get_scaled_slice(altura):
-
-                return pygame.transform.scale(slice_to_scale, (1, altura))
-            
-            return get_scaled_slice
-
-
-        porta1_cache_generators.append(create_scaler_for_slice(fatia))
-
-    geradoresCache.append(porta1_cache_generators)
 
 
     porta2_fatias = PrepararFatias(porta2)
+    geradoresCache.append(CriarGeradorCache(porta2_fatias))
 
-    for fatia in porta2_fatias:
-
-        def create_scaler_for_slice(slice_to_scale):
-            
-
-            @functools.lru_cache(maxsize=700) 
-            def get_scaled_slice(altura):
-
-                return pygame.transform.scale(slice_to_scale, (1, altura))
-            
-            return get_scaled_slice
-
-
-        porta2_cache_generators.append(create_scaler_for_slice(fatia))
-
-    geradoresCache.append(porta2_cache_generators)
 
 
     
     porta3_fatias = PrepararFatias(porta3)
+    geradoresCache.append(CriarGeradorCache(porta3_fatias))
 
-    for fatia in porta3_fatias:
-
-        def create_scaler_for_slice(slice_to_scale):
-            
-
-            @functools.lru_cache(maxsize=700) 
-            def get_scaled_slice(altura):
-
-                return pygame.transform.scale(slice_to_scale, (1, altura))
-            
-            return get_scaled_slice
-
-
-        porta3_cache_generators.append(create_scaler_for_slice(fatia))
-
-    geradoresCache.append(porta3_cache_generators)
 
 
     parede3_fatias = PrepararFatias(parede3)
+    geradoresCache.append(CriarGeradorCache(parede3_fatias))
 
-    for fatia in parede3_fatias:
+    parede4_fatias = PrepararFatias(parede4)
+    geradoresCache.append(CriarGeradorCache(parede4_fatias))
 
-        def create_scaler_for_slice(slice_to_scale):
-            
+    parede5_fatias = PrepararFatias(parede5)
+    geradoresCache.append(CriarGeradorCache(parede5_fatias))
 
-            @functools.lru_cache(maxsize=700) 
-            def get_scaled_slice(altura):
+    parede6_fatias = PrepararFatias(parede6)
+    geradoresCache.append(CriarGeradorCache(parede6_fatias))
 
-                return pygame.transform.scale(slice_to_scale, (1, altura))
-            
-            return get_scaled_slice
+    parede7_fatias = PrepararFatias(parede7)
+    geradoresCache.append(CriarGeradorCache(parede7_fatias))
 
+    portabanheiro_fatias = PrepararFatias(portabanheiro)
+    geradoresCache.append(CriarGeradorCache(portabanheiro_fatias))
 
-        parede3_cache_generators.append(create_scaler_for_slice(fatia))
-
-    geradoresCache.append(parede3_cache_generators)
+    parede1Elevador_fatias = PrepararFatias(parede1Elevador)
+    geradoresCache.append(CriarGeradorCache(parede1Elevador_fatias))
 
     texturaChao = pygame.image.load('Sprites/chao1.png').convert()
     texturaTeto = pygame.image.load('Sprites/teto1.png').convert()
@@ -328,7 +306,54 @@ def CarregarTexturas(janela):
 
 
 
+    cadeira1F = pygame.image.load('Sprites/cadeira1F.png').convert_alpha()
+    cadeira1T = pygame.image.load('Sprites/cadeira1T.png').convert_alpha()
+    cadeira1L = pygame.image.load('Sprites/cadeira1L.png').convert_alpha()
+    cadeira1O = pygame.image.load('Sprites/cadeira1O.png').convert_alpha()
 
+    spriteTexturas.append([cadeira1F, cadeira1T, cadeira1L, cadeira1O])
+    geradoresCacheSprites.append([CriarGeradorCacheSprite(cadeira1F), CriarGeradorCacheSprite(cadeira1T),CriarGeradorCacheSprite(cadeira1L), CriarGeradorCacheSprite(cadeira1O)])
+
+    bebedouroF = pygame.image.load('Sprites/bebedouroF.png').convert_alpha()
+    bebedouroT = pygame.image.load('Sprites/bebedouroT.png').convert_alpha()
+    bebedouroL = pygame.image.load('Sprites/bebedouroL.png').convert_alpha()
+    bebedouroO = pygame.image.load('Sprites/bebedouroO.png').convert_alpha()
+
+    spriteTexturas.append([bebedouroF, bebedouroT, bebedouroL, bebedouroO])
+    geradoresCacheSprites.append([CriarGeradorCacheSprite(bebedouroF), CriarGeradorCacheSprite(bebedouroT),CriarGeradorCacheSprite(bebedouroL), CriarGeradorCacheSprite(bebedouroO)])
+
+    piabanheiroF = pygame.image.load('Sprites/banheiropiaF.png').convert_alpha()
+    piabanheiroL = pygame.image.load('Sprites/banheiropiaL.png').convert_alpha()
+    piabanheiroO = pygame.image.load('Sprites/banheiropiaO.png').convert_alpha()
+
+    spriteTexturas.append([piabanheiroF, piabanheiroF, piabanheiroL, piabanheiroO])
+    geradorSame = CriarGeradorCacheSprite(piabanheiroF)
+    geradoresCacheSprites.append([geradorSame, geradorSame,CriarGeradorCacheSprite(piabanheiroL), CriarGeradorCacheSprite(piabanheiroO)])
+
+    lataLixo = pygame.image.load('Sprites/lataLixo.png').convert_alpha()
+
+    spriteTexturas.append([lataLixo, lataLixo, lataLixo, lataLixo])
+    geradorSame = CriarGeradorCacheSprite(lataLixo)
+    geradoresCacheSprites.append([geradorSame, geradorSame,geradorSame, geradorSame])
+
+
+    cadeirasMesaF = pygame.image.load('Sprites/cadeirasmesaF.png').convert_alpha()
+    cadeirasMesaT = pygame.image.load('Sprites/cadeirasmesaT.png').convert_alpha()
+    cadeirasMesaL = pygame.image.load('Sprites/cadeirasmesaL.png').convert_alpha()
+
+    spriteTexturas.append([cadeirasMesaF, cadeirasMesaF, cadeirasMesaL, cadeirasMesaL])
+    geradorSameL = CriarGeradorCacheSprite(cadeirasMesaL)
+
+    geradoresCacheSprites.append([CriarGeradorCacheSprite(cadeirasMesaF), CriarGeradorCacheSprite(cadeirasMesaT), geradorSameL, geradorSameL])
+
+
+    intersec = pygame.image.load('Sprites/intersec.png').convert_alpha()
+
+
+    spriteTexturas.append([intersec, intersec, intersec, intersec])
+    geradorSame = CriarGeradorCacheSprite(intersec)
+
+    geradoresCacheSprites.append([geradorSame, geradorSame, geradorSame, geradorSame])
 
     agora2 = time.time() - agora1 
     print("Demorou " + str(agora2))

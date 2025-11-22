@@ -15,6 +15,7 @@ class Luta():
         self.tempoAnimacao = 1
         self.tempoAnimacaoBotoes = 0.3
         self.habilidadeSelecionada = 0
+        self.itemSelecionado = 0
         self.tempoPassado = 0
         self.botaoAntigo = 0
 
@@ -36,6 +37,7 @@ class Luta():
         FIM = 5
         RESULTADO = 6
         ESCOLHENDOHABILIDADE = 7
+        ESCOLHENDOITEM = 8
 
 
     class LutaHUD():

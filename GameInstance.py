@@ -18,7 +18,8 @@ class Jogo():
         self.alvoLuta = 0
         self.alvoLutaAnimacao = 0
         self.estadoJogo = Data.EEstado.ANDANDO
-
+        self.animacao = Data.EANIMACAOOVERWORLD.NADA
+        self.escolhas = []
         self.inimigosNaLuta = []
         self.botoesLuta = [self.lutaHUD.bItem, self.lutaHUD.bAtacar, self.lutaHUD.bHabilidade, self.lutaHUD.bFugir]
         self.posicoesBotoesLuta = [ (janela.width * 0.075, janela.height - (7 * janela.height / 30)), (janela.width * 0.03, janela.height - (3 * janela.height / 10)),  (janela.width * 0.01, janela.height - (janela.height / 10)), (janela.width * 0.03, janela.height - (janela.height / 6)),]
@@ -27,10 +28,11 @@ class Jogo():
         self.ultimoMovimentoBotao = time.time()
         self.botaoSolto = True
         self.objetosADesenhar = []
-
+        self.escolhaSelecionada = 0
         self.tempoAgora = time.time()
         self.tempoUltimoFrame = time.time()
-
+        self.ultimoInput = 0
+        self.ultimoInputAnterior = 0
         self.ultimoMovimento = time.time()
         self.ultimaRotacao = time.time()
 
@@ -54,12 +56,12 @@ class Jogo():
 
         self.jogador = Data.Jogador(21.5 , 9.5, 0, Data.direcao["O"], 110)
         self.teclado = Window.get_keyboard()
-        self.mapaAtual = Mapa.GerarMapa(0)
-
+        self.mapaAtual = Mapa.GerarMapa(1)
+        self.dialogoMensagens = []
 
 
         self.GAME_WIDTH = 200  
         self.GAME_HEIGHT = 200 
         self.janelaMenor = pygame.Surface((self.GAME_WIDTH, self.GAME_HEIGHT))
 
-
+        self.fade = Sprites.FadeSprite(janela.width, janela.height)

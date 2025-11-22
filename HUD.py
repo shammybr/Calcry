@@ -34,7 +34,9 @@ class GameImageMelhor(PPlay.gameimage.GameImage):
         self.imagemOriginal = self.image
 
         
-
+    def set_position(self, x, y):
+        self.coordenadas = (x,y)
+        super().set_position(x, y)
 
 
 
@@ -46,6 +48,7 @@ class ImagensHUD():
         self.barraEnergiaBackground = GameImageMelhor('Sprites/HUD/BarraVidaVazia.png', 0, 0)
         self.barraEnergia = GameImageMelhor('Sprites/HUD/BarraEnergia.png', 0, 0)
         self.jogadorSprite = GameImageMelhor('Sprites/HUD/jogadorSprite.png', 0, 0)
+        self.logBG = GameImageMelhor('Sprites/Luta/logBG.png', 0, 0)
 
 def CriarHUD(janela):
     jogadorHUD = ImagensHUD()
@@ -68,5 +71,8 @@ def CriarHUD(janela):
 
     jogadorHUD.jogadorSprite.Transformar(278 * (janela.width/1920), 346 * (janela.height/1080))
     jogadorHUD.jogadorSprite.set_position(0, janela.height - (janela.height* 0.3))
+
+    jogadorHUD.logBG.Transformar(1300 * (janela.width/1920), 300 * (janela.height/1080))
+    jogadorHUD.logBG.set_position((janela.width / 2) - (jogadorHUD.logBG.largura / 2), janela.height - (jogadorHUD.logBG.altura))
 
     return jogadorHUD

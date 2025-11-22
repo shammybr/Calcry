@@ -53,6 +53,9 @@ class EEstado(Enum):
     MAINMENU = 1
     ANDANDO = 2
     LUTA = 3
+    ESCOLHA = 4
+    ANIMACAOOVERWORLD = 5
+    DIALOGO = 6
 
 class ELuta(Enum):
     ITEM = 1
@@ -60,6 +63,9 @@ class ELuta(Enum):
     HABILIDADE = 3
     FUGIR = 4
 
+class EANIMACAOOVERWORLD(Enum):
+    NADA = 0
+    MUDARANDAR = 1
 
 
 class Entidade():
@@ -103,9 +109,11 @@ class Jogador(Entidade):
         self.planeX = 0.0 # The camera plane vector
         self.planeY = -0.66
         self.habilidades = []
+        self.items = []
         self.level = 1
         self.xp = 99
         self.danoGuardado = 0
+        self.andar = 1
 
     def GanharXP(self, xp):
         self.xp = self.xp + xp
@@ -125,6 +133,15 @@ class Jogador(Entidade):
 
     def AprenderHabilidade(self, habilidade):
         self.habilidades.append(habilidade)
+
+    def ObterItem(self, item):
+        for itemNaBag in self.items:
+            if(itemNaBag.ID == item.ID):
+                itemNaBag.quantidade += 1
+                return 1
+
+        self.items.append(item)
+
 
     def TomarDano(self, dano):
         danoAtual = dano
@@ -186,6 +203,41 @@ class Buff():
         self.turnosTotais = turnosTotais
         self.Iturnos = 0
 
+class Item():
+    def __init__(self, nome, ID, valores, desc, temAlvo, funcs, quantidade):
+        self.nome = nome
+        self.ID = ID
+        self.valores = valores
+        self.desc = desc
+        self.temAlvo = temAlvo
+        self.funcs = funcs
+        self.quantidade = quantidade
+
+class Escolha():
+    def __init__(self, desc, spriteNormal, spriteSelecionada, funcoes):
+        self.desc = desc
+        self.spriteNormal = spriteNormal
+        self.spriteSelecionada = spriteSelecionada
+        self.funcoes = funcoes
+        self.selecionado = False
+        self.imagem = HUD.GameImageMelhor(spriteNormal, 0, 0)
+
+    
+    def Selecionar(self, on):
+        if(self.selecionado):
+            if(not on):
+                self.imagem.MudarImagem(self.spriteNormal)
+                self.selecionado = False
+        else:
+            if(on):
+                self.imagem.MudarImagem(self.spriteSelecionada)
+                self.selecionado = True
+
+    def AdicionarFunc(self, func):
+        self.funcoes.append(func)
+                
+
+
 def BuffarAtaque(entidades, valores):
     mensagens = []
     for entidade in entidades:
@@ -231,8 +283,53 @@ def AbsorverAtaque(entidades, valores):
 
     return mensagens
 
+
+def CurarVida(entidades, valores):
+    mensagens = []
+
+    for entidade in entidades:
+        entidade.Curar(valores,0)
+        mensagens.append("Vida de " + entidade.nome +  " restaurada em " + str(valores) +" !")
+
+    return mensagens
+
+def SubirDeAndar(jogador):
+    jogador.andar += 1
+
+    print("Subiu")
+
+    return True
+
+
+def DescerDeAndar(jogador):
+    jogador.andar -= 1
+
+    print("Subiu")
+
+    return True
+
+
+def Voltar(jogador):
+
+    print("Voltou")
+
+    return True
+
 habilidadeBD = [ Habilidade("Concentração", 1, [40, 10, 10], ["Concentre-se na tarefa!", "Aumenta o ataque e a defesa - 3 turnos"], False, [BuffarAtaque, BuffarDefesa]),
                  Habilidade("Meditação", 2, [0, 30], ["Controle sua mente!", "Recupera sua energia em 30"], False, [CurarEnergia]),
                  Habilidade("Preparação", 2, [80, 30], ["Transforme dor em força!", "Aumenta o seu dano de acordo com o dano recebido."], False, [AbsorverAtaque]),
+
+]
+
+itemBD = [  Item("Energético", 1, [0, 9999], ["Energético com gosto de manga.", "Recupera toda a energia."], False, [CurarEnergia], 1),
+            Item("Analgésico", 2, [0, 50], ["Analgésico genérico.", "Recupera sua vida em 50."], False, [CurarVida], 1),
+          
+]
+
+escolhaBD = [   Escolha('Subir de andar' , 'Sprites/HUD/escolhaNormal.png', 'Sprites/HUD/escolhaSelecionada.png', []),
+                Escolha('Voltar' , 'Sprites/HUD/escolhaNormal.png', 'Sprites/HUD/escolhaSelecionada.png', []),
+                Escolha('Descer de andar' , 'Sprites/HUD/escolhaNormal.png', 'Sprites/HUD/escolhaSelecionada.png', [])
+
+
 
 ]

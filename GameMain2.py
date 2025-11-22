@@ -22,6 +22,11 @@ luta = jogo.luta
 jogo.jogador.AprenderHabilidade(Data.habilidadeBD[0])
 jogo.jogador.AprenderHabilidade(Data.habilidadeBD[1])
 jogo.jogador.AprenderHabilidade(Data.habilidadeBD[2])
+jogo.jogador.ObterItem(Data.itemBD[0])
+jogo.jogador.ObterItem(Data.itemBD[1])
+jogo.jogador.ObterItem(Data.itemBD[1])
+
+
 
 def Update():
     global minimapa
@@ -102,6 +107,78 @@ def Update():
 
         RenderizarMapa()
 
+    elif(jogo.estadoJogo == Data.EEstado.ESCOLHA):
+
+
+        if((time.time() - jogo.ultimoMovimentoBotao > 0.1 and jogo.botaoSolto) or jogo.ultimoInput != jogo.ultimoInputAnterior):
+            if(jogo.ultimoInput == 1):   
+                CalcularEscolhaSelecionada(1)
+                jogo.botaoSolto = False
+                jogo.ultimoMovimentoBotao = time.time()
+            elif(jogo.ultimoInput == 2):
+                CalcularEscolhaSelecionada(-1)
+                jogo.botaoSolto = False
+                jogo.ultimoMovimentoBotao = time.time()
+
+            elif(jogo.ultimoInput == 5):
+                for func in jogo.escolhas[jogo.escolhaSelecionada].funcoes:
+                    func()
+
+                jogo.botaoSolto = False
+                jogo.ultimoMovimentoBotao = time.time()
+
+
+
+        DesenharEscolhas(jogo.escolhas)
+
+    elif(jogo.estadoJogo == Data.EEstado.DIALOGO):
+
+
+        if((time.time() - jogo.ultimoMovimentoBotao > 0.1 and jogo.botaoSolto)):
+            if(jogo.ultimoInput == 5):
+                if(jogo.ultimoInput == 5):
+                    if(len(luta.mensagem) <= 4):
+                        jogo.dialogoMensagens.clear()
+                        jogo.estadoJogo = Data.EEstado.ANDANDO
+                    else:
+                        jogo.dialogoMensagens.pop(0)
+                        jogo.dialogoMensagens.pop(0)
+                        jogo.dialogoMensagens.pop(0)
+                        jogo.dialogoMensagens.pop(0)
+
+                        jogo.ultimoMovimentoBotao = time.time()
+                        jogo.botaoSolto = False
+
+
+        RenderizarMapa()
+        DesenharDialogo()
+        EscreverDialogo(jogo.dialogoMensagens)
+
+
+    elif(jogo.estadoJogo == Data.EEstado.ANIMACAOOVERWORLD):
+        if(jogo.animacao == Data.EANIMACAOOVERWORLD.NADA):
+            Data.EEstado.ANDANDO
+        else:
+            if(jogo.animacao ==  Data.EANIMACAOOVERWORLD.MUDARANDAR):
+                RenderizarMapa()
+                velocidadeFade = 1000
+                if(jogo.fade.fading):
+                    if(jogo.fade.alpha < 255):
+                        jogo.fade.FadeIn(velocidadeFade * min(jogo.deltaTime, 0.01))
+                    else:
+                        if(jogo.fade.tempo < 0.3):
+                            jogo.fade.Cooldown(jogo.deltaTime)
+                        else:
+                            jogo.fade.fading = False
+
+                else:
+                    if(jogo.fade.alpha > 0):
+                        jogo.fade.FadeOut(velocidadeFade * min(jogo.deltaTime, 0.01))
+
+                    else:
+                        jogo.estadoJogo = Data.EEstado.ANDANDO
+
+                janela.get_screen().blit(jogo.fade.surface, (0, 0))
 
     elif(jogo.estadoJogo == Data.EEstado.LUTA):
 
@@ -147,7 +224,7 @@ def Update():
         elif(luta.estadoLuta == luta.EEstadoLuta.LUTANDO):
             
 
-            if(time.time() - jogo.ultimoMovimentoBotao > 0.1 and jogo.botaoSolto):
+            if((time.time() - jogo.ultimoMovimentoBotao > 0.1 and jogo.botaoSolto) or jogo.ultimoInput != jogo.ultimoInputAnterior):
                 if(jogo.ultimoInput == 2):
                     jogo.botaoAntigo = jogo.botaoSelecionadoLuta
 
@@ -206,7 +283,13 @@ def Update():
 
 
                     elif(jogo.botaoSelecionadoLuta == Data.ELuta.ITEM):
-                        pass
+                        luta.itemSelecionado = 0
+                        luta.mensagem.clear()
+                        if(len(jogo.jogador.items)):
+                            luta.mensagem = jogo.jogador.items[0].desc.copy()
+
+                        CalcularLutaItemSelecionado(0)
+                        luta.estadoLuta = luta.EEstadoLuta.ESCOLHENDOITEM
 
 
                     elif(jogo.botaoSelecionadoLuta == Data.ELuta.FUGIR):
@@ -240,7 +323,7 @@ def Update():
 
         elif(luta.estadoLuta == luta.EEstadoLuta.ESCOLHENDOALVO):
 
-            if(time.time() - jogo.ultimoMovimentoBotao > 0.1 and jogo.botaoSolto):
+            if((time.time() - jogo.ultimoMovimentoBotao > 0.1 and jogo.botaoSolto) or jogo.ultimoInput != jogo.ultimoInputAnterior):
                 if(jogo.ultimoInput == 3):
 
                     alvoTransformado = CalcularSelecionarAlvo(1)
@@ -323,7 +406,7 @@ def Update():
 
         elif(luta.estadoLuta == luta.EEstadoLuta.ESCOLHENDOHABILIDADE):
 
-            if(time.time() - jogo.ultimoMovimentoBotao > 0.05 or jogo.botaoSolto):
+            if((time.time() - jogo.ultimoMovimentoBotao > 0.05 and jogo.botaoSolto) or jogo.ultimoInput != jogo.ultimoInputAnterior):
                 if(jogo.botaoSolto):
                     
                         if(jogo.ultimoInput == 1):
@@ -383,14 +466,87 @@ def Update():
                             jogo.botaoSolto = False
                             jogo.ultimoMovimentoBotao = time.time() - 0.25
                     
-
-
-
-
             RenderizarLuta()
             DesenharLutaJanelaHabilidades() 
             DesenharLutaHabilidadeSelecionada()
             DesenharHabilidades()
+            DesenharLutaLog()
+            EscreverLutaLog(luta.mensagem)
+
+        elif(luta.estadoLuta == luta.EEstadoLuta.ESCOLHENDOITEM):
+
+            if((time.time() - jogo.ultimoMovimentoBotao > 0.05 and jogo.botaoSolto) or jogo.ultimoInput != jogo.ultimoInputAnterior):
+                if(jogo.botaoSolto):
+                    
+                        if(jogo.ultimoInput == 1):
+
+                            CalcularLutaItemSelecionado(1)
+                            luta.mensagem.clear()
+                            if(len(jogo.jogador.items)):
+                                luta.mensagem = jogo.jogador.items[luta.itemSelecionado].desc.copy()
+                            jogo.botaoSolto = False
+                            jogo.ultimoMovimentoBotao = time.time()
+
+
+                        elif(jogo.ultimoInput == 2):
+                            
+                            CalcularLutaItemSelecionado(-1)
+                            luta.mensagem.clear()
+                            if(len(jogo.jogador.items)):
+                                luta.mensagem = jogo.jogador.items[luta.itemSelecionado].desc.copy()
+                            jogo.botaoSolto = False
+                            jogo.ultimoMovimentoBotao = time.time()
+
+                        elif(jogo.ultimoInput == 5):
+                            jogo.botaoSolto = False
+                            jogo.ultimoMovimentoBotao = time.time()
+                            luta.mensagem.clear()
+
+
+                            i = 1
+                            for funcao in jogo.jogador.items[luta.itemSelecionado].funcs:
+                                if(jogo.jogador.items[luta.itemSelecionado].temAlvo):
+                                    pass
+                                else:
+                                    for mensagem in funcao([jogo.jogador], jogo.jogador.items[luta.itemSelecionado].valores[i]):
+                                        luta.mensagem.append(mensagem)
+
+                                    i += 1
+
+                            jogo.jogador.items[luta.itemSelecionado].quantidade -= 1
+                            if(jogo.jogador.items[luta.itemSelecionado].quantidade <= 0):
+                                jogo.jogador.items.pop(luta.itemSelecionado)
+
+                            luta.estadoLuta = luta.EEstadoLuta.PROCESSANDOTURNO
+                            luta.esperandoInput = True
+
+                        elif(jogo.ultimoInput == 6):
+                            jogo.botaoSolto = False
+                            jogo.ultimoMovimentoBotao = time.time()
+                            luta.estadoLuta = luta.EEstadoLuta.LUTANDO
+                else:
+                    if(time.time() - jogo.ultimoMovimentoBotao > 0.3):
+                        if(jogo.ultimoInput == 1):
+                            CalcularLutaItemSelecionado(1)
+                            luta.mensagem.clear()
+                            if(len(jogo.jogador.items)):
+                                luta.mensagem = jogo.jogador.habilidades[luta.habilidadeSelecionada].desc.copy()
+                            jogo.botaoSolto = False
+                            jogo.ultimoMovimentoBotao = time.time() - 0.25
+
+                        elif(jogo.ultimoInput == 2): 
+                            CalcularLutaItemSelecionado(-1)
+                            luta.mensagem.clear()
+                            if(len(jogo.jogador.items)):
+                                luta.mensagem = jogo.jogador.habilidades[luta.habilidadeSelecionada].desc.copy()
+                            jogo.botaoSolto = False
+                            jogo.ultimoMovimentoBotao = time.time() - 0.25
+                    
+
+            RenderizarLuta()
+            DesenharLutaJanelaHabilidades() 
+            DesenharLutaHabilidadeSelecionada()
+            DesenharItems()
             DesenharLutaLog()
             EscreverLutaLog(luta.mensagem)
 
@@ -463,9 +619,11 @@ def Update():
     
     janela.update()
 
+    jogo.ultimoInputAnterior = jogo.ultimoInput
+
     if(jogo.segundo > 1):
         print(jogo.numeroFrames)
-        print(f"Direção: {jogo.jogador.direcao}")
+      # print(f"Direção: {jogo.jogador.direcao}")
         jogo.numeroFrames = 0
         jogo.segundo -= 1
 
@@ -497,6 +655,8 @@ def DesenharLutaHabilidadeSelecionada():
 
     jogo.lutaHUD.itemSelecionado.draw()
 
+
+    
 def CalcularLutaHabilidadeSelecionada(passo):
     if(passo == -1):
         luta.habilidadeSelecionada = min(luta.habilidadeSelecionada + 1, len(jogo.jogador.habilidades) - 1)
@@ -505,11 +665,30 @@ def CalcularLutaHabilidadeSelecionada(passo):
 
     jogo.lutaHUD.itemSelecionado.set_position(janela.width * 0.81, janela.height * 0.54 + (luta.habilidadeSelecionada * janela.height * 0.05))
 
+def CalcularLutaItemSelecionado(passo):
+    if(passo == -1):
+        luta.itemSelecionado = min(luta.itemSelecionado + 1, len(jogo.jogador.items) - 1)
+    elif(passo == 1):
+        luta.itemSelecionado = max(luta.itemSelecionado - 1, 0)
+
+    jogo.lutaHUD.itemSelecionado.set_position(janela.width * 0.81, janela.height * 0.54 + (luta.itemSelecionado * janela.height * 0.05))
+
+
 def DesenharHabilidades():
     for i in range(0, 10):
             if i < len(jogo.jogador.habilidades):
                 janela.draw_text(jogo.jogador.habilidades[i].nome, janela.width * 0.82, janela.height * 0.55 + (i * janela.height * 0.05), "Sprites/HUD/PressStart2P-Regular.ttf", 13 * int((1280/janela.width)), (255,255,255), )
                 janela.draw_text(str(jogo.jogador.habilidades[i].valores[0]), janela.width * 0.96, janela.height * 0.55 + (i * janela.height * 0.05), "Sprites/HUD/PressStart2P-Regular.ttf", 13 * int((1280/janela.width)), (255,255,255), )
+           
+            else:
+                janela.draw_text("--------------" , janela.width * 0.82, janela.height * 0.55 + (i * janela.height * 0.05), "Sprites/HUD/PressStart2P-Regular.ttf", 13 * int((1280/janela.width)), (255,255,255), )
+
+
+def DesenharItems():
+    for i in range(0, 10):
+            if i < len(jogo.jogador.items):
+                janela.draw_text(jogo.jogador.items[i].nome, janela.width * 0.82, janela.height * 0.55 + (i * janela.height * 0.05), "Sprites/HUD/PressStart2P-Regular.ttf", 13 * int((1280/janela.width)), (255,255,255), )
+                janela.draw_text(str(jogo.jogador.items[i].quantidade), janela.width * 0.96, janela.height * 0.55 + (i * janela.height * 0.05), "Sprites/HUD/PressStart2P-Regular.ttf", 13 * int((1280/janela.width)), (255,255,255), )
            
             else:
                 janela.draw_text("--------------" , janela.width * 0.82, janela.height * 0.55 + (i * janela.height * 0.05), "Sprites/HUD/PressStart2P-Regular.ttf", 13 * int((1280/janela.width)), (255,255,255), )
@@ -540,7 +719,7 @@ def RenderizarMapa():
         DesenharHUD()
         DesenharMinimapa()
 
-        janela.update()
+        
 
 
 
@@ -549,6 +728,9 @@ def RenderizarMapa():
 
 
 def ChecarColisao(novaPosicaoX, novaPosicaoY):
+
+    if(ChecarEvento(novaPosicaoX, novaPosicaoY)):
+        return True
 
     if(novaPosicaoX - jogo.jogador.x > 0):
         if(Mapa.GetMapaAtual()[int(novaPosicaoY)][int(novaPosicaoX)].oeste):
@@ -568,6 +750,69 @@ def ChecarColisao(novaPosicaoX, novaPosicaoY):
 
 
     return False
+
+def ChecarEvento(novaPosicaoX, novaPosicaoY):
+    evento = Mapa.GetMapaEventos()[int(novaPosicaoY)][int(novaPosicaoX)]
+
+    if(evento != 0):
+        if(evento == 1):
+            jogo.escolhas.clear()
+            jogo.escolhaSelecionada = 0
+
+
+
+            jogo.escolhas.append(Data.escolhaBD[0])
+            jogo.escolhas[0].imagem.Transformar(janela.width * 0.3, janela.height* 0.09)
+            jogo.escolhas[0].imagem.set_position(janela.width * 0.5 - ( jogo.escolhas[0].imagem.largura / 2), janela.height * 0.35 - ( jogo.escolhas[0].imagem.altura / 2))
+
+
+
+
+            jogo.escolhas.append(Data.escolhaBD[1])
+            jogo.escolhas[1].imagem.Transformar(janela.width * 0.3, janela.height* 0.09)
+            jogo.escolhas[1].imagem.set_position(janela.width * 0.5 - ( jogo.escolhas[1].imagem.largura / 2), janela.height * 0.5 - ( jogo.escolhas[1].imagem.altura / 2))
+
+            if(jogo.jogador.andar > 1):
+
+                jogo.escolhas.append(Data.escolhaBD[2])
+                jogo.escolhas[2].imagem.Transformar(janela.width * 0.3, janela.height* 0.09)
+                jogo.escolhas[2].imagem.set_position(janela.width * 0.5 - (jogo.escolhas[2].imagem.largura / 2), janela.height * 0.65 - (jogo.escolhas[2].imagem.altura / 2))
+
+            jogo.estadoJogo = Data.EEstado.ESCOLHA
+
+            return True
+        
+
+
+        elif(evento == 10):
+            jogo.dialogoMensagens.clear()
+            jogo.dialogoMensagens.append("O elevador parece quebrado...")
+            jogo.estadoJogo = Data.EEstado.DIALOGO
+
+
+def CalcularEscolhaSelecionada(passo):
+    if(passo == -1):
+        jogo.escolhaSelecionada = min(jogo.escolhaSelecionada + 1, len(jogo.escolhas) - 1)
+    elif(passo == 1):
+        jogo.escolhaSelecionada = max(jogo.escolhaSelecionada - 1, 0)
+
+    for i, escolha in enumerate(jogo.escolhas):
+        if(i == jogo.escolhaSelecionada):
+            escolha.Selecionar(True)
+        else:
+            escolha.Selecionar(False)
+
+
+
+
+def DesenharEscolhas(escolhas):
+    tamanhoFonte = 20 * int((1280/janela.width))
+    
+    for escolha in escolhas:
+       
+        escolha.imagem.draw()
+        janela.draw_text( escolha.desc , escolha.imagem.coordenadas[0] + (escolha.imagem.largura / 2) - (tamanhoFonte * len(escolha.desc) / 2), escolha.imagem.coordenadas[1] + (escolha.imagem.altura / 2) - (tamanhoFonte / 2) , "Sprites/HUD/PressStart2P-Regular.ttf", tamanhoFonte, (212,219,170), )
+
 
 def AndarJogadorLoop(jogador, andandoDestino, inicioJogador, velocidade):
     
@@ -739,13 +984,18 @@ def DesenharHUD():
     jogo.jogadorHUD.barraEnergia.draw()
 
     jogo.jogadorHUD.jogadorSprite.draw()
-
+ 
 
     janela.draw_text("Vida:    " + str(jogo.jogador.vida) + " / " + str(jogo.jogador.vidaMaxima), janela.width * 0.18, janela.height * 0.89, "Sprites/HUD/PressStart2P-Regular.ttf", 10 * int((1280/janela.width)), (255,255,255), )
     janela.draw_text("Energia: " + str(jogo.jogador.energia)+ " / " + str(jogo.jogador.energiaMaxima), janela.width * 0.42, janela.height * 0.89, "Sprites/HUD/PressStart2P-Regular.ttf", 10 * int((1280/janela.width)), (255,255,255), )
 
     janela.draw_text("Level: " + str(jogo.jogador.level), janela.width * 0.72, janela.height * 0.9, "Sprites/HUD/PressStart2P-Regular.ttf", 14 * int((1280/janela.width)), (63,78,182), )
     janela.draw_text("XP: " + str(jogo.jogador.xp)+ " / " + str(Data.xpProximoLevel[jogo.jogador.level]), janela.width * 0.72, janela.height * 0.95, "Sprites/HUD/PressStart2P-Regular.ttf", 10 * int((1280/janela.width)), (255,255,255), )
+
+
+def DesenharDialogo():
+
+    jogo.jogadorHUD.logBG.draw()
 
 def AtualizarHUD():
     jogo.jogadorHUD.background.Transformar(janela.width, janela.height* 0.3)
@@ -854,7 +1104,9 @@ def EscreverLutaLog(mensagens):
     tamanho = 20
 
     for i, mensagem in enumerate(mensagens[:2]):
-        if(len(mensagem) > 35):
+        if(len(mensagem) > 40):
+            tamanho = 11
+        elif(len(mensagem) > 35):
             tamanho = 14
         elif(len(mensagem) > 30):
             tamanho = 15
@@ -863,6 +1115,12 @@ def EscreverLutaLog(mensagens):
             
         janela.draw_text(mensagem,  jogo.lutaHUD.logBG.x + (jogo.lutaHUD.logBG.width * 0.01),  jogo.lutaHUD.logBG.y + (janela.height * 0.03 + (i * janela.height * 0.035)), "Sprites/HUD/PressStart2P-Regular.ttf", tamanho * int((1280/janela.width)), (255,255,255), )
 
+def EscreverDialogo(mensagens):
+    tamanho = 20
+
+    for i, mensagem in enumerate(mensagens[:4]):
+            
+        janela.draw_text(mensagem,  jogo.jogadorHUD.logBG.x + (jogo.jogadorHUD.logBG.width * 0.01),  jogo.jogadorHUD.logBG.y + (janela.height * 0.03 + (i * janela.height * 0.035)), "Sprites/HUD/PressStart2P-Regular.ttf", tamanho * int((1280/janela.width)), (255,255,255), )
 
 
 def DesenharLutaBotoes():
@@ -996,7 +1254,7 @@ def PrepararLuta():
 
 # Inicio Parte minimapa
 
-minimapa_completo=Mapa.GetMinimapaComp()
+minimapa_completo=Mapa.GetMinimapaComp(jogo.jogador)
 
 def GetMinimapa():
     
@@ -1077,6 +1335,35 @@ def DesenharMinimapa():
 
 # Fim Parte minimapa
 
+
+def CancelarOpcoes():
+    jogo.estadoJogo = Data.EEstado.ANDANDO
+
+Data.escolhaBD[1].AdicionarFunc(CancelarOpcoes)
+
+def SubirAndar():
+    jogo.jogador.andar += 1
+    jogo.animacao = Data.EANIMACAOOVERWORLD.MUDARANDAR
+    jogo.fade.fading = True
+    jogo.fade.alpha = 0
+    jogo.fade.surface.set_alpha(0)
+    jogo.mapaAtual = Mapa.GerarMapa(jogo.jogador.andar)
+    jogo.estadoJogo = Data.EEstado.ANIMACAOOVERWORLD
+
+Data.escolhaBD[0].AdicionarFunc(SubirAndar)
+
+
+def DescerAndar():
+    jogo.jogador.andar -= 1
+    jogo.animacao = Data.EANIMACAOOVERWORLD.MUDARANDAR
+    jogo.fade.fading = True
+    jogo.fade.alpha = 0
+    jogo.fade.surface.set_alpha(0)
+    jogo.mapaAtual = Mapa.GerarMapa(jogo.jogador.andar)
+    jogo.estadoJogo = Data.EEstado.ANIMACAOOVERWORLD
+
+Data.escolhaBD[2].AdicionarFunc(DescerAndar)
+
 #não usado
 def UpdateTest():
     janela.get_screen().fill((100, 100, 100)) # Gray floor
@@ -1094,8 +1381,10 @@ def UpdateTest():
     janela.update()
 
 
+
+
+
+
+
 while(True):
     Update()
-
-
-    
