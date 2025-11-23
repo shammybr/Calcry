@@ -151,7 +151,7 @@ def CriarGeradorCache(fatias):
             # --- THIS IS THE MAGIC ---
             # We attach the LRU cache to this inner function.
             # It will store up to 512 *different heights* for this *one column*.
-            @functools.lru_cache(maxsize=700) 
+            @functools.lru_cache(maxsize=512) 
             def get_scaled_slice(altura):
                 """
                 Generates and caches a scaled slice.

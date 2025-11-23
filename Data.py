@@ -236,6 +236,14 @@ class Escolha():
     def AdicionarFunc(self, func):
         self.funcoes.append(func)
                 
+class Interacao():
+    def __init__(self, norte, sul, leste, oeste, interacao, id):
+        self.norte = norte
+        self.sul = sul
+        self.leste = leste
+        self.oeste = oeste
+        self.interacao = interacao
+        self.id = id
 
 
 def BuffarAtaque(entidades, valores):

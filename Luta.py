@@ -187,21 +187,23 @@ class Luta():
                 self.mensagem.append(self.ordemTurno[self.iTurno].nome + " ataca!")
                 danoCausado = self.Atacar(jogador, self.ordemTurno[self.iTurno].dano)
                 self.mensagem.append("Causou " + str(danoCausado) + " de dano!")
-                self.esperandoInput = True
+                self.AnimarDanoNoPlayer()
 
             elif(self.ordemTurno[self.iTurno].tipo == Data.tipoEntidade["Derivada"]):
                 print("Atacando player...")
                 self.mensagem.append(self.ordemTurno[self.iTurno].nome + " ataca!")
                 danoCausado = self.Atacar(jogador, self.ordemTurno[self.iTurno].dano)
                 self.mensagem.append("Causou " + str(danoCausado) + " de dano!")
-                self.esperandoInput = True
+                self.AnimarDanoNoPlayer()
+
 
             elif(self.ordemTurno[self.iTurno].tipo == Data.tipoEntidade["Integral"]):
                 print("Atacando player...")
                 self.mensagem.append(self.ordemTurno[self.iTurno].nome + " ataca!")
                 danoCausado = self.Atacar(jogador, self.ordemTurno[self.iTurno].dano)
                 self.mensagem.append("Causou " + str(danoCausado) + " de dano!")
-                self.esperandoInput = True
+                self.AnimarDanoNoPlayer()
+
         
         self.iTurno += 1
 
@@ -415,6 +417,9 @@ class Luta():
         self.estadoAnimacao = 3
         self.tempoPassado = 0
 
+
+
+
     def AnimarDanoLoop(self, janela, alvoluta, deltaTime):
 
         progresso = min(1.0, self.tempoPassado / self.tempoAnimacaoDano)
@@ -427,6 +432,66 @@ class Luta():
         else:
             alvoluta.sprite.set_position(self.posicaoOriginalDano[0], self.posicaoOriginalDano[1])
             self.esperandoInput = True
+
+    def AnimarDanoNoPlayer(self):
+        self.estadoLuta = self.EEstadoLuta.ANIMACAO
+        self.estadoAnimacao = 4
+        self.tempoPassado = 0
+
+    def AnimarDanoPlayerLoop(self, janela, jogo):
+
+        progresso = min(1.0, self.tempoPassado / self.tempoAnimacaoDano)
+
+        offsetX = math.sin(progresso * 6 * math.pi) * janela.width * 0.005
+        offsetY = math.sin((progresso + offsetX) * 6 * math.pi) * janela.height * 0.005
+
+        if(progresso < 1):
+            self.tempoPassado += jogo.deltaTime
+
+        else:
+            offsetX = 0
+            offsetY = 0
+            self.esperandoInput = True
+
+
+        jogo.lutaHUD.background.draw()
+
+
+        for inimigo in jogo.inimigosNaLuta:
+            if(inimigo.vida > 0):
+                inimigo.barraHPBackground.Transformar(janela.width * 0.1, janela.height* 0.02)
+                inimigo.barraHPBackground.set_position(inimigo.sprite.x + (inimigo.barraHPBackground.largura / 2), inimigo.sprite.y - inimigo.barraHPBackground.altura)
+                inimigo.barraHPBackground.draw()
+
+                inimigo.barraHP.Transformar((janela.width * 0.1) * min(1, (inimigo.vida / inimigo.vidaMaxima)), janela.height* 0.02)
+                inimigo.barraHP.set_position(inimigo.sprite.x + (inimigo.barraHPBackground.largura / 2), inimigo.sprite.y - inimigo.barraHP.altura)
+                inimigo.barraHP.draw()
+
+
+        jogo.jogadorHUD.barraHPBackground.Transformar(janela.width * 0.1, janela.height* 0.02)
+        jogo.jogadorHUD.barraHPBackground.set_position(janela.width * 0.3 + offsetX, janela.height * 0.95 + offsetY)
+
+        jogo.jogadorHUD.barraHP.Transformar((janela.width * 0.1) * min(1, (jogo.jogador.vida / jogo.jogador.vidaMaxima)), janela.height* 0.02)
+        jogo.jogadorHUD.barraHP.set_position(janela.width * 0.3 + offsetX, janela.height * 0.95 + offsetY)
+
+
+        jogo.jogadorHUD.barraEnergiaBackground.Transformar(janela.width * 0.1, janela.height* 0.02)
+        jogo.jogadorHUD.barraEnergiaBackground.set_position(janela.width * 0.6 + offsetX, janela.height * 0.95 + offsetY)
+
+        jogo.jogadorHUD.barraEnergia.Transformar((janela.width * 0.1) * min(1, (jogo.jogador.energia / jogo.jogador.energiaMaxima)), janela.height* 0.02)
+        jogo.jogadorHUD.barraEnergia.set_position(janela.width * 0.6 + offsetX, janela.height * 0.95 + offsetY)
+
+        jogo.jogadorHUD.barraHPBackground.draw()
+        jogo.jogadorHUD.barraHP.draw()
+        jogo.jogadorHUD.barraEnergiaBackground.draw()
+        jogo.jogadorHUD.barraEnergia.draw()
+
+        janela.draw_text("Vida: " + str(jogo.jogador.vida) + " / " + str(jogo.jogador.vidaMaxima), janela.width * 0.3 + offsetX, janela.height * 0.94 + offsetY, "Sprites/HUD/PressStart2P-Regular.ttf", 8 * int((1280/janela.width)), (255,255,255), )
+        janela.draw_text("Energia: " + str(jogo.jogador.energia)+ " / " + str(jogo.jogador.energiaMaxima), janela.width * 0.6 + offsetX, janela.height * 0.94 + offsetY, "Sprites/HUD/PressStart2P-Regular.ttf", 8 * int((1280/janela.width)), (255,255,255), )
+
+
+
+
 
     def AcabarLuta(self):
         self.estadoLuta = self.EEstadoLuta.ANIMACAO

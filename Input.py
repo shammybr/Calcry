@@ -18,9 +18,11 @@ def LerInput(teclado, janela):
         return 5
     if teclado.key_pressed("x"):  # voltar
         return 6
+    
     if teclado.key_pressed("l"):  # teste
         return 9
-
+    if teclado.key_pressed("k"):  # teste
+        return 10
 
 
     if teclado.key_pressed("ESC"):  # Esc, escape..

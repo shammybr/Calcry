@@ -71,6 +71,9 @@ def Update():
                     jogo.ultimaDirecaoX = jogo.jogador.dirX
                     jogo.ultimaDirecaoY = jogo.jogador.dirY
 
+                
+
+
 
 
 
@@ -97,6 +100,11 @@ def Update():
 
 
 
+        if((time.time() - jogo.ultimoMovimentoBotao > 0.1 and jogo.botaoSolto) or jogo.ultimoInput != jogo.ultimoInputAnterior):
+            if(jogo.ultimoInput == 5):
+                ChecarInteracao()
+                jogo.botaoSolto = False
+                jogo.ultimoMovimentoBotao = time.time()
 
         if(jogo.ultimoInput == 9):
             
@@ -104,6 +112,11 @@ def Update():
             jogo.estadoJogo = Data.EEstado.LUTA
             luta.estadoLuta = luta.EEstadoLuta.ANIMACAO
             luta.estadoAnimacao = 0
+            
+        if(jogo.ultimoInput == 10 and jogo.botaoSolto):
+
+            jogo.botaoSolto = False
+            jogo.jogador.TomarDano(5)
 
         RenderizarMapa()
 
@@ -147,7 +160,7 @@ def Update():
                         jogo.dialogoMensagens.pop(0)
 
                         jogo.ultimoMovimentoBotao = time.time()
-                        jogo.botaoSolto = False
+                    jogo.botaoSolto = False
 
 
         RenderizarMapa()
@@ -213,6 +226,22 @@ def Update():
                         jogo.botaoSolto = False
                         jogo.ultimoMovimentoBotao = time.time()
                         luta.estadoLuta = luta.EEstadoLuta.PROCESSANDOTURNO
+
+
+            elif(luta.estadoAnimacao == 4):
+                luta.AnimarDanoPlayerLoop(janela, jogo)
+                DesenharInimigos()
+                DesenharLutaBotoes()
+                DesenharLutaLog()
+                EscreverLutaLog(luta.mensagem)
+
+                if(luta.esperandoInput and time.time() - jogo.ultimoMovimentoBotao > 0.1 and jogo.botaoSolto):
+                    if(jogo.ultimoInput == 5):
+                        luta.esperandoInput = False
+                        jogo.botaoSolto = False
+                        jogo.ultimoMovimentoBotao = time.time()
+                        luta.estadoLuta = luta.EEstadoLuta.PROCESSANDOTURNO
+
 
             elif(luta.estadoAnimacao <= 100):
                 if(luta.SairLutaLoop(janela, jogo.deltaTime) == 1):
@@ -785,10 +814,12 @@ def ChecarEvento(novaPosicaoX, novaPosicaoY):
 
 
         elif(evento == 10):
-            jogo.dialogoMensagens.clear()
-            jogo.dialogoMensagens.append("O elevador parece quebrado...")
-            jogo.estadoJogo = Data.EEstado.DIALOGO
+            ChecarElevador()
 
+def ChecarElevador():
+    jogo.dialogoMensagens.clear()
+    jogo.dialogoMensagens.append("O elevador parece quebrado...")
+    jogo.estadoJogo = Data.EEstado.DIALOGO
 
 def CalcularEscolhaSelecionada(passo):
     if(passo == -1):
@@ -1250,6 +1281,44 @@ def PrepararLuta():
 
                         
         i += 1
+
+def BebedouroCurar():
+    jogo.jogador.Curar(jogo.jogador.vidaMaxima, jogo.jogador.energiaMaxima)
+
+def ChecarInteracao():
+    interacao = Mapa.GetMapaInteracoes()[int(jogo.jogador.y)][int(jogo.jogador.x)]
+    #norte
+    if(jogo.jogador.dirX == 0 and jogo.jogador.dirY == 1):
+        if(interacao.norte):
+            CalcularInteracao(interacao)
+    #sul
+    elif(jogo.jogador.dirX == 0 and jogo.jogador.dirY == -1 ):
+        if(interacao.sul):
+            CalcularInteracao(interacao)
+
+
+    #leste
+    if(jogo.jogador.dirX == 1 and jogo.jogador.dirY == 0):
+        if(interacao.leste):
+            CalcularInteracao(interacao)
+
+
+    #oeste
+
+    elif(jogo.jogador.dirX == -1 and jogo.jogador.dirY == 0 ):
+        if(interacao.oeste):
+            CalcularInteracao(interacao)
+
+
+
+
+def CalcularInteracao(interacao):
+    if(interacao.interacao == 1):
+        if(interacao.id == 1):
+            BebedouroCurar()
+
+    elif(interacao.interacao == 10):
+        ChecarElevador()
 
 
 # Inicio Parte minimapa
