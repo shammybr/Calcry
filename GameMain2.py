@@ -1456,4 +1456,9 @@ def UpdateTest():
 
 
 while(True):
-    Update()
+
+    if(jogo.estadoJogo == Data.EEstado.MAINMENU):
+        jogo.MainMenu.DesenharMainMenu(janela)
+    
+    else:
+        Update()

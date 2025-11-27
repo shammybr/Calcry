@@ -7,7 +7,7 @@ import Mapa
 import math
 import HUD
 import Luta
-
+import MainMenu
 
 class Jogo():
     def __init__(self, janela):
@@ -17,7 +17,7 @@ class Jogo():
         self.lutaHUD = self.luta.CriarLutaHUD(janela)
         self.alvoLuta = 0
         self.alvoLutaAnimacao = 0
-        self.estadoJogo = Data.EEstado.ANDANDO
+        self.estadoJogo = Data.EEstado.MAINMENU
         self.animacao = Data.EANIMACAOOVERWORLD.NADA
         self.escolhas = []
         self.inimigosNaLuta = []
@@ -65,3 +65,5 @@ class Jogo():
         self.janelaMenor = pygame.Surface((self.GAME_WIDTH, self.GAME_HEIGHT))
 
         self.fade = Sprites.FadeSprite(janela.width, janela.height)
+
+        self.MainMenu = MainMenu.MainMenu()
