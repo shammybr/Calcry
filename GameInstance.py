@@ -1,5 +1,6 @@
 from PPlay.window import *
 from PPlay.sprite import *
+from PPlay.sound import *
 import Sprites
 import Data
 import Input
@@ -8,6 +9,7 @@ import math
 import HUD
 import Luta
 import MainMenu
+import Sounds
 
 class Jogo():
     def __init__(self, janela):
@@ -56,6 +58,7 @@ class Jogo():
 
         self.jogador = Data.Jogador(21.5 , 9.5, 0, Data.direcao["O"], 110)
         self.teclado = Window.get_keyboard()
+        self.mouse = Window.get_mouse()
         self.mapaAtual = Mapa.GerarMapa(1)
         self.dialogoMensagens = []
 
@@ -67,3 +70,4 @@ class Jogo():
         self.fade = Sprites.FadeSprite(janela.width, janela.height)
 
         self.MainMenu = MainMenu.MainMenu()
+        self.Musica = Sounds.musica(Sounds.criar_lista_musicas())

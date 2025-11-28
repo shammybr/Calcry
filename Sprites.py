@@ -662,4 +662,25 @@ def CalcularParede(jogadorX, jogadorY, janela, vertices, jogadorDirecao, FOV):
 
     pygame.draw.polygon(janela.get_screen(), (200, 200, 200), coordenadasPoligono)
 
+def get_lista_botoes_menu():
+    
+    Lista=[]
+    
+    Lista.append(Sprite((f'Sprites/botoes/novo_jogo.png')))
+    Lista.append(Sprite((f'Sprites/botoes/continuar.png')))
+    Lista.append(Sprite((f'Sprites/botoes/opcoes.png')))
+    Lista.append(Sprite((f'Sprites/botoes/sair.png')))
+
+    for i in range(4):
+        Lista[i].set_position(480, 90+i*135)
+
+    Lista.append(Sprite((f'Sprites/botoes/menos.png')))
+    Lista.append(Sprite((f'Sprites/botoes/mais.png')))
+    Lista.append(Sprite((f'Sprites/botoes/voltar.png')))
+
+    Lista[4].set_position(400, 210)
+    Lista[5].set_position(720, 210)
+    Lista[6].set_position(480, 345)
+
+    return Lista
 

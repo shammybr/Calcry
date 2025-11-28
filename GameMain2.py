@@ -1,5 +1,6 @@
 from PPlay.window import *
 from PPlay.sprite import *
+from PPlay.sound import *
 from functools import cmp_to_key
 
 from Janela import CriarJanela
@@ -15,9 +16,13 @@ import math
 import HUD
 import Luta
 import GameInstance
+import Sounds
 
 Sprites.CarregarTexturas(janela)
 jogo = GameInstance.Jogo(janela)
+
+jogo.Musica.musica_atual.play()
+
 luta = jogo.luta
 jogo.jogador.AprenderHabilidade(Data.habilidadeBD[0])
 jogo.jogador.AprenderHabilidade(Data.habilidadeBD[1])
@@ -25,6 +30,10 @@ jogo.jogador.AprenderHabilidade(Data.habilidadeBD[2])
 jogo.jogador.ObterItem(Data.itemBD[0])
 jogo.jogador.ObterItem(Data.itemBD[1])
 jogo.jogador.ObterItem(Data.itemBD[1])
+
+botoes_menu=Sprites.get_lista_botoes_menu()
+ismousepressed=False
+
 
 
 
@@ -1456,9 +1465,37 @@ def UpdateTest():
 
 
 while(True):
-
     if(jogo.estadoJogo == Data.EEstado.MAINMENU):
-        jogo.MainMenu.DesenharMainMenu(janela)
-    
+        jogo.MainMenu.DesenharMainMenu(janela, botoes_menu)
+        if (jogo.mouse.is_button_pressed(1)):
+            if (not ismousepressed):
+                ismousepressed=True
+                if (jogo.mouse.is_over_object(botoes_menu[0])):
+                    print(1)
+                elif (jogo.mouse.is_over_object(botoes_menu[1])):
+                    print(2)
+                elif (jogo.mouse.is_over_object(botoes_menu[2])):
+
+                    while (True):
+                        jogo.MainMenu.Desenharopcoes(janela, botoes_menu)
+
+                        if (jogo.mouse.is_button_pressed(1)):
+                            if (not ismousepressed):
+                                ismousepressed=True
+                                if (jogo.mouse.is_over_object(botoes_menu[4])):
+                                    print("menos")
+                                elif (jogo.mouse.is_over_object(botoes_menu[5])):
+                                    print("mais")
+                                elif (jogo.mouse.is_over_object(botoes_menu[6])):
+                                    break                                    
+                        else:
+                            ismousepressed=False
+
+                elif (jogo.mouse.is_over_object(botoes_menu[3])):
+                    break
+        else:
+            ismousepressed=False
     else:
         Update()
+
+jogo.Musica.musica_atual.stop()
