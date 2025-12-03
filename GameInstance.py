@@ -1,3 +1,4 @@
+import pickle
 from PPlay.window import *
 from PPlay.sprite import *
 from PPlay.sound import *
@@ -71,3 +72,56 @@ class Jogo():
 
         self.MainMenu = MainMenu.MainMenu()
         self.Musica = Sounds.musica(Sounds.criar_lista_musicas())
+
+
+    def SalvarJogo(self):
+        habilidades = []
+
+        for habilidade in self.jogador.habilidades:
+            habilidades.append(habilidade.ID)
+
+        items = []
+
+        for item in self.jogador.items:
+            items.append([item.ID, item.quantidade])
+
+        save = {
+            "jogadorPos": [self.jogador.x, self.jogador.y],
+            "jogadorRot": [self.jogador.dirX, self.jogador.dirY, self.jogador.planeX, self.jogador.planeY],
+            "jogadorLevel": self.jogador.level,
+            "jogadorXp": self.jogador.xp,
+            "jogadorHabilidades": habilidades,
+            "jogadorItems":  items,
+            "jogadorHp": self.jogador.vida,
+            "jogadorHpMax": self.jogador.vidaMaxima,
+            "jogadorEnergia": self.jogador.energia,
+            "jogadorEnergiaMax": self.jogador.energiaMaxima,
+            "andar": self.jogador.andar,
+        }
+
+        with open("save.pkl", "wb") as f:
+            pickle.dump(save, f)
+
+    def CarregarJogo(self, save):
+
+        self.jogador.x =      save["jogadorPos"][0]
+        self.jogador.y  =     save["jogadorPos"][1]
+        self.jogador.dirX =   save["jogadorRot"][0]
+        self.jogador.dirY =   save["jogadorRot"][1]
+        self.jogador.planeX = save["jogadorRot"][2]
+        self.jogador.planeY = save["jogadorRot"][3]
+        self.jogador.level =  save["jogadorLevel"]
+        self.jogador.xp =     save["jogadorXp"]
+        for habilidade in save["jogadorHabilidades"]:
+            self.jogador.AprenderHabilidade(habilidade)
+
+        for item in save["jogadorItems"]:
+            for i in range(0, item[1]):
+                self.jogador.ObterItem(Data.itemBD[item[0] - 1])
+
+
+        self.jogador.vida = save["jogadorHp"]
+        self.jogador.vidaMaxima = save["jogadorHpMax"]
+        self.jogador.energia = save["jogadorEnergia"]
+        self.jogador.energiaMaxima = save["jogadorEnergiaMax"]
+        self.jogador.andar = save["andar"]

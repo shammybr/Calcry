@@ -1,3 +1,4 @@
+import pickle
 from PPlay.window import *
 from PPlay.sprite import *
 from PPlay.sound import *
@@ -126,6 +127,17 @@ def Update():
 
             jogo.botaoSolto = False
             jogo.jogador.TomarDano(5)
+
+        if(jogo.ultimoInput == 11 and jogo.botaoSolto):
+
+            jogo.botaoSolto = False
+            jogo.SalvarJogo()
+        
+        if(jogo.ultimoInput == 12 and jogo.botaoSolto):
+
+            jogo.botaoSolto = False
+            jogo.CarregarJogo()
+
 
         RenderizarMapa()
 
@@ -1461,7 +1473,20 @@ def UpdateTest():
 
 
 
+def ComecarJogo():
+    jogo.estadoJogo = Data.EEstado.ANDANDO
 
+def CarregarJogo():
+    try:
+        with open("save.pkl", "rb") as f:
+            save = pickle.load(f)
+            jogo.estadoJogo = Data.EEstado.ANDANDO
+            jogo.CarregarJogo(save)
+    except FileNotFoundError:
+        print("No save file found. Starting new game...")
+        
+    except (pickle.UnpicklingError, EOFError):
+        print("Save file is corrupted!")
 
 
 while(True):
@@ -1471,9 +1496,9 @@ while(True):
             if (not ismousepressed):
                 ismousepressed=True
                 if (jogo.mouse.is_over_object(botoes_menu[0])):
-                    print(1)
+                    ComecarJogo()
                 elif (jogo.mouse.is_over_object(botoes_menu[1])):
-                    print(2)
+                    CarregarJogo()
                 elif (jogo.mouse.is_over_object(botoes_menu[2])):
 
                     while (True):
