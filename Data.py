@@ -114,6 +114,7 @@ class Jogador(Entidade):
         self.xp = 99
         self.danoGuardado = 0
         self.andar = 1
+        self.engrenagems = [False, False, False]
 
     def GanharXP(self, xp):
         self.xp = self.xp + xp
@@ -323,6 +324,8 @@ def Voltar(jogador):
 
     return True
 
+
+
 habilidadeBD = [ Habilidade("Concentração", 1, [40, 10, 10], ["Concentre-se na tarefa!", "Aumenta o ataque e a defesa - 3 turnos"], False, [BuffarAtaque, BuffarDefesa]),
                  Habilidade("Meditação", 2, [0, 30], ["Controle sua mente!", "Recupera sua energia em 30"], False, [CurarEnergia]),
                  Habilidade("Preparação", 2, [80, 30], ["Transforme dor em força!", "Aumenta o seu dano de acordo com o dano recebido."], False, [AbsorverAtaque]),
@@ -336,7 +339,9 @@ itemBD = [  Item("Energético", 1, [0, 9999], ["Energético com gosto de manga."
 
 escolhaBD = [   Escolha('Subir de andar' , 'Sprites/HUD/escolhaNormal.png', 'Sprites/HUD/escolhaSelecionada.png', []),
                 Escolha('Voltar' , 'Sprites/HUD/escolhaNormal.png', 'Sprites/HUD/escolhaSelecionada.png', []),
-                Escolha('Descer de andar' , 'Sprites/HUD/escolhaNormal.png', 'Sprites/HUD/escolhaSelecionada.png', [])
+                Escolha('Descer de andar' , 'Sprites/HUD/escolhaNormal.png', 'Sprites/HUD/escolhaSelecionada.png', []),
+                Escolha('Aceitar' , 'Sprites/HUD/escolhaNormal.png', 'Sprites/HUD/escolhaSelecionada.png', []),
+                Escolha('Recusar' , 'Sprites/HUD/escolhaNormal.png', 'Sprites/HUD/escolhaSelecionada.png', [])
 
 
 

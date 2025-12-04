@@ -352,6 +352,13 @@ def CarregarTexturas(janela):
 
     spriteTexturas.append([intersec, intersec, intersec, intersec])
     geradorSame = CriarGeradorCacheSprite(intersec)
+    geradoresCacheSprites.append([geradorSame, geradorSame, geradorSame, geradorSame])
+
+    professor = pygame.image.load('Sprites/NPCs/professor.png').convert_alpha()
+
+
+    spriteTexturas.append([professor, professor, professor, professor])
+    geradorSame = CriarGeradorCacheSprite(professor)
 
     geradoresCacheSprites.append([geradorSame, geradorSame, geradorSame, geradorSame])
 

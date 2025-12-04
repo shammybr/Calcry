@@ -1,4 +1,5 @@
 import pickle
+import random
 from PPlay.window import *
 from PPlay.sprite import *
 from PPlay.sound import *
@@ -25,9 +26,9 @@ jogo = GameInstance.Jogo(janela)
 jogo.Musica.musica_atual.play()
 
 luta = jogo.luta
-jogo.jogador.AprenderHabilidade(Data.habilidadeBD[0])
-jogo.jogador.AprenderHabilidade(Data.habilidadeBD[1])
-jogo.jogador.AprenderHabilidade(Data.habilidadeBD[2])
+#jogo.jogador.AprenderHabilidade(Data.habilidadeBD[0])
+#jogo.jogador.AprenderHabilidade(Data.habilidadeBD[1])
+#jogo.jogador.AprenderHabilidade(Data.habilidadeBD[2])
 jogo.jogador.ObterItem(Data.itemBD[0])
 jogo.jogador.ObterItem(Data.itemBD[1])
 jogo.jogador.ObterItem(Data.itemBD[1])
@@ -117,11 +118,8 @@ def Update():
                 jogo.ultimoMovimentoBotao = time.time()
 
         if(jogo.ultimoInput == 9):
-            
-            PrepararLuta()
-            jogo.estadoJogo = Data.EEstado.LUTA
-            luta.estadoLuta = luta.EEstadoLuta.ANIMACAO
-            luta.estadoAnimacao = 0
+            ComecarLuta()
+
             
         if(jogo.ultimoInput == 10 and jogo.botaoSolto):
 
@@ -136,7 +134,7 @@ def Update():
         if(jogo.ultimoInput == 12 and jogo.botaoSolto):
 
             jogo.botaoSolto = False
-            jogo.CarregarJogo()
+            CarregarJogo()
 
 
         RenderizarMapa()
@@ -155,6 +153,8 @@ def Update():
                 jogo.ultimoMovimentoBotao = time.time()
 
             elif(jogo.ultimoInput == 5):
+                jogo.dialogoMensagens.clear()
+
                 for func in jogo.escolhas[jogo.escolhaSelecionada].funcoes:
                     func()
 
@@ -171,14 +171,18 @@ def Update():
         if((time.time() - jogo.ultimoMovimentoBotao > 0.1 and jogo.botaoSolto)):
             if(jogo.ultimoInput == 5):
                 if(jogo.ultimoInput == 5):
-                    if(len(luta.mensagem) <= 4):
-                        jogo.dialogoMensagens.clear()
-                        jogo.estadoJogo = Data.EEstado.ANDANDO
+                    if(len(jogo.dialogoMensagens) <= 6):
+                        if(jogo.ultimoEstadoJogo != Data.EEstado.ESCOLHA):
+                            jogo.dialogoMensagens.clear()
+
+                        if(jogo.ultimoEstadoJogo != Data.EEstado.DIALOGO):
+                            jogo.estadoJogo = jogo.ultimoEstadoJogo
+                        else:
+                            jogo.estadoJogo = Data.EEstado.ANDANDO
                     else:
-                        jogo.dialogoMensagens.pop(0)
-                        jogo.dialogoMensagens.pop(0)
-                        jogo.dialogoMensagens.pop(0)
-                        jogo.dialogoMensagens.pop(0)
+                        for i in range(0, 6):
+                            jogo.dialogoMensagens.pop(0)
+
 
                         jogo.ultimoMovimentoBotao = time.time()
                     jogo.botaoSolto = False
@@ -661,7 +665,7 @@ def Update():
 
         elif(luta.estadoLuta == luta.EEstadoLuta.FIM):
             
-            jogo.estadoJogo = Data.EEstado.ANDANDO
+            jogo.estadoJogo = jogo.ultimoEstadoJogo
 
 
 
@@ -679,7 +683,12 @@ def Update():
 
 
 
-
+def ComecarLuta():
+        PrepararLuta()
+        jogo.ultimoEstadoJogo = Data.EEstado.ANDANDO
+        jogo.estadoJogo = Data.EEstado.LUTA
+        luta.estadoLuta = luta.EEstadoLuta.ANIMACAO
+        luta.estadoAnimacao = 0
 
 def RenderizarLuta():
 
@@ -801,6 +810,46 @@ def ChecarColisao(novaPosicaoX, novaPosicaoY):
 
     return False
 
+
+def ProfessorPirataDialogo():
+    jogo.dialogoMensagens.append("Professor:")
+    jogo.dialogoMensagens.append(" ")
+    jogo.dialogoMensagens.append("Yarr! Escondi um tesouro neste andar!")
+    jogo.dialogoMensagens.append("3 S 4 O 4 N 2 O")
+    jogo.dialogoMensagens.append("É de quem primeiro achar!")
+    jogo.ultimoEstadoJogo = Data.EEstado.ANDANDO
+    jogo.estadoJogo = Data.EEstado.DIALOGO
+    return True
+
+def ProfessorProvaAndar1():
+    jogo.dialogoMensagens.append("Professor Substituto:")
+    jogo.dialogoMensagens.append(" ")
+    jogo.dialogoMensagens.append("Eu não sei se consigo fazer exercícios")
+    jogo.dialogoMensagens.append("muito legais...")
+    jogo.dialogoMensagens.append("Poderia me ajudar a testar essa lista?")
+
+    jogo.escolhas.clear()
+    jogo.escolhaSelecionada = 0
+
+
+
+    jogo.escolhas.append(Data.escolhaBD[3])
+    jogo.escolhas[0].imagem.Transformar(janela.width * 0.3, janela.height* 0.09)
+    jogo.escolhas[0].imagem.set_position(janela.width * 0.5 - ( jogo.escolhas[0].imagem.largura / 2), janela.height * 0.35 - ( jogo.escolhas[0].imagem.altura / 2))
+
+
+
+
+    jogo.escolhas.append(Data.escolhaBD[4])
+    jogo.escolhas[1].imagem.Transformar(janela.width * 0.3, janela.height* 0.09)
+    jogo.escolhas[1].imagem.set_position(janela.width * 0.5 - ( jogo.escolhas[1].imagem.largura / 2), janela.height * 0.5 - ( jogo.escolhas[1].imagem.altura / 2))
+    
+    CalcularEscolhaSelecionada(0)
+
+    jogo.ultimoEstadoJogo = Data.EEstado.ESCOLHA
+    jogo.estadoJogo = Data.EEstado.DIALOGO
+    return True
+
 def ChecarEvento(novaPosicaoX, novaPosicaoY):
     evento = Mapa.GetMapaEventos()[int(novaPosicaoY)][int(novaPosicaoX)]
 
@@ -833,13 +882,30 @@ def ChecarEvento(novaPosicaoX, novaPosicaoY):
             return True
         
 
-
+        elif(evento == 2):
+            return ProfessorPirataDialogo()
+        
+        elif(evento == 4):
+            return ProfessorProvaAndar1()
+        
         elif(evento == 10):
             ChecarElevador()
 
 def ChecarElevador():
     jogo.dialogoMensagens.clear()
+    jogo.dialogoMensagens.append(" ")
     jogo.dialogoMensagens.append("O elevador parece quebrado...")
+    jogo.dialogoMensagens.append(" ")
+    if(jogo.jogador.engrenagems[0]):
+        if(jogo.jogador.engrenagems[1]):
+            if(jogo.jogador.engrenagems[2]):
+                pass
+            else:
+                jogo.dialogoMensagens.append("Tem mais uma engrenagem faltando...")
+        else:
+            jogo.dialogoMensagens.append("Tem mais duas engrenagens faltando...")
+
+    jogo.ultimoEstadoJogo = Data.EEstado.ANDANDO
     jogo.estadoJogo = Data.EEstado.DIALOGO
 
 def CalcularEscolhaSelecionada(passo):
@@ -1170,7 +1236,7 @@ def EscreverLutaLog(mensagens):
 def EscreverDialogo(mensagens):
     tamanho = 20
 
-    for i, mensagem in enumerate(mensagens[:4]):
+    for i, mensagem in enumerate(mensagens[:6]):
             
         janela.draw_text(mensagem,  jogo.jogadorHUD.logBG.x + (jogo.jogadorHUD.logBG.width * 0.01),  jogo.jogadorHUD.logBG.y + (janela.height * 0.03 + (i * janela.height * 0.035)), "Sprites/HUD/PressStart2P-Regular.ttf", tamanho * int((1280/janela.width)), (255,255,255), )
 
@@ -1331,12 +1397,42 @@ def ChecarInteracao():
             CalcularInteracao(interacao)
 
 
+def PegarTesouro():
+    jogo.dialogoMensagens.append(" ")
+    jogo.dialogoMensagens.append("Tem uma pequena caixa debaixo da")
+    jogo.dialogoMensagens.append("carteira... ")
+    jogo.dialogoMensagens.append(" ")
+    jogo.dialogoMensagens.append(" ")
+    jogo.dialogoMensagens.append(" ")
+    jogo.dialogoMensagens.append(" ")
+    jogo.dialogoMensagens.append("Jogador aprendeu: Concentração!")
+    jogo.jogador.AprenderHabilidade(Data.habilidadeBD[0])
+    jogo.estadoJogo = Data.EEstado.DIALOGO
 
+def PegarEngrenagem(andar):
+
+    jogo.jogador.engrenagems[andar - 1] = True
 
 def CalcularInteracao(interacao):
     if(interacao.interacao == 1):
         if(interacao.id == 1):
             BebedouroCurar()
+    elif(interacao.interacao == 2):
+        ProfessorPirataDialogo()
+    elif(interacao.interacao == 3):
+        if(jogo.jogador.habilidades.count(Data.habilidadeBD[0]) == 0):
+            PegarTesouro()
+
+    elif(interacao.interacao == 4):
+            ProfessorProvaAndar1()
+    elif(interacao.interacao == 5):
+            if(not jogo.jogador.engrenagems[0]):
+                jogo.dialogoMensagens.append(" ")
+                jogo.dialogoMensagens.append("Você encontrou uma engrenagem!")
+                jogo.jogador.AprenderHabilidade(Data.habilidadeBD[0])
+                jogo.ultimoEstadoJogo = Data.EEstado.ANDANDO
+                jogo.estadoJogo = Data.EEstado.DIALOGO
+                PegarEngrenagem(1)
 
     elif(interacao.interacao == 10):
         ChecarElevador()
@@ -1454,6 +1550,63 @@ def DescerAndar():
 
 Data.escolhaBD[2].AdicionarFunc(DescerAndar)
 
+def FazerListaLimites():
+    jogo.inimigosNaLuta.clear()
+
+    for i in range(0, 4):
+                inimigo = Data.Inimigo("",0, 0, 0, 0, 0, HUD.GameImageMelhor('Sprites/Inimigos/Erro.png', 0, 0), 0 ,0, 0, 0)
+
+                nlimite = 0
+                for i in range(0, len( jogo.inimigosNaLuta)):
+                    if(jogo.inimigosNaLuta[i].tipo == Data.tipoEntidade["Limite"]):
+                        nlimite += 1
+
+                inimigo = Data.ILimite("Limite " + chr(65 + nlimite))
+
+    i = 0
+
+    for inimigo in jogo.inimigosNaLuta:
+        if(inimigo.vida > 0):
+            if(inimigo.tipo == Data.tipoEntidade["Limite"]):
+                    inimigo.sprite.Transformar(int(317 * (janela.width/1920)), int(497 * (janela.height/1080)))
+                    largura = (inimigo.sprite.largura / 2)
+                    altura = (inimigo.sprite.altura / 2)
+
+                    if(i == 0):
+                        inimigo.sprite.set_position( int( (0.40 * janela.width)  - largura), int( 0.65 * janela.height - altura )    )
+                    
+                    elif(i == 1):
+                        inimigo.sprite.set_position( int( (0.60 * janela.width) - largura), int( 0.65 * janela.height  - altura)    )
+
+                    elif(i == 2):
+                        inimigo.sprite.set_position( int( (0.25 * janela.width) - largura), int( 0.55 * janela.height - altura )    )
+                    
+                    elif(i == 3):
+                        inimigo.sprite.set_position( int( (0.75 * janela.width) - largura), int( 0.55 * janela.height - altura )    )
+
+        i += 1
+
+    jogo.estadoJogo = Data.EEstado.LUTA
+    luta.estadoLuta = luta.EEstadoLuta.ANIMACAO
+    luta.estadoAnimacao = 0
+    jogo.dialogoMensagens.append("Professor Substituto:")
+    jogo.dialogoMensagens.append("")
+    jogo.dialogoMensagens.append("Muito obrigado! Acho que sei como")
+    jogo.dialogoMensagens.append("melhorar essa lista.")
+    jogo.ultimoEstadoJogo = Data.EEstado.DIALOGO
+
+Data.escolhaBD[3].AdicionarFunc(FazerListaLimites)
+
+def RecusarProfessor():
+    jogo.dialogoMensagens.append("Professor Substituto:")
+    jogo.dialogoMensagens.append("")
+    jogo.dialogoMensagens.append("Poxa... ")
+    jogo.ultimoEstadoJogo = Data.EEstado.ANDANDO
+    jogo.estadoJogo = Data.EEstado.DIALOGO
+
+
+Data.escolhaBD[4].AdicionarFunc(RecusarProfessor)
+
 #não usado
 def UpdateTest():
     janela.get_screen().fill((100, 100, 100)) # Gray floor
@@ -1483,7 +1636,7 @@ def CarregarJogo():
             jogo.estadoJogo = Data.EEstado.ANDANDO
             jogo.CarregarJogo(save)
     except FileNotFoundError:
-        print("No save file found. Starting new game...")
+        print("No save file found.")
         
     except (pickle.UnpicklingError, EOFError):
         print("Save file is corrupted!")

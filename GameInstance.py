@@ -21,6 +21,7 @@ class Jogo():
         self.alvoLuta = 0
         self.alvoLutaAnimacao = 0
         self.estadoJogo = Data.EEstado.MAINMENU
+        self.ultimoEstadoJogo = Data.EEstado.MAINMENU
         self.animacao = Data.EANIMACAOOVERWORLD.NADA
         self.escolhas = []
         self.inimigosNaLuta = []
@@ -87,10 +88,11 @@ class Jogo():
 
         save = {
             "jogadorPos": [self.jogador.x, self.jogador.y],
-            "jogadorRot": [self.jogador.dirX, self.jogador.dirY, self.jogador.planeX, self.jogador.planeY],
+            "jogadorRot": [self.jogador.dirX, self.jogador.dirY, self.jogador.planeX, self.jogador.planeY, self.jogador.direcao],
             "jogadorLevel": self.jogador.level,
             "jogadorXp": self.jogador.xp,
             "jogadorHabilidades": habilidades,
+            "jogadorEngrenagens": self.jogador.engrenagems,
             "jogadorItems":  items,
             "jogadorHp": self.jogador.vida,
             "jogadorHpMax": self.jogador.vidaMaxima,
@@ -110,10 +112,13 @@ class Jogo():
         self.jogador.dirY =   save["jogadorRot"][1]
         self.jogador.planeX = save["jogadorRot"][2]
         self.jogador.planeY = save["jogadorRot"][3]
+        self.jogador.direcao = save["jogadorRot"][4]
         self.jogador.level =  save["jogadorLevel"]
         self.jogador.xp =     save["jogadorXp"]
+        self.jogador.engrenagems = save["jogadorEngrenagens"]
         for habilidade in save["jogadorHabilidades"]:
-            self.jogador.AprenderHabilidade(habilidade)
+            pass
+            self.jogador.AprenderHabilidade(Data.habilidadeBD[habilidade-1])
 
         for item in save["jogadorItems"]:
             for i in range(0, item[1]):
