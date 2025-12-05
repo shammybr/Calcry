@@ -195,7 +195,7 @@ def Update():
 
     elif(jogo.estadoJogo == Data.EEstado.ANIMACAOOVERWORLD):
         if(jogo.animacao == Data.EANIMACAOOVERWORLD.NADA):
-            Data.EEstado.ANDANDO
+            jogo.estadoJogo = Data.EEstado.ANDANDO
         else:
             if(jogo.animacao ==  Data.EANIMACAOOVERWORLD.MUDARANDAR):
                 RenderizarMapa()
@@ -214,9 +214,59 @@ def Update():
                         jogo.fade.FadeOut(velocidadeFade * min(jogo.deltaTime, 0.01))
 
                     else:
+                        jogo.ultimoEstadoJogo = Data.EEstado.ANDANDO
                         jogo.estadoJogo = Data.EEstado.ANDANDO
 
+
                 janela.get_screen().blit(jogo.fade.surface, (0, 0))
+
+            if(jogo.animacao == Data.EANIMACAOOVERWORLD.CADEIRAS):
+                RenderizarMapa()
+                velocidadeFade = 1000
+                if(jogo.fade.fading):
+                    if(jogo.fade.alpha < 255):
+                        jogo.fade.FadeIn(velocidadeFade * min(jogo.deltaTime, 0.01))
+                    else:
+                        if(jogo.fade.tempo < 0.3):
+                            jogo.fade.Cooldown(jogo.deltaTime)
+                        else:
+                            jogo.jogador.quests[1] = 99
+                            jogo.jogador.x = 2.5
+                            jogo.jogador.y = 11.5
+                            jogo.jogador.dirX = -1
+                            jogo.jogador.dirY = 0
+                            jogo.jogador.planeX = 0
+                            jogo.jogador.planeY = 0.66
+                            jogo.jogador.direcao = Data.direcao["O"]
+
+                            jogo.mapaAtual = Mapa.GerarMapa(2, jogo)
+                            jogo.fade.fading = False
+
+                else:
+                    if(jogo.fade.alpha > 0):
+                        jogo.fade.FadeOut(velocidadeFade * min(jogo.deltaTime, 0.01))
+
+                    else:
+                        jogo.dialogoMensagens.append("Professor Feliz:")
+                        jogo.dialogoMensagens.append(" ")
+                        jogo.dialogoMensagens.append("Minhas cadeiras! Você achou elas!")
+                        jogo.dialogoMensagens.append("Ah, mas que saudade eu estava de olhar")
+                        jogo.dialogoMensagens.append("esse azul... azul tão profundo...")
+                        jogo.dialogoMensagens.append(" ")
+                        jogo.dialogoMensagens.append("Professor Feliz:")
+                        jogo.dialogoMensagens.append(" ")
+                        jogo.dialogoMensagens.append("Oh! Desculpe, esqueci que estava aí.")
+                        jogo.dialogoMensagens.append("Eu achei isso aqui enquanto procurava as")
+                        jogo.dialogoMensagens.append("cadeiras, talvez você queira.")
+                        jogo.dialogoMensagens.append(" ")
+                        jogo.dialogoMensagens.append("Você obeteve uma engrenagem")
+                        jogo.jogador.engrenagems[1] = True
+                        jogo.ultimoEstadoJogo = Data.EEstado.ANDANDO
+                        jogo.estadoJogo = Data.EEstado.DIALOGO
+
+
+                janela.get_screen().blit(jogo.fade.surface, (0, 0))
+
 
     elif(jogo.estadoJogo == Data.EEstado.LUTA):
 
@@ -676,6 +726,7 @@ def Update():
     jogo.ultimoInputAnterior = jogo.ultimoInput
 
     if(jogo.segundo > 1):
+
         print(jogo.numeroFrames)
       # print(f"Direção: {jogo.jogador.direcao}")
         jogo.numeroFrames = 0
@@ -850,6 +901,90 @@ def ProfessorProvaAndar1():
     jogo.estadoJogo = Data.EEstado.DIALOGO
     return True
 
+def ProfessorCadeiras():
+    if(jogo.jogador.quests[1] < 1):
+        jogo.dialogoMensagens.append("Professor Triste:")
+        jogo.dialogoMensagens.append(" ")
+        jogo.dialogoMensagens.append("Cade minhas cadeiras?! Como eu vou dar")
+        jogo.dialogoMensagens.append("aula sem cadeiras?")
+        jogo.dialogoMensagens.append(" ")
+        jogo.dialogoMensagens.append(" ")
+        jogo.dialogoMensagens.append("Professor Triste: ")
+        jogo.dialogoMensagens.append(" ")
+        jogo.dialogoMensagens.append("Por favor, me ajude a encontrar minhas")
+        jogo.dialogoMensagens.append("preciosas cadeiras...")
+        jogo.ultimoEstadoJogo = Data.EEstado.ANDANDO
+        jogo.estadoJogo = Data.EEstado.DIALOGO
+        return True
+    
+    elif(jogo.jogador.quests[1] < 3):
+        jogo.dialogoMensagens.append("Professor Triste:")
+        jogo.dialogoMensagens.append(" ")
+        jogo.dialogoMensagens.append("Uma cadeira no banheiro?!")
+        jogo.dialogoMensagens.append("Será que alguém escondeu elas no banheiro")
+        jogo.dialogoMensagens.append("feminino? Mas eu não posso entrar lá...")
+        jogo.ultimoEstadoJogo = Data.EEstado.ANDANDO
+        jogo.estadoJogo = Data.EEstado.DIALOGO
+        return True
+    
+    elif(jogo.jogador.quests[1] == 3):
+        jogo.dialogoMensagens.append("Professor Triste:")
+        jogo.dialogoMensagens.append(" ")
+        jogo.dialogoMensagens.append("AHH!! FOGOOOOOOO!!!")
+        jogo.dialogoMensagens.append("SALVEM AS CADEIRAS!!!!")
+        jogo.ultimoEstadoJogo = Data.EEstado.ANDANDO
+        jogo.estadoJogo = Data.EEstado.DIALOGO
+        return True
+
+
+    elif(jogo.jogador.quests[1] == 99):
+        jogo.dialogoMensagens.append("Professor Feliz:")
+        jogo.dialogoMensagens.append(" ")
+        jogo.dialogoMensagens.append("Muito obrigado!")
+        jogo.dialogoMensagens.append("Ah, que cadeiras lindas...")
+        jogo.ultimoEstadoJogo = Data.EEstado.ANDANDO
+        jogo.estadoJogo = Data.EEstado.DIALOGO
+        return True
+
+def EntrarBanheiroMeninas():
+        jogo.dialogoMensagens.append(" ")
+        jogo.dialogoMensagens.append("Não parece ser uma boa ideia entrar aí...")
+        jogo.ultimoEstadoJogo = Data.EEstado.ANDANDO
+        jogo.estadoJogo = Data.EEstado.DIALOGO
+        return True
+
+def EntrarBanheiroMeninasCadeiras():
+    if(jogo.jogador.quests[1] == 0):
+        jogo.dialogoMensagens.append(" ")
+        jogo.dialogoMensagens.append("Não parece ser uma boa ideia entrar aí...")
+        jogo.ultimoEstadoJogo = Data.EEstado.ANDANDO
+        jogo.estadoJogo = Data.EEstado.DIALOGO
+        return True
+    elif(jogo.jogador.quests[1] == 1):
+        jogo.dialogoMensagens.append(" ")
+        jogo.dialogoMensagens.append("Dá pra ouvir o som de pessoas usando o")
+        jogo.dialogoMensagens.append("banheiro. Melhor esperar estar vazio.")
+        jogo.ultimoEstadoJogo = Data.EEstado.ANDANDO
+        jogo.estadoJogo = Data.EEstado.DIALOGO
+        jogo.jogador.quests[1] = 2
+        return True
+    elif(jogo.jogador.quests[1] == 2):
+        jogo.dialogoMensagens.append(" ")
+        jogo.dialogoMensagens.append("Dá pra ouvir o som de pessoas usando o")
+        jogo.dialogoMensagens.append("banheiro. Melhor esperar estar vazio.")
+        jogo.ultimoEstadoJogo = Data.EEstado.ANDANDO
+        return True
+
+def PegarCadeiras():
+    jogo.ultimoEstadoJogo = Data.EEstado.ANDANDO
+    jogo.fade.fading = True
+    jogo.fade.alpha = 0
+    jogo.fade.surface.set_alpha(0)
+    jogo.estadoJogo = Data.EEstado.ANIMACAOOVERWORLD
+    jogo.animacao = Data.EANIMACAOOVERWORLD.CADEIRAS
+
+    return True
+
 def ChecarEvento(novaPosicaoX, novaPosicaoY):
     evento = Mapa.GetMapaEventos()[int(novaPosicaoY)][int(novaPosicaoX)]
 
@@ -888,6 +1023,19 @@ def ChecarEvento(novaPosicaoX, novaPosicaoY):
         elif(evento == 4):
             return ProfessorProvaAndar1()
         
+        elif(evento == 6):
+            return ProfessorCadeiras()
+        elif(evento == 7):
+            if(jogo.jogador.quests[1] == 0):
+                jogo.jogador.quests[1] = 1
+
+        elif(evento == 8):
+            return EntrarBanheiroMeninasCadeiras()
+        
+        elif(evento == 9):
+            return PegarCadeiras()
+        
+
         elif(evento == 10):
             ChecarElevador()
 
@@ -896,14 +1044,22 @@ def ChecarElevador():
     jogo.dialogoMensagens.append(" ")
     jogo.dialogoMensagens.append("O elevador parece quebrado...")
     jogo.dialogoMensagens.append(" ")
+
+    engrenagens = 0
     if(jogo.jogador.engrenagems[0]):
-        if(jogo.jogador.engrenagems[1]):
-            if(jogo.jogador.engrenagems[2]):
-                pass
-            else:
-                jogo.dialogoMensagens.append("Tem mais uma engrenagem faltando...")
-        else:
-            jogo.dialogoMensagens.append("Tem mais duas engrenagens faltando...")
+        engrenagens += 1
+    
+    if(jogo.jogador.engrenagems[1]):
+        engrenagens += 1
+    if(jogo.jogador.engrenagems[2]):
+        engrenagens += 1
+
+
+   
+    if(engrenagens == 1):
+        jogo.dialogoMensagens.append("Tem mais duas engrenagens faltando...")
+    elif(engrenagens == 2):
+        jogo.dialogoMensagens.append("Tem mais uma engrenagem faltando...")
 
     jogo.ultimoEstadoJogo = Data.EEstado.ANDANDO
     jogo.estadoJogo = Data.EEstado.DIALOGO
@@ -1407,11 +1563,47 @@ def PegarTesouro():
     jogo.dialogoMensagens.append(" ")
     jogo.dialogoMensagens.append("Jogador aprendeu: Concentração!")
     jogo.jogador.AprenderHabilidade(Data.habilidadeBD[0])
+    jogo.ultimoEstadoJogo = Data.EEstado.ANDANDO
     jogo.estadoJogo = Data.EEstado.DIALOGO
 
 def PegarEngrenagem(andar):
 
     jogo.jogador.engrenagems[andar - 1] = True
+
+def AlarmeIncendio():
+    if(jogo.jogador.andar != 2 or jogo.jogador.quests[1] < 2):
+        jogo.dialogoMensagens.append(" ")
+        jogo.dialogoMensagens.append("Quebrar isso causaria uma confusão.")
+        jogo.ultimoEstadoJogo = Data.EEstado.ANDANDO
+        jogo.estadoJogo = Data.EEstado.DIALOGO
+
+    elif(jogo.jogador.andar == 2 and jogo.jogador.quests[1] == 2):
+        jogo.dialogoMensagens.append(" ")
+        jogo.dialogoMensagens.append("Quebrar isso causaria uma confusão.")
+
+        jogo.escolhas.clear()
+        jogo.escolhaSelecionada = 0
+
+
+
+        jogo.escolhas.append(Data.escolhaBD[5])
+        jogo.escolhas[0].imagem.Transformar(janela.width * 0.3, janela.height* 0.09)
+        jogo.escolhas[0].imagem.set_position(janela.width * 0.5 - ( jogo.escolhas[0].imagem.largura / 2), janela.height * 0.35 - ( jogo.escolhas[0].imagem.altura / 2))
+
+
+
+
+        jogo.escolhas.append(Data.escolhaBD[1])
+        jogo.escolhas[1].imagem.Transformar(janela.width * 0.3, janela.height* 0.09)
+        jogo.escolhas[1].imagem.set_position(janela.width * 0.5 - ( jogo.escolhas[1].imagem.largura / 2), janela.height * 0.5 - ( jogo.escolhas[1].imagem.altura / 2))
+        
+        CalcularEscolhaSelecionada(0)
+
+        jogo.ultimoEstadoJogo = Data.EEstado.ESCOLHA
+        jogo.estadoJogo = Data.EEstado.DIALOGO
+        return True
+
+
 
 def CalcularInteracao(interacao):
     if(interacao.interacao == 1):
@@ -1433,9 +1625,19 @@ def CalcularInteracao(interacao):
                 jogo.ultimoEstadoJogo = Data.EEstado.ANDANDO
                 jogo.estadoJogo = Data.EEstado.DIALOGO
                 PegarEngrenagem(1)
+    elif(interacao.interacao == 6):
+        ProfessorCadeiras()
 
+
+    elif(interacao.interacao == 8):
+        EntrarBanheiroMeninasCadeiras()
+
+    elif(interacao.interacao == 9):
+        AlarmeIncendio()
     elif(interacao.interacao == 10):
         ChecarElevador()
+    elif(interacao.interacao == 11):
+        EntrarBanheiroMeninas()
 
 
 # Inicio Parte minimapa
@@ -1533,7 +1735,7 @@ def SubirAndar():
     jogo.fade.fading = True
     jogo.fade.alpha = 0
     jogo.fade.surface.set_alpha(0)
-    jogo.mapaAtual = Mapa.GerarMapa(jogo.jogador.andar)
+    jogo.mapaAtual = Mapa.GerarMapa(jogo.jogador.andar, jogo)
     jogo.estadoJogo = Data.EEstado.ANIMACAOOVERWORLD
 
 Data.escolhaBD[0].AdicionarFunc(SubirAndar)
@@ -1545,7 +1747,7 @@ def DescerAndar():
     jogo.fade.fading = True
     jogo.fade.alpha = 0
     jogo.fade.surface.set_alpha(0)
-    jogo.mapaAtual = Mapa.GerarMapa(jogo.jogador.andar)
+    jogo.mapaAtual = Mapa.GerarMapa(jogo.jogador.andar, jogo)
     jogo.estadoJogo = Data.EEstado.ANIMACAOOVERWORLD
 
 Data.escolhaBD[2].AdicionarFunc(DescerAndar)
@@ -1607,6 +1809,13 @@ def RecusarProfessor():
 
 Data.escolhaBD[4].AdicionarFunc(RecusarProfessor)
 
+def AcionarAlarme():
+    jogo.jogador.quests[1] = 3
+    jogo.ultimoEstadoJogo = Data.EEstado.ANDANDO
+    jogo.estadoJogo = Data.EEstado.ANDANDO
+
+Data.escolhaBD[5].AdicionarFunc(AcionarAlarme)
+
 #não usado
 def UpdateTest():
     janela.get_screen().fill((100, 100, 100)) # Gray floor
@@ -1635,6 +1844,7 @@ def CarregarJogo():
             save = pickle.load(f)
             jogo.estadoJogo = Data.EEstado.ANDANDO
             jogo.CarregarJogo(save)
+            jogo.mapaAtual = Mapa.GerarMapa(jogo.jogador.andar, jogo)
     except FileNotFoundError:
         print("No save file found.")
         

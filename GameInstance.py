@@ -61,7 +61,7 @@ class Jogo():
         self.jogador = Data.Jogador(21.5 , 9.5, 0, Data.direcao["O"], 110)
         self.teclado = Window.get_keyboard()
         self.mouse = Window.get_mouse()
-        self.mapaAtual = Mapa.GerarMapa(1)
+        self.mapaAtual = Mapa.GerarMapa(1, self)
         self.dialogoMensagens = []
 
 
@@ -99,6 +99,7 @@ class Jogo():
             "jogadorEnergia": self.jogador.energia,
             "jogadorEnergiaMax": self.jogador.energiaMaxima,
             "andar": self.jogador.andar,
+            "quests": self.jogador.quests
         }
 
         with open("save.pkl", "wb") as f:
@@ -116,6 +117,7 @@ class Jogo():
         self.jogador.level =  save["jogadorLevel"]
         self.jogador.xp =     save["jogadorXp"]
         self.jogador.engrenagems = save["jogadorEngrenagens"]
+        self.jogador.quests = save["quests"]
         for habilidade in save["jogadorHabilidades"]:
             pass
             self.jogador.AprenderHabilidade(Data.habilidadeBD[habilidade-1])
