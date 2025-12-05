@@ -42,7 +42,7 @@ class Luta():
 
     class LutaHUD():
         def __init__(self):
-            self.background = HUD.GameImageMelhor('Sprites/Luta/LutaBG.png', 0, 0)
+            self.background = HUD.GameImageMelhor('Sprites/Luta/lutaBG.png', 0, 0)
             self.bAtacar = HUD.GameImageMelhor('Sprites/Luta/BAtacarHL.png', 0, 0)
             self.bHabilidade = HUD.GameImageMelhor('Sprites/Luta/BHabilidade.png', 0, 0)
             self.bItem = HUD.GameImageMelhor('Sprites/Luta/BItem.png', 0, 0)

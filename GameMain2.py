@@ -1488,7 +1488,7 @@ def GetMinimapa():
         while aux1<=yf_minimapa:
             if (minimapa_completo[aux2][xo_no_completo]==1):
                 soma+=1
-                Sprite_auxiliar=Sprite("Sprites/Minimapa/quadrado_branco.png")
+                Sprite_auxiliar=Sprite("Sprites/minimapa/quadrado_branco.png")
                 Sprite_auxiliar.set_position(1241-34*xo_minimapa, 545+34*aux1)
                 minimapa[aux1][xo_minimapa]=Sprite_auxiliar
             aux1+=1

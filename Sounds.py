@@ -25,8 +25,8 @@ class musica():
 def criar_lista_musicas():
     lista=[]
 
-    lista.append(Sound("musicas/menu.ogg"))
-    lista.append(Sound("musicas/andando.ogg"))
-    lista.append(Sound("musicas/luta.ogg"))
+    lista.append(Sound("Musicas/menu.ogg"))
+    lista.append(Sound("Musicas/andando.ogg"))
+    lista.append(Sound("Musicas/luta.ogg"))
 
     return lista
