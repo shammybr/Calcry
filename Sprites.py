@@ -673,17 +673,17 @@ def get_lista_botoes_menu():
     
     Lista=[]
     
-    Lista.append(Sprite((f'Sprites/botoes/novo_jogo.png')))
-    Lista.append(Sprite((f'Sprites/botoes/continuar.png')))
-    Lista.append(Sprite((f'Sprites/botoes/opcoes.png')))
-    Lista.append(Sprite((f'Sprites/botoes/sair.png')))
+    Lista.append(Sprite('Sprites/botoes/novo_jogo.png'))
+    Lista.append(Sprite('Sprites/botoes/continuar.png'))
+    Lista.append(Sprite('Sprites/botoes/opcoes.png'))
+    Lista.append(Sprite('Sprites/botoes/sair.png'))
 
     for i in range(4):
         Lista[i].set_position(480, 90+i*135)
 
-    Lista.append(Sprite((f'Sprites/botoes/menos.png')))
-    Lista.append(Sprite((f'Sprites/botoes/mais.png')))
-    Lista.append(Sprite((f'Sprites/botoes/voltar.png')))
+    Lista.append(Sprite('Sprites/botoes/menos.png'))
+    Lista.append(Sprite(f'Sprites/botoes/mais.png'))
+    Lista.append(Sprite('Sprites/botoes/voltar.png'))
 
     Lista[4].set_position(400, 210)
     Lista[5].set_position(720, 210)
@@ -691,3 +691,52 @@ def get_lista_botoes_menu():
 
     return Lista
 
+
+#Alterações 5/12 - Inicio
+def get_lista_botoes_submenu():
+
+    Lista=[]
+
+    Lista.append(Sprite('Sprites/botoes/continuar.png'))
+    Lista.append(Sprite('Sprites/botoes/opcoes.png'))
+    Lista.append(Sprite('Sprites/botoes/controles.png'))
+    Lista.append(Sprite('Sprites/botoes/voltar_menu.png'))
+
+    for i in range(4):
+        Lista[i].set_position(480, 90+i*135)
+
+    Lista.append(Sprite('Sprites/botoes/menos.png'))
+    Lista.append(Sprite('Sprites/botoes/mais.png'))
+    Lista.append(Sprite('Sprites/botoes/voltar.png'))
+
+    Lista[4].set_position(400, 210)
+    Lista[5].set_position(720, 210)
+    Lista[6].set_position(480, 345)
+
+    return Lista
+
+def get_diplay_volume():
+
+    Lista=[]
+
+    Lista.append(Sprite('Sprites/botoes/Display/n0.png'))
+    Lista.append(Sprite('Sprites/botoes/Display/n1.png'))
+    Lista.append(Sprite('Sprites/botoes/Display/n2.png'))
+    Lista.append(Sprite('Sprites/botoes/Display/n3.png'))
+    Lista.append(Sprite('Sprites/botoes/Display/n4.png'))
+    Lista.append(Sprite('Sprites/botoes/Display/n5.png'))
+    Lista.append(Sprite('Sprites/botoes/Display/n6.png'))
+    Lista.append(Sprite('Sprites/botoes/Display/n7.png'))
+    Lista.append(Sprite('Sprites/botoes/Display/n8.png'))
+    Lista.append(Sprite('Sprites/botoes/Display/n9.png'))
+    Lista.append(Sprite('Sprites/botoes/Display/n10.png'))
+
+    for i in range(11):
+        Lista[i].set_position(560, 250)
+    
+    Lista.append(Sprite('Sprites/botoes/Display/volume.png'))
+    Lista[11].set_position(560, 210)
+
+    return Lista
+
+#Alterações 5/12 - Fim
