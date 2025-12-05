@@ -26,7 +26,7 @@ jogo = GameInstance.Jogo(janela)
 jogo.Musica.musica_atual.play()
 
 luta = jogo.luta
-#jogo.jogador.AprenderHabilidade(Data.habilidadeBD[0])
+jogo.jogador.AprenderHabilidade(Data.habilidadeBD[0])
 #jogo.jogador.AprenderHabilidade(Data.habilidadeBD[1])
 #jogo.jogador.AprenderHabilidade(Data.habilidadeBD[2])
 jogo.jogador.ObterItem(Data.itemBD[0])
@@ -1562,8 +1562,12 @@ def PegarTesouro():
     jogo.dialogoMensagens.append(" ")
     jogo.dialogoMensagens.append(" ")
     jogo.dialogoMensagens.append("Jogador aprendeu: Concentração!")
+<<<<<<< Updated upstream
     jogo.jogador.AprenderHabilidade(Data.habilidadeBD[0])
     jogo.ultimoEstadoJogo = Data.EEstado.ANDANDO
+=======
+    jogo.jogador.AprenderHabilidade(Data.habilidadeBD[1])
+>>>>>>> Stashed changes
     jogo.estadoJogo = Data.EEstado.DIALOGO
 
 def PegarEngrenagem(andar):
