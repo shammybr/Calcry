@@ -1562,12 +1562,8 @@ def PegarTesouro():
     jogo.dialogoMensagens.append(" ")
     jogo.dialogoMensagens.append(" ")
     jogo.dialogoMensagens.append("Jogador aprendeu: Concentração!")
-<<<<<<< Updated upstream
-    jogo.jogador.AprenderHabilidade(Data.habilidadeBD[0])
-    jogo.ultimoEstadoJogo = Data.EEstado.ANDANDO
-=======
     jogo.jogador.AprenderHabilidade(Data.habilidadeBD[1])
->>>>>>> Stashed changes
+    jogo.ultimoEstadoJogo = Data.EEstado.ANDANDO
     jogo.estadoJogo = Data.EEstado.DIALOGO
 
 def PegarEngrenagem(andar):
