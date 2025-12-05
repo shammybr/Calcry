@@ -23,14 +23,7 @@ import Sounds
 Sprites.CarregarTexturas(janela)
 jogo = GameInstance.Jogo(janela)
 
-#Alteração 5/12/25 - Início
-jogo.Musica.musica_atual.set_repeat(True)
 jogo.Musica.musica_atual.play()
-botoes_menu=Sprites.get_lista_botoes_menu()
-botoes_submenu=Sprites.get_lista_botoes_submenu()
-display_volume=Sprites.get_diplay_volume()
-
-#Alteração 5/12/25 - Fim
 
 luta = jogo.luta
 #jogo.jogador.AprenderHabilidade(Data.habilidadeBD[0])
@@ -40,6 +33,7 @@ jogo.jogador.ObterItem(Data.itemBD[0])
 jogo.jogador.ObterItem(Data.itemBD[1])
 jogo.jogador.ObterItem(Data.itemBD[1])
 
+botoes_menu=Sprites.get_lista_botoes_menu()
 ismousepressed=False
 
 
@@ -55,58 +49,12 @@ def Update():
 
     jogo.ultimoDraw += jogo.deltaTime
 
+    
+  
+
     jogo.ultimoInput = Input.LerInput(jogo.teclado, janela)
     if(jogo.ultimoInput == 0):
         jogo.botaoSolto = True
-
-
-    # Alterações 5/12/2025 - Inicio
-    jogo.Musica.atualizar_musica_mais_facil(jogo.estadoJogo) # otimizar depois
-
-    if (jogo.ultimoInput == 13):
-        jogo.Musica.atualizar_musica(Data.EEstado.MAINMENU)
-        ismousepressed = False
-        while True:
-            jogo.SubMenu.DesenharSubMenu(janela, botoes_submenu)
-            if (jogo.mouse.is_button_pressed(1)):
-                if (not ismousepressed):
-                    ismousepressed=True
-                    if (jogo.mouse.is_over_object(botoes_submenu[0])):
-                        break
-                    elif (jogo.mouse.is_over_object(botoes_submenu[1])):
-                        while (True):
-                            jogo.SubMenu.Desenharopcoes(janela, botoes_submenu, display_volume, jogo.Musica.musica_atual.volume)
-
-                            if (jogo.mouse.is_button_pressed(1)):
-                                if (not ismousepressed):
-                                    ismousepressed=True
-                                    if (jogo.mouse.is_over_object(botoes_submenu[4])):
-                                        jogo.Musica.musica_atual.decrease_volume(10)
-                                    elif (jogo.mouse.is_over_object(botoes_submenu[5])):
-                                        jogo.Musica.musica_atual.increase_volume(10)
-                                    elif (jogo.mouse.is_over_object(botoes_submenu[6])):
-                                        break                                    
-                            else:
-                                ismousepressed=False
-                    elif (jogo.mouse.is_over_object(botoes_submenu[2])):
-                        while True:
-                            jogo.SubMenu.DesenharControles(janela, botoes_submenu)
-                            if (jogo.mouse.is_button_pressed(1)):
-                                if (not ismousepressed):
-                                    ismousepressed=True
-                                    if (jogo.mouse.is_over_object(botoes_submenu[6])):
-                                        break                                    
-                            else:
-                                ismousepressed=False
-                    elif (jogo.mouse.is_over_object(botoes_submenu[3])):
-                        jogo.SalvarJogo()
-                        jogo.estadoJogo=Data.EEstado.MAINMENU
-                        break
-
-            else:
-                ismousepressed=False
-    # Alterações 5/12/2025 - Fim
-
 
 
     if(jogo.estadoJogo == Data.EEstado.ANDANDO):
@@ -1707,15 +1655,15 @@ while(True):
                 elif (jogo.mouse.is_over_object(botoes_menu[2])):
 
                     while (True):
-                        jogo.MainMenu.Desenharopcoes(janela, botoes_menu, display_volume, jogo.Musica.musica_atual.volume)
+                        jogo.MainMenu.Desenharopcoes(janela, botoes_menu)
 
                         if (jogo.mouse.is_button_pressed(1)):
                             if (not ismousepressed):
                                 ismousepressed=True
                                 if (jogo.mouse.is_over_object(botoes_menu[4])):
-                                    jogo.Musica.musica_atual.decrease_volume(10)
+                                    print("menos")
                                 elif (jogo.mouse.is_over_object(botoes_menu[5])):
-                                    jogo.Musica.musica_atual.increase_volume(10)
+                                    print("mais")
                                 elif (jogo.mouse.is_over_object(botoes_menu[6])):
                                     break                                    
                         else:
