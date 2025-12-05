@@ -24,8 +24,6 @@ class musica():
             self.musica_atual=self.lista_musicas[2]
         self.musica_atual.play()
     
-    #Alteração 5/12 - Inicio
-    
     def atualizar_musica_mais_facil(self, estado):
         if (estado==Data.EEstado.MAINMENU):
             if (self.musica_atual!=self.lista_musicas[0]):
@@ -34,22 +32,21 @@ class musica():
                 self.musica_atual=self.lista_musicas[0]
                 self.musica_atual.set_volume(volume)
                 self.musica_atual.play()
-        elif (estado==Data.EEstado.ANDANDO) or (estado==Data.EEstado.DIALOGO):
-            if (self.musica_atual!=self.lista_musicas[1]):
-                volume=self.musica_atual.volume
-                self.musica_atual.stop()
-                self.musica_atual=self.lista_musicas[1]
-                self.musica_atual.set_volume(volume)
-                self.musica_atual.play()
-        else:
+        elif (estado==Data.EEstado.LUTA):
             if (self.musica_atual!=self.lista_musicas[2]):
                 volume=self.musica_atual.volume
                 self.musica_atual.stop()
                 self.musica_atual=self.lista_musicas[2]
                 self.musica_atual.set_volume(volume)
                 self.musica_atual.play()
+        else:
+            if (self.musica_atual!=self.lista_musicas[1]):
+                volume=self.musica_atual.volume
+                self.musica_atual.stop()
+                self.musica_atual=self.lista_musicas[1]
+                self.musica_atual.set_volume(volume)
+                self.musica_atual.play()
 
-    #Alteração 5/12 - Fim
     
 def criar_lista_musicas():
     lista=[]
@@ -57,5 +54,6 @@ def criar_lista_musicas():
     lista.append(Sound("Musicas/menu.ogg"))
     lista.append(Sound("Musicas/andando.ogg"))
     lista.append(Sound("Musicas/luta.ogg"))
-
+    for i in range(3):
+        lista[i].set_repeat(True)
     return lista

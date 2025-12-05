@@ -692,7 +692,7 @@ def get_lista_botoes_menu():
     return Lista
 
 
-#Alterações 5/12 - Inicio
+
 def get_lista_botoes_submenu():
 
     Lista=[]
@@ -738,5 +738,3 @@ def get_diplay_volume():
     Lista[11].set_position(560, 210)
 
     return Lista
-
-#Alterações 5/12 - Fim

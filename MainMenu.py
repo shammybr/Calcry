@@ -14,8 +14,6 @@ class MainMenu():
             lista[i].draw()
         janela.update()
 
-#Alterações 5/12 - Inicio
-
     def Desenharopcoes(self, janela, lista1, lista2, volume):
         janela.set_background_color([0, 0, 0])
         for i1 in range(4, 7):
@@ -47,4 +45,3 @@ class SubMenu():
         lista[6].draw()
         janela.update()
 
-#Alterações 5/12 - Fim

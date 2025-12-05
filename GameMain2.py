@@ -23,14 +23,11 @@ import Sounds
 Sprites.CarregarTexturas(janela)
 jogo = GameInstance.Jogo(janela)
 
-#Alteração 5/12/25 - Início
 jogo.Musica.musica_atual.set_repeat(True)
 jogo.Musica.musica_atual.play()
 botoes_menu=Sprites.get_lista_botoes_menu()
 botoes_submenu=Sprites.get_lista_botoes_submenu()
 display_volume=Sprites.get_diplay_volume()
-
-#Alteração 5/12/25 - Fim
 
 luta = jogo.luta
 #jogo.jogador.AprenderHabilidade(Data.habilidadeBD[0])
@@ -60,8 +57,8 @@ def Update():
         jogo.botaoSolto = True
 
 
-    # Alterações 5/12/2025 - Inicio
-    jogo.Musica.atualizar_musica_mais_facil(jogo.estadoJogo) # otimizar depois
+
+    jogo.Musica.atualizar_musica_mais_facil(jogo.estadoJogo) # Passível de Otimização
 
     if (jogo.ultimoInput == 13):
         jogo.Musica.atualizar_musica(Data.EEstado.MAINMENU)
@@ -105,7 +102,6 @@ def Update():
 
             else:
                 ismousepressed=False
-    # Alterações 5/12/2025 - Fim
 
 
 
