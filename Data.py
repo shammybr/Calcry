@@ -66,6 +66,7 @@ class ELuta(Enum):
 class EANIMACAOOVERWORLD(Enum):
     NADA = 0
     MUDARANDAR = 1
+    CADEIRAS = 2
 
 
 class Entidade():
@@ -115,6 +116,7 @@ class Jogador(Entidade):
         self.danoGuardado = 0
         self.andar = 1
         self.engrenagems = [False, False, False]
+        self.quests = [0, 0]
 
     def GanharXP(self, xp):
         self.xp = self.xp + xp
@@ -341,7 +343,8 @@ escolhaBD = [   Escolha('Subir de andar' , 'Sprites/HUD/escolhaNormal.png', 'Spr
                 Escolha('Voltar' , 'Sprites/HUD/escolhaNormal.png', 'Sprites/HUD/escolhaSelecionada.png', []),
                 Escolha('Descer de andar' , 'Sprites/HUD/escolhaNormal.png', 'Sprites/HUD/escolhaSelecionada.png', []),
                 Escolha('Aceitar' , 'Sprites/HUD/escolhaNormal.png', 'Sprites/HUD/escolhaSelecionada.png', []),
-                Escolha('Recusar' , 'Sprites/HUD/escolhaNormal.png', 'Sprites/HUD/escolhaSelecionada.png', [])
+                Escolha('Recusar' , 'Sprites/HUD/escolhaNormal.png', 'Sprites/HUD/escolhaSelecionada.png', []),
+                Escolha('Quebrar' , 'Sprites/HUD/escolhaNormal.png', 'Sprites/HUD/escolhaSelecionada.png', []),
 
 
 

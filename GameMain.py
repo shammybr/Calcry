@@ -55,7 +55,7 @@ inicioJogador = [0,0]
 
 jogador = Data.Jogador(1.5 , 6.5, 0, Data.direcao["N"])
 teclado = Window.get_keyboard()
-mapaAtual = Mapa.GerarMapa(0)
+mapaAtual = Mapa.GerarMapa(0, 0)
 
 
 
