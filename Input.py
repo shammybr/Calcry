@@ -30,6 +30,6 @@ def LerInput(teclado, janela):
 
 
     if teclado.key_pressed("ESC"):  # Esc, escape..
-        janela.close()  # Fecha o programa
+        return 13
 
     return 0

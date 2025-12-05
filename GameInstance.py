@@ -72,7 +72,9 @@ class Jogo():
         self.fade = Sprites.FadeSprite(janela.width, janela.height)
 
         self.MainMenu = MainMenu.MainMenu()
+        self.SubMenu = MainMenu.SubMenu()
         self.Musica = Sounds.musica(Sounds.criar_lista_musicas())
+        
 
 
     def SalvarJogo(self):
