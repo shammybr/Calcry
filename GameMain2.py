@@ -2560,7 +2560,10 @@ def UpdateTest():
 
 
 
-def ComecarJogo():
+def CriarJogo():
+    jogo.jogador=Data.Jogador(23.5 , 8.5, 0, Data.direcao["L"], 110)
+    jogo.jogador.AprenderHabilidade(Data.habilidadeBD[0])
+    jogo.jogador.AprenderHabilidade(Data.habilidadeBD[1])
     jogo.estadoJogo = Data.EEstado.ANDANDO
 
 def CarregarJogo():
@@ -2584,7 +2587,7 @@ while(True):
             if (not ismousepressed):
                 ismousepressed=True
                 if (jogo.mouse.is_over_object(botoes_menu[0])):
-                    ComecarJogo()
+                    CriarJogo()
                 elif (jogo.mouse.is_over_object(botoes_menu[1])):
                     CarregarJogo()
                 elif (jogo.mouse.is_over_object(botoes_menu[2])):
