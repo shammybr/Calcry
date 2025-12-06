@@ -58,7 +58,7 @@ class Jogo():
         self.andarVelocidade = 10
         self.inicioJogador = [0,0]
 
-        self.jogador = Data.Jogador(21.5 , 9.5, 0, Data.direcao["O"], 110)
+        self.jogador = Data.Jogador(23.5 , 8.5, 0, Data.direcao["L"], 110)
         self.teclado = Window.get_keyboard()
         self.mouse = Window.get_mouse()
         self.mapaAtual = Mapa.GerarMapa(1, self)
@@ -74,7 +74,7 @@ class Jogo():
         self.MainMenu = MainMenu.MainMenu()
         self.SubMenu = MainMenu.SubMenu()
         self.Musica = Sounds.musica(Sounds.criar_lista_musicas())
-        
+        self.ultimaLuta = False    
 
 
     def SalvarJogo(self):
@@ -101,7 +101,9 @@ class Jogo():
             "jogadorEnergia": self.jogador.energia,
             "jogadorEnergiaMax": self.jogador.energiaMaxima,
             "andar": self.jogador.andar,
-            "quests": self.jogador.quests
+            "quests": self.jogador.quests,
+            "provas" : self.jogador.provas,
+            "aulas" : self.jogador.aulas
         }
 
         with open("save.pkl", "wb") as f:
@@ -120,8 +122,10 @@ class Jogo():
         self.jogador.xp =     save["jogadorXp"]
         self.jogador.engrenagems = save["jogadorEngrenagens"]
         self.jogador.quests = save["quests"]
-        for habilidade in save["jogadorHabilidades"]:
-            pass
+        self.jogador.provas = save["provas"]
+        self.jogador.aulas = save["aulas"]
+
+        for habilidade in save["jogadorHabilidades"]:     
             self.jogador.AprenderHabilidade(Data.habilidadeBD[habilidade-1])
 
         for item in save["jogadorItems"]:
