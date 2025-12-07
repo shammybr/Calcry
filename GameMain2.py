@@ -2662,14 +2662,20 @@ def mudar_volume(valor):
             aux=jogo.Musica.musica_atual.volume
             if aux!=0:
                 for i in range(len(lista_efeitos)):
-                    lista_efeitos[i].volume=aux+10
+                    lista_efeitos[i].set_volume(aux+10)
+            else:
+                for i in range(len(lista_efeitos)):
+                    lista_efeitos[i].set_volume(aux)
     else:
         if aux<=100:
             jogo.Musica.musica_atual.increase_volume(valor)
             aux=jogo.Musica.musica_atual.volume
             if aux!=0:
                 for i in range(len(lista_efeitos)):
-                    lista_efeitos[i].volume=aux+10
+                    lista_efeitos[i].set_volume(aux+10)
+            else:
+                for i in range(len(lista_efeitos)):
+                    lista_efeitos[i].set_volume(aux)
 
 
 while(True):
