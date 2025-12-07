@@ -28,6 +28,7 @@ jogo.Musica.musica_atual.play()
 botoes_menu=Sprites.get_lista_botoes_menu()
 botoes_submenu=Sprites.get_lista_botoes_submenu()
 display_volume=Sprites.get_diplay_volume()
+lista_efeitos=Sounds.criar_lista_efeitos()
 
 luta = jogo.luta
 jogo.jogador.AprenderHabilidade(Data.habilidadeBD[0])
@@ -306,7 +307,7 @@ def Update():
                         jogo.dialogoMensagens.append("Eu achei isso aqui enquanto procurava as")
                         jogo.dialogoMensagens.append("cadeiras, talvez você queira.")
                         jogo.dialogoMensagens.append(" ")
-                        jogo.dialogoMensagens.append("Você obeteve uma engrenagem")
+                        jogo.dialogoMensagens.append("Você obteve uma engrenagem")
                         jogo.jogador.engrenagems[1] = True
                         jogo.ultimoEstadoJogo = Data.EEstado.ANDANDO
                         jogo.estadoJogo = Data.EEstado.DIALOGO
@@ -1085,6 +1086,7 @@ def EntrarBanheiroMeninasCadeiras():
         return True
 
 def PegarCadeiras():
+    lista_efeitos[3].play()
     jogo.ultimoEstadoJogo = Data.EEstado.ANDANDO
     jogo.fade.fading = True
     jogo.fade.alpha = 0
@@ -1240,6 +1242,7 @@ def ChecarEvento(novaPosicaoX, novaPosicaoY):
             if(jogo.jogador.quests[2] == 2):
                 jogo.dialogoMensagens.append("")
                 jogo.dialogoMensagens.append("Você pegou um chaveiro cheio de chaves.")
+                lista_efeitos[4].play()
                 jogo.ultimoEstadoJogo = Data.EEstado.ANDANDO
                 jogo.estadoJogo = Data.EEstado.DIALOGO
                 jogo.jogador.quests[2] = 3
@@ -1309,6 +1312,7 @@ def ChecarElevador():
             jogo.estadoJogo = Data.EEstado.DIALOGO
 
         else:
+            lista_efeitos[1].play()
             jogo.jogador.andar = 4
             jogo.animacao = Data.EANIMACAOOVERWORLD.MUDARANDAR
             jogo.fade.fading = True
@@ -1788,6 +1792,7 @@ def PrepararLuta():
         i += 1
 
 def BebedouroCurar():
+    lista_efeitos[0].play()
     jogo.jogador.Curar(jogo.jogador.vidaMaxima, jogo.jogador.energiaMaxima)
 
 def ChecarInteracao():
@@ -2444,6 +2449,7 @@ def SubirAndar():
     if(jogo.jogador.andar < 3):
         jogo.jogador.andar += 1
         jogo.animacao = Data.EANIMACAOOVERWORLD.MUDARANDAR
+        lista_efeitos[2].play()
         jogo.fade.fading = True
         jogo.fade.alpha = 0
         jogo.fade.surface.set_alpha(0)
@@ -2462,6 +2468,7 @@ Data.escolhaBD[0].AdicionarFunc(SubirAndar)
 def DescerAndar():
     jogo.jogador.andar -= 1
     jogo.animacao = Data.EANIMACAOOVERWORLD.MUDARANDAR
+    lista_efeitos[2].play()
     jogo.fade.fading = True
     jogo.fade.alpha = 0
     jogo.fade.surface.set_alpha(0)

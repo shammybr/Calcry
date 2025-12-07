@@ -57,3 +57,15 @@ def criar_lista_musicas():
     for i in range(3):
         lista[i].set_repeat(True)
     return lista
+
+def criar_lista_efeitos():
+
+    lista=[]
+
+    lista.append(Sound("Soms/Efeitos/bebendo_agua.ogg"))
+    lista.append(Sound("Soms/Efeitos/elevador.ogg"))
+    lista.append(Sound("Soms/Efeitos/escadaria.ogg"))
+    lista.append(Sound("Soms/Efeitos/movendo_cadeira.ogg"))
+    lista.append(Sound("Soms/Efeitos/pegar_chaves.ogg"))
+
+    return lista
