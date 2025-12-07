@@ -78,9 +78,9 @@ def Update():
                                 if (not ismousepressed):
                                     ismousepressed=True
                                     if (jogo.mouse.is_over_object(botoes_submenu[4])):
-                                        jogo.Musica.musica_atual.decrease_volume(10)
+                                        mudar_volume(-10)
                                     elif (jogo.mouse.is_over_object(botoes_submenu[5])):
-                                        jogo.Musica.musica_atual.increase_volume(10)
+                                        mudar_volume(10)
                                     elif (jogo.mouse.is_over_object(botoes_submenu[6])):
                                         break                                    
                             else:
@@ -2654,6 +2654,24 @@ def CarregarJogo():
     except (pickle.UnpicklingError, EOFError):
         print("Save file is corrupted!")
 
+def mudar_volume(valor):
+    aux=jogo.Musica.musica_atual.volume
+    print("volume:", aux)
+    if valor<0:
+        if aux>=0:
+            jogo.Musica.musica_atual.increase_volume(valor)
+            aux=jogo.Musica.musica_atual.volume
+            if aux!=0:
+                for i in range(len(lista_efeitos)):
+                    lista_efeitos[i].volume=aux+10
+    else:
+        if aux<=100:
+            jogo.Musica.musica_atual.increase_volume(valor)
+            aux=jogo.Musica.musica_atual.volume
+            if aux!=0:
+                for i in range(len(lista_efeitos)):
+                    lista_efeitos[i].volume=aux+10
+
 
 while(True):
     if(jogo.estadoJogo == Data.EEstado.MAINMENU):
@@ -2674,9 +2692,9 @@ while(True):
                             if (not ismousepressed):
                                 ismousepressed=True
                                 if (jogo.mouse.is_over_object(botoes_menu[4])):
-                                    jogo.Musica.musica_atual.decrease_volume(10)
+                                    mudar_volume(-10)
                                 elif (jogo.mouse.is_over_object(botoes_menu[5])):
-                                    jogo.Musica.musica_atual.increase_volume(10)
+                                    mudar_volume(10)
                                 elif (jogo.mouse.is_over_object(botoes_menu[6])):
                                     break                                    
                         else:
