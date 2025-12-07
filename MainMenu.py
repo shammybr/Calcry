@@ -6,16 +6,17 @@ from PPlay.sprite import *
 
 class MainMenu():
     def __init__(self):
-        self.background = HUD.GameImageMelhor('Sprites/HUD/HUDBot.png', 0, 0)
+        self.background = HUD.GameImageMelhor('Sprites/MainMenu.png', 0, 0)
+        self.background.Transformar(1280, 720)
 
     def DesenharMainMenu(self, janela, lista):
-        janela.set_background_color([0, 0, 0])
+        self.background.draw()
         for i in range(4):
             lista[i].draw()
         janela.update()
 
     def Desenharopcoes(self, janela, lista1, lista2, volume):
-        janela.set_background_color([0, 0, 0])
+        self.background.draw()
         for i1 in range(4, 7):
             lista1[i1].draw()
         lista2[volume//10].draw()
@@ -24,16 +25,17 @@ class MainMenu():
 
 class SubMenu():
     def __init__(self):
-        self.background = HUD.GameImageMelhor('Sprites/HUD/HUDBot.png', 0, 0)
-    
+        self.background = HUD.GameImageMelhor('Sprites/MainMenu.png', 0, 0)
+        self.background.Transformar(1280, 720)
+        
     def DesenharSubMenu(self, janela, lista):
-        janela.set_background_color([0, 0, 0])
+        self.background.draw()
         for i in range(4):
             lista[i].draw()
         janela.update()
 
     def Desenharopcoes(self, janela, lista1, lista2, volume):
-        janela.set_background_color([0, 0, 0])
+        self.background.draw()
         for i1 in range(4, 7):
             lista1[i1].draw()
         lista2[volume//10].draw()
@@ -41,7 +43,7 @@ class SubMenu():
         janela.update()
     
     def DesenharControles(self, janela, lista):
-        janela.set_background_color([0, 0, 0])
+
         lista[6].draw()
         janela.update()
 
