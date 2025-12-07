@@ -709,7 +709,7 @@ def get_lista_botoes_menu(janela):
         Lista[i].rect = imagemCopia.get_rect()
         Lista[i].rect.center = centroOriginal
         Lista[i].image = imagemCopia
-        Lista[i].set_position(janela.width * 0.5 - ((janela.width * 0.51) / 2), (janela.height * 0.25) + (i * janela.height * 0.15) )
+        Lista[i].set_position(janela.width * 0.5 - ((janela.width * 0.51) / 2), (janela.height * 0.4) + (i * janela.height * 0.15) )
         
     Lista.append(Sprite('Sprites/botoes/menos.png'))
     Lista.append(Sprite(f'Sprites/botoes/mais.png'))
@@ -726,7 +726,7 @@ def get_lista_botoes_menu(janela):
 
     Lista[4].set_position(400, 210)
     Lista[5].set_position(720, 210)
-    Lista[6].set_position(janela.width * 0.5 - ((janela.width * 0.51) / 2), (janela.height * 0.25) + (4 * janela.height * 0.15) )
+    Lista[6].set_position(janela.width * 0.5 - ((janela.width * 0.51) / 2), (janela.height * 0.4) + (3 * janela.height * 0.15) )
 
     return Lista
 
@@ -749,7 +749,7 @@ def get_lista_botoes_submenu(janela):
         Lista[i].rect = imagemCopia.get_rect()
         Lista[i].rect.center = centroOriginal
         Lista[i].image = imagemCopia
-        Lista[i].set_position(janela.width * 0.5 - ((janela.width * 0.51) / 2), (janela.height * 0.25) + (i * janela.height * 0.15) )
+        Lista[i].set_position(janela.width * 0.5 - ((janela.width * 0.51) / 2), (janela.height * 0.4) + (i * janela.height * 0.15) )
 
     Lista.append(Sprite('Sprites/botoes/menos.png'))
     Lista.append(Sprite('Sprites/botoes/mais.png'))
@@ -766,7 +766,7 @@ def get_lista_botoes_submenu(janela):
 
     Lista[4].set_position(400, 210)
     Lista[5].set_position(720, 210)
-    Lista[6].set_position(janela.width * 0.5 - ((janela.width * 0.51) / 2), (janela.height * 0.25) + (4 * janela.height * 0.15) )
+    Lista[6].set_position(janela.width * 0.5 - ((janela.width * 0.51) / 2), (janela.height * 0.4) + (3 * janela.height * 0.15) )
 
     return Lista
 
