@@ -119,6 +119,11 @@ class FadeSprite():
     def Cooldown(self, deltatime):
         self.tempo += deltatime
 
+    def FadeRed(self):
+        self.surface.fill((237, 68, 69))
+        
+    def FadeBlack(self):
+        self.surface.fill((0, 0, 0))
 
 def Tela_de_Loading(janela):
     global contador_do_loading

@@ -58,6 +58,7 @@ class EEstado(Enum):
     ANIMACAOOVERWORLD = 5
     DIALOGO = 6
     FIM = 7
+    GAMEOVER = 8
 
 class ELuta(Enum):
     ITEM = 1
@@ -102,7 +103,7 @@ class Entidade():
 
 class Jogador(Entidade):
     def __init__(self, coordenadaX, coordenadaY, angulo, direcao, velocidade):
-        super().__init__("Jogador", tipoEntidade["Jogador"], 300, 300, 100, 100, velocidade, 30, 0)
+        super().__init__("Jogador", tipoEntidade["Jogador"], 0, 300, 100, 100, velocidade, 30, 0)
         self.x = coordenadaX
         self.y = coordenadaY
         self.angulo = angulo

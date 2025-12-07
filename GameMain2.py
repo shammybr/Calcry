@@ -315,6 +315,31 @@ def Update():
 
                 janela.get_screen().blit(jogo.fade.surface, (0, 0))
 
+    elif(jogo.estadoJogo == Data.EEstado.GAMEOVER):
+        
+
+        velocidadeFade = 10
+
+        if(jogo.fade.fading):
+            if(jogo.fade.alpha < 255):
+                if(jogo.fade.tempo < 0.05):
+                    jogo.fade.Cooldown(jogo.deltaTime)
+                else:
+                    jogo.fade.tempo = 0
+                    jogo.fade.FadeIn(5)
+                    jogo.fade.surface.fill((255 - jogo.fade.alpha, 0, 0))
+            else:
+                    jogo.fade.surface.fill((0, 0, 0))
+
+                    jogo.fade.fading = False
+
+            janela.get_screen().blit(jogo.fade.surface, (0, 0))
+
+        else:
+                GameOverScreen()
+                jogo.fade.FadeBlack()
+
+        
 
     elif(jogo.estadoJogo == Data.EEstado.LUTA):
 
@@ -754,6 +779,8 @@ def Update():
                     luta.PassoTurno()
                     luta.ProcessarTurno(jogo.jogador)
                     luta.ultimoTurno = time.time()
+                    if(jogo.jogador.vida <= 0):
+                        GameOver()
                 else:
                     luta.mensagem.clear()
                     jogo.botaoSolto = False
@@ -2564,7 +2591,17 @@ def UpdateTest():
 
     janela.update()
 
+def GameOverScreen():
+    janela.get_screen().blit(jogo.fade.surface, (0, 0))
+    janela.draw_text("Sua jornada termina aqui..." , janela.width * 0.5  - int((26/2) * 30 * int((1280/janela.width))), janela.height * 0.3, "Sprites/HUD/PressStart2P-Regular.ttf", 30 * int((1280/janela.width)), (255,255,255), )
 
+def GameOver():
+
+    jogo.fade.FadeRed()
+    jogo.fade.fading = True
+    jogo.fade.alpha = 0
+    jogo.fade.surface.set_alpha(1)
+    jogo.estadoJogo = Data.EEstado.GAMEOVER
 
 
 def CriarJogo():
