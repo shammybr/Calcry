@@ -2656,7 +2656,6 @@ def CarregarJogo():
 
 def mudar_volume(valor):
     aux=jogo.Musica.musica_atual.volume
-    print("volume:", aux)
     if valor<0:
         if aux>=0:
             jogo.Musica.musica_atual.increase_volume(valor)
