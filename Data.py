@@ -37,6 +37,8 @@ xpProximoLevel = { 1 : 100,
                        6 : 300,
                        7 : 350,
                        8 : 400,
+                       9 : 450,
+                       10 : 500,
                        
 }
 
@@ -48,6 +50,8 @@ statusPorLevel = { 1: [10, 50, 10],
                    6: [10, 50, 10],
                    7: [10, 50, 10],
                    8: [10, 50, 10],
+                   9: [10, 50, 10],
+                   10: [10, 50, 10],
 
 
 }
@@ -68,6 +72,7 @@ class EEstado(Enum):
     DIALOGO = 6
     FIM = 7
     GAMEOVER = 8
+    FINALJOGO = 9
 
 class ELuta(Enum):
     ITEM = 1
@@ -131,6 +136,7 @@ class Jogador(Entidade):
         self.quests = [0, 0, 0]
         self.provas = [False, False, False]
         self.aulas = [[False, False, False, False], [False, False, False, False, False], [False, False, False, False, False]]
+        self.itemPego = [False, False, False, False, False]
 
     def GanharXP(self, xp):
         self.xp = self.xp + xp
@@ -212,11 +218,11 @@ class ILimite(Inimigo):
 
 class IDerivada(Inimigo):
      def __init__(self, nome):
-        super().__init__(nome, tipoEntidade["Derivada"], 100, 100, 100, 100, HUD.GameImageMelhor('Sprites/Inimigos/IDerivada.png', 0, 0), 100, 5, 15, 60)
+        super().__init__(nome, tipoEntidade["Derivada"], 100, 100, 100, 100, HUD.GameImageMelhor('Sprites/Inimigos/IDerivada.png', 0, 0), 100, 10, 15, 60)
 
 class IIntegral(Inimigo):
      def __init__(self, nome):
-        super().__init__(nome, tipoEntidade["Integral"], 100, 100, 100, 100, HUD.GameImageMelhor('Sprites/Inimigos/IIntegral.png', 0, 0), 100, 5, 20, 80)
+        super().__init__(nome, tipoEntidade["Integral"], 100, 100, 100, 100, HUD.GameImageMelhor('Sprites/Inimigos/IIntegral.png', 0, 0), 100, 20, 20, 80)
         self.dobrado = False
 
 class IBOSS(Inimigo):
@@ -405,14 +411,26 @@ def Rolle(entidades, valores):
     return mensagens
 
 def TFC(entidades, valores):
+    mensagens = []
 
     for entidade in entidades:
-        entidade.buffs.append(Buff("TFC", 4, [], [valores], 3))
+        entidade.buffs.append(Buff("TFC", 5, [], [valores], 5))
+        mensagens.append("Cada problema resolvido te revigora!")
 
-    return True
+    return mensagens
+
+def Cola(entidades, valores):
+    mensagens = []
+
+    for entidade in entidades:
+        entidade.tomarDano(valores)
+        mensagens.append(entidade.nome +  " recebeu " + str(valores) +" de dano!")
+
+    return mensagens
+
 
 habilidadeBD = [ Habilidade("Concentração", 1, [40, 25, 10], ["Concentre-se na tarefa!", "Aumenta o ataque e a defesa - 3 turnos"], False, [BuffarAtaque, BuffarDefesa]),
-                 Habilidade("Meditação", 2, [0, 60], ["Controle sua mente!", "Recupera sua energia em 6.0"], False, [CurarEnergia]),
+                 Habilidade("Meditação", 2, [0, 80], ["Controle sua mente!", "Recupera sua energia em 80."], False, [CurarEnergia]),
                  Habilidade("Preparação", 3, [30, 30], ["Transforme dor em força!", "Aumenta o seu dano de acordo com o dano recebido."], False, [AbsorverAtaque]),
                  Habilidade("T. Sanduíche", 4, [20, 0], ["Resolve os limites!", "Inverte o dano extra que todos os limites possuem."], False, [Sanduiche]),
                  Habilidade("Série d.Taylor", 5, [30, 0], ["Expanda seu poder!", "Aumenta o seu dano de acordo com o número de derivadas."], False, [Taylor]),
@@ -422,8 +440,8 @@ habilidadeBD = [ Habilidade("Concentração", 1, [40, 25, 10], ["Concentre-se na
 ]
 
 itemBD = [  Item("Energético", 1, [0, 9999], ["Energético com gosto de manga.", "Recupera toda a energia."], False, [CurarEnergia], 1),
-            Item("Analgésico", 2, [0, 50], ["Analgésico genérico.", "Recupera sua vida em 50."], False, [CurarVida], 1),
-          
+            Item("Analgésico", 2, [0, 100], ["Analgésico genérico.", "Recupera sua vida em 100."], False, [CurarVida], 1),
+            Item("Cola", 3, [0, 50], ["Pequena cola num papel.", "Dá 50 de dano em área."], False, [Cola], 1),
 ]
 
 escolhaBD = [   Escolha('Subir de andar' , 'Sprites/HUD/escolhaNormal.png', 'Sprites/HUD/escolhaSelecionada.png', []),

@@ -103,7 +103,8 @@ class Jogo():
             "andar": self.jogador.andar,
             "quests": self.jogador.quests,
             "provas" : self.jogador.provas,
-            "aulas" : self.jogador.aulas
+            "aulas" : self.jogador.aulas,
+            "itemPego": self.jogador.itemPego
         }
 
         with open("save.pkl", "wb") as f:
@@ -138,3 +139,4 @@ class Jogo():
         self.jogador.energia = save["jogadorEnergia"]
         self.jogador.energiaMaxima = save["jogadorEnergiaMax"]
         self.jogador.andar = save["andar"]
+        self.jogador.itemPego = save["itemPego"]

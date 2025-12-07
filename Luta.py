@@ -196,7 +196,7 @@ class Luta():
                     self.mensagem.append(self.ordemTurno[self.iTurno].nome + " se aproxima cada vez mais...")
                     self.mensagem.append("Ataque e defesa aumentados!")
                     self.ordemTurno[self.iTurno].danoAcumulado += 20
-                    self.ordemTurno[self.iTurno].defesaAcumulada += 20
+                    self.ordemTurno[self.iTurno].defesaAcumulada += 10
                     print("Limite hab...")
 
             elif(self.ordemTurno[self.iTurno].tipo == Data.tipoEntidade["Derivada"]):
@@ -236,10 +236,13 @@ class Luta():
                     self.mensagem.append(self.ordemTurno[self.iTurno].nome + " brilha intensamente!")
                     self.mensagem.append(self.ordemTurno[self.iTurno].nome + " ataca!")
                     danoCausado = self.Atacar(jogador, max(1, self.ordemTurno[self.iTurno].dano * 2))
-                    self.mensagem.append("Causou " + str(danoCausado) + " de dano!")
+                    self.mensagem.append(self.ordemTurno[self.iTurno].nome + " causou " + str(danoCausado) + " de dano!")
                     self.AnimarDanoNoPlayer()
                     self.ordemTurno[self.iTurno].dobrado = False
+                    self.esperandoInput = True
                 else:
+                    ataque = random.randint(1, 100)
+
                     if(ataque < 60):
                         print("Atacando player...")
                         self.mensagem.append(self.ordemTurno[self.iTurno].nome + " ataca!")
@@ -250,6 +253,7 @@ class Luta():
                         self.mensagem.append(self.ordemTurno[self.iTurno].nome + " aumenta sua área...")
                         self.mensagem.append("Um ataque muito forte está vindo!")
                         self.ordemTurno[self.iTurno].dobrado = True
+                        self.esperandoInput = True
                         print("Limite hab...")
 
         
@@ -291,29 +295,26 @@ class Luta():
 
 
     def CalcularInimigos(self, lugar):
-        if(lugar == Data.EANDAR.EANDAR1):
+        if(lugar == Data.EANDAR.EANDAR3):
             nInimigos = random.randint(1, 100)
             inimigosLuta = []
             
-            if(nInimigos < 50):
-                nInimigos = 1
-            elif(nInimigos < 80):
+
+            if(nInimigos < 30):
                 nInimigos = 2
-            elif(nInimigos < 90):
+            elif(nInimigos < 60):
                 nInimigos = 3
             else:
                 nInimigos = 4
 
-            nInimigos = 4
 
             for i in range(0, nInimigos):
                 inimigo = Data.Inimigo("",0, 0, 0, 0, 0, HUD.GameImageMelhor('Sprites/Inimigos/Erro.png', 0, 0), 0 ,0, 0, 0)
 
-                lInimigos = [value for value in Data.tipoEntidade.values() if value != 99]
+                lInimigos = [value for value in Data.tipoEntidade.values() if (value != 99 and value != 3)]
 
                 tipoInimigo = random.choice(list(lInimigos))
 
-                tipoInimigo = Data.tipoEntidade["Derivada"]
                 if(tipoInimigo == Data.tipoEntidade["Limite"]):
                     nlimite = 0
                     for i in range(0, len(inimigosLuta)):

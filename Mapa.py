@@ -119,7 +119,7 @@ def GerarMapa(mapaID, jogo):
     pl2 = Data.Interacao(1, 0, 0, 1, 12, 12)
     pl3 = Data.Interacao(0, 0, 0, 1, 12, 12)
     bq = Data.Interacao(0, 1, 0, 0, 13, 13)
-    ch = Data.Interacao(0, 1, 0, 0, 16, 16)
+    ch = Data.Interacao(0, 1, 0, 0, 15, 15)
 
     pf1 =  Data.Interacao(0, 1, 0, 1, 98, 98)
     pf2 =  Data.Interacao(1, 0, 0, 1, 98, 98)
@@ -143,6 +143,10 @@ def GerarMapa(mapaID, jogo):
     z13 = Data.Interacao(0, 0, 0, 1, 22, 3)
     z14 = Data.Interacao(0, 0, 1, 0, 22, 4)
 
+    lx1 = Data.Interacao(0, 1, 0, 0, 30, 0)
+    lx2 = Data.Interacao(0, 1, 0, 0, 30, 1)
+    lx3 = Data.Interacao(0, 1, 0, 0, 30, 2)
+    lx4 = Data.Interacao(0, 1, 0, 0, 30, 3)
 
     if(mapaID == 1):
         mapaObjetosInvertido = [
@@ -189,8 +193,8 @@ def GerarMapa(mapaID, jogo):
         [ 8, 7, 7, 7, 2, 9, 0, 0, 0, 9, 2, 0, 0, 2, 2, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 9, 0, 0, 0, 9, 2, 0, 0, 2, 2, 7, 7, 7,8, 0, 0, 0, 0, 0],
         [ 8, 7, 7, 7, 7, 8, 7, 7, 7, 8, 2, 7, 7, 7, 2, 1, 1, 1, 1, 1, 1, 0, 0, 0,12, 1, 1, 1, 1, 8, 7, 7, 7, 8, 2, 7, 7, 2, 2, 7, 7, 7,8, 0, 0, 0, 0, 0],
         [ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 7, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 7, 7, 7, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 6, 6, 6,12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0,12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 6, 6, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [ 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
@@ -214,7 +218,7 @@ def GerarMapa(mapaID, jogo):
 
         game_mapInteracoesInvertido = [
         [E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E],
-        [E, E, E, E, E, E, E, E, E, E, E, E, E, E,al, E, E, E, E, E, E, E, E, E,bi, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E,z4, E, E, E, E, E, E],
+        [E, E, E, E, E, E, E, E, E, E, E, E, E, E,al, E, E, E, E, E, lx1, E, E, E,bi, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E,z4, E, E, E, E, E, E],
         [E,b1, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E,ch, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E,z4, E, E, E, E, E, E],
         [E, E,b3, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E,z4, E, E, E, E, E, E],
         [E,b2, E, E, E, E,z1, E, E, E,z2, E, E, E, E, E, E, E, E, E, E, E, E,el, E, E, E, E, E, E,pp, E, E, E,z3, E, E, E, E, E, E,z4, E, E, E, E, E, E],
@@ -235,7 +239,7 @@ def GerarMapa(mapaID, jogo):
             [O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,  O, O, O,  O, O, O, O, O, O, O,  O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O],
             [O, p, O, O,pd, O, O, O, O, O, O, O, O, O, i2,  i, O, O, O,cm, l,cm, O,cm,bb,  O,cm, O,i2, i, O, O, O, O, O, O, O,pd, O, O, O, O, O, O, O, O, O, O],
             [O, O, c, c, O, O, O, c, c, c, O, c, c, c, O,  O,pT2,O,pT3, O, O, O, O, O, O,pT3, O,pT2,O, O, O, c, c, c, O, c, c, c, O,c2,c2, O, O, O, O, O, O, O],
-            [O, O, c, c, O, O,pT, c, c, c,pT, c, c, c, O,  O, O, O, ac, O, O, l, O, O, O, ac, O, O, O, O,pT, c, c, c,pT, c, c, c, O,c2,c2, O, O, O, O, O, O, O],
+            [O, O, c, c, O, O,pT, c, c, c,pT, c, c, c, O,  O, O, O, ac, O, O, O, O, O, O, ac, O, O, O, O,pT, c, c, c,pT, c, c, c, O,c2,c2, O, O, O, O, O, O, O],
             [O, O, c, c, O, O, O, c, c, c, O, c, c, c, O,  O, O, O,  O, O, O, O, O, O, O,  O, O, O, O, O, O, c, c, c, O, c, c, c, O,c2,c2, O, O, O, O, O, O, O],
             [O, O, c, c, O, O, O, c, c, c, O, c, c, c, O,  O, O, O,  O, O, O, O, O, O, O,  O, O, O, O, O, O, c, c, c, O, c, c, c, O,c2,c2, O, O, O, O, O, O, O],
             [O, O, c, c, O, O, O, c, c, c, O, c, c, c, O,  O, O, O,  O, O, O, O, O, O, O,  O, O, O, O, O, O, c, c, c, O, c, c, c, O,c2,c2, O, O, O, O, O, O, O],
@@ -252,7 +256,7 @@ def GerarMapa(mapaID, jogo):
             [O, O, O, O, O, O, O, O, O, O, O, O, O, O, O,  O, O, O,  O, O, O, O, O, O, O,  O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O],
             [O, p, O, O,pd, O, O, O, O, O, O, O, O, O, i2,  i, O, O, O,cm, l,cm, O,cm,bb,  O,cm, O,i2, i, O, O, O, O, O, O, O,pd, O, O, O, O, O, O, O, O, O, O],
             [O, O, O, O, O, O, O, c, c, c, O, c, c, c, O,  O,pT2,O,pT3, O, O, O, O, O, O,pT3, O,pT2,O, O, O, c, c, c, O, c, c, c, O,c2,c2, O, O, O, O, O, O, O],
-            [O, O, O, O, O, O,pT, c, c, c,pT, c, c, c, O,  O, O, O, ac, O, O, l, O, O, O, ac, O, O, O, O,pT, c, c, c,pT, c, c, c, O,c2,c2, O, O, O, O, O, O, O],
+            [O, O, O, O, O, O,pT, c, c, c,pT, c, c, c, O,  O, O, O, ac, O, O, O, O, O, O, ac, O, O, O, O,pT, c, c, c,pT, c, c, c, O,c2,c2, O, O, O, O, O, O, O],
             [O, O, O, O, O, O, O, c, c, c, O, c, c, c, O,  O, O, O,  O, O, O, O, O, O, O,  O, O, O, O, O, O, c, c, c, O, c, c, c, O,c2,c2, O, O, O, O, O, O, O],
             [O, O, O, O, O, O, O, c, c, c, O, c, c, c, O,  O, O, O,  O, O, O, O, O, O, O,  O, O, O, O, O, O, c, c, c, O, c, c, c, O,c2,c2, O, O, O, O, O, O, O],
             [O, O, O, O, O, O, O, c, c, c, O, c, c, c, O,  O, O, O,  O, O, O, O, O, O, O,  O, O, O, O, O, O, c, c, c, O, c, c, c, O,c2,c2, O, O, O, O, O, O, O],
@@ -304,7 +308,7 @@ def GerarMapa(mapaID, jogo):
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1, 0, 0, 0, 0, 0, 0,-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -318,7 +322,7 @@ def GerarMapa(mapaID, jogo):
 
         game_mapInteracoesInvertido = [
         [E, E,  E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E],
-        [E, E,pc1, E, E, E, E, E, E, E, E, E, E, E,al, E, E, E, E, E, E, E, E, E,bi, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E,z9, E, E, E, E, E, E],
+        [E, E,pc1, E, E, E, E, E, E, E, E, E, E, E,al, E, E, E, E, E, lx2, E, E, E,bi, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E,z9, E, E, E, E, E, E],
         [E,pc2, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E,z9, E, E, E, E, E, E],
         [E, E,  E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E,z9, E, E, E, E, E, E],
         [E, E,  E, E, E, E,z5, E, E, E,z6, E, E, E, E, E, E, E, E, E, E, E, E,el, E, E, E, E, E, E,z7, E, E, E,z8, E, E, E, E, E, E,z9, E, E, E, E, E, E],
@@ -392,7 +396,7 @@ def GerarMapa(mapaID, jogo):
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,16, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0,12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -407,7 +411,7 @@ def GerarMapa(mapaID, jogo):
 
         game_mapInteracoesInvertido = [
         [E, E,  E, E, E, E,  E, E, E, E,  E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E,  E, E, E, E,  E,  E, E, E, E, E, E,  E, E, E, E, E, E, E],
-        [E, E,  E, E, E, E,  E, E, E, E,  E, E, E, E, E, E, E, E, E, E, E, E, E, E,bq, E, E, E, E, E,  E, E, E, E,  E,  E, E, E, E, E, E,z14, E, E, E, E, E, E],
+        [E, E,  E, E, E, E,  E, E, E, E,  E, E, E, E, E, E, E, E, E, E, lx3, E, E, E,bq, E, E, E, E, E,  E, E, E, E,  E,  E, E, E, E, E, E,z14, E, E, E, E, E, E],
         [E, E,  E, E, E, E,  E, E, E, E,  E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E,  E, E, E, E,  E,  E, E, E, E, E, E,z14, E, E, E, E, E, E],
         [E,pl1, E, E, E, E,  E, E, E, E,  E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E,  E, E, E, E,  E,  E, E, E, E, E, E,z14, E, E, E, E, E, E],
         [E, E,pl3, E, E, E,z10, E, E, E,z11, E, E, E, E, E, E, E, E, E, E, E, E,el, E, E, E, E, E, E,z12, E, E, E,z13,  E, E, E, E, E, E,z14, E, E, E, E, E, E],
@@ -479,9 +483,9 @@ def GerarMapa(mapaID, jogo):
         
         game_mapEventosInvertido = [
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,99, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,16, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0,98, 0, 0, 0, 0,99, 0, 0, 0,99, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,99, 0, 0, 0,99, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,99, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0,98, 0, 0, 0, 0,99, 0, 0, 0,99, 0, 0, 0, 0,99, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,99, 0, 0, 0,99, 0, 0, 0,99, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -496,13 +500,13 @@ def GerarMapa(mapaID, jogo):
 
         game_mapInteracoesInvertido = [
         [E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E],
-        [E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E,al, E, E, E, E, E, E,bb, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E],
+        [E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E,al, E, E, E, lx4, E, E,bi, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E],
         [E,pf1, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E],
         [E, E,pf3, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E],
         [E,pf2, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E,el, E, E, E, E, E, E,pp, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E],
         [E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E,h1, E, E, E, E, E, E, E, E, E, E, E],
         [E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E,el, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E],
-        [E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E,e1, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E],
+        [E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E],
         [E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E,el, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E],
         [E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E],
         [E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E],
