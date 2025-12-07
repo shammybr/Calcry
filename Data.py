@@ -33,12 +33,21 @@ xpProximoLevel = { 1 : 100,
                        2 : 120,
                        3 : 150,
                        4 : 200,
+                       5 : 250,
+                       6 : 300,
+                       7 : 350,
+                       8 : 400,
+                       
 }
 
 statusPorLevel = { 1: [10, 50, 10],
                    2: [10, 50, 10],
                    3: [10, 50, 10],
                    4: [10, 50, 10],
+                   5: [10, 50, 10],
+                   6: [10, 50, 10],
+                   7: [10, 50, 10],
+                   8: [10, 50, 10],
 
 
 }
@@ -103,7 +112,7 @@ class Entidade():
 
 class Jogador(Entidade):
     def __init__(self, coordenadaX, coordenadaY, angulo, direcao, velocidade):
-        super().__init__("Jogador", tipoEntidade["Jogador"], 0, 300, 100, 100, velocidade, 30, 0)
+        super().__init__("Jogador", tipoEntidade["Jogador"], 300, 300, 100, 100, velocidade, 30, 0)
         self.x = coordenadaX
         self.y = coordenadaY
         self.angulo = angulo
@@ -121,7 +130,7 @@ class Jogador(Entidade):
         self.engrenagems = [False, False, False]
         self.quests = [0, 0, 0]
         self.provas = [False, False, False]
-        self.aulas = [[False, False, False, False]]
+        self.aulas = [[False, False, False, False], [False, False, False, False, False], [False, False, False, False, False]]
 
     def GanharXP(self, xp):
         self.xp = self.xp + xp
@@ -184,7 +193,7 @@ class Parede():
 
 class ILimite(Inimigo):
     def __init__(self, nome):
-        super().__init__(nome, tipoEntidade["Limite"], 100, 100, 100, 100, HUD.GameImageMelhor('Sprites/Inimigos/ILimite.png', 0, 0), 100, 5, 9, 10)
+        super().__init__(nome, tipoEntidade["Limite"], 100, 100, 100, 100, HUD.GameImageMelhor('Sprites/Inimigos/ILimite.png', 0, 0), 100, 5, 9, 40)
         self.danoAcumulado = 0
         self.defesaAcumulada = 0
 
@@ -203,11 +212,11 @@ class ILimite(Inimigo):
 
 class IDerivada(Inimigo):
      def __init__(self, nome):
-        super().__init__(nome, tipoEntidade["Derivada"], 100, 100, 100, 100, HUD.GameImageMelhor('Sprites/Inimigos/IDerivada.png', 0, 0), 100, 5, 15, 10)
+        super().__init__(nome, tipoEntidade["Derivada"], 100, 100, 100, 100, HUD.GameImageMelhor('Sprites/Inimigos/IDerivada.png', 0, 0), 100, 5, 15, 60)
 
 class IIntegral(Inimigo):
      def __init__(self, nome):
-        super().__init__(nome, tipoEntidade["Integral"], 100, 100, 100, 100, HUD.GameImageMelhor('Sprites/Inimigos/IIntegral.png', 0, 0), 100, 5, 20, 10)
+        super().__init__(nome, tipoEntidade["Integral"], 100, 100, 100, 100, HUD.GameImageMelhor('Sprites/Inimigos/IIntegral.png', 0, 0), 100, 5, 20, 80)
         self.dobrado = False
 
 class IBOSS(Inimigo):
@@ -283,7 +292,7 @@ def BuffarAtaque(entidades, valores):
             if(buff.ID == 1):
                 entidade.buffs.remove(buff)
 
-        entidade.buffs.append(Buff("Buff de Ataque", 1, [Datributo["Ataque"]], [10], 3))
+        entidade.buffs.append(Buff("Buff de Ataque", 1, [Datributo["Ataque"]], [25], 4))
         mensagens.append("Ataque de " + entidade.nome + " aumentado em 10!")
 
     return mensagens
@@ -297,7 +306,7 @@ def BuffarDefesa(entidades, valores):
             if(buff.ID == 2):
                 entidade.buffs.remove(buff)
 
-        entidade.buffs.append(Buff("Buff de Defesa", 2, [Datributo["Defesa"]], [10], 3))
+        entidade.buffs.append(Buff("Buff de Defesa", 2, [Datributo["Defesa"]], [10], 4))
         mensagens.append("Defesa de " + entidade.nome + " aumentado em 10!")
         
     return mensagens
@@ -355,10 +364,14 @@ def Voltar(jogador):
 
 def Taylor(entidades, valores):
 
-    for entidade in entidades:
-        entidade.buffs.append(Buff("Taylor", 3, [], [valores], 4))
+    mensagens = []
 
-    return True
+    for entidade in entidades:
+        entidade.buffs.append(Buff("Taylor", 4, [Datributo["Ataque"]], [valores * 15], 5))
+        mensagens.append("Série expandida por " + str(valores) + "!")
+        mensagens.append("Ataque aumentado em " + str(valores * 15) + "!")
+        
+    return mensagens
 
 def Sanduiche(entidades, valores):
     mensagens = []
@@ -380,9 +393,11 @@ def Sanduiche(entidades, valores):
 def Rolle(entidades, valores):
     mensagens = []
 
+    i = 0
     for entidade in entidades:
-        entidade.TomarDano(valores)
-        mensagens.append(entidade.nome + " tomou " + str(valores) + " de dano")
+        danoTomado = entidade.TomarDano(int(valores[i]))
+        mensagens.append(entidade.nome + " tomou " + str(danoTomado) + " de dano")
+        i += 1
 
     if(len(mensagens) == 0):
         mensagens.append("Nenhuma derivada com mesmo HP encontrada.")
@@ -397,12 +412,12 @@ def TFC(entidades, valores):
     return True
 
 habilidadeBD = [ Habilidade("Concentração", 1, [40, 25, 10], ["Concentre-se na tarefa!", "Aumenta o ataque e a defesa - 3 turnos"], False, [BuffarAtaque, BuffarDefesa]),
-                 Habilidade("Meditação", 2, [0, 30], ["Controle sua mente!", "Recupera sua energia em 30"], False, [CurarEnergia]),
-                 Habilidade("Preparação", 2, [30, 30], ["Transforme dor em força!", "Aumenta o seu dano de acordo com o dano recebido."], False, [AbsorverAtaque]),
-                 Habilidade("T. Sanduíche", 4, [10, 0], ["Resolve os limites!", "Inverte o dano extra que todos os limites possuem."], False, [Sanduiche]),
-                 Habilidade("Série de Taylor", 5, [10, 0], ["Expanda seu poder!", "Aumenta o seu dano de acordo com o número de derivadas."], False, [Taylor]),
-                 Habilidade("T. Rolle", 6, [10, 0], ["Teorema de Rolle!", "Dano em derivadas com o mesmo HP (dano*HP faltando)."], False, [Rolle]),
-                 Habilidade("T.F.C", 7, [10, 0], ["Teorema Fundamental do Cálculo!", "Rouba vida em todo ataque por 3 turnos."], False, [TFC]),
+                 Habilidade("Meditação", 2, [0, 60], ["Controle sua mente!", "Recupera sua energia em 6.0"], False, [CurarEnergia]),
+                 Habilidade("Preparação", 3, [30, 30], ["Transforme dor em força!", "Aumenta o seu dano de acordo com o dano recebido."], False, [AbsorverAtaque]),
+                 Habilidade("T. Sanduíche", 4, [20, 0], ["Resolve os limites!", "Inverte o dano extra que todos os limites possuem."], False, [Sanduiche]),
+                 Habilidade("Série d.Taylor", 5, [30, 0], ["Expanda seu poder!", "Aumenta o seu dano de acordo com o número de derivadas."], False, [Taylor]),
+                 Habilidade("T. Rolle", 6, [30, 0], ["Teorema de Rolle!", "Dano em derivadas com o mesmo HP (dano*HP faltando)."], False, [Rolle]),
+                 Habilidade("T.F.C", 7, [80, 0], ["Teorema Fundamental do Cálculo!", "Rouba vida em todo ataque por 3 turnos."], False, [TFC]),
 
 ]
 

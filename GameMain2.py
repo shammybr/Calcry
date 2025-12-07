@@ -31,7 +31,7 @@ display_volume=Sprites.get_diplay_volume()
 lista_efeitos=Sounds.criar_lista_efeitos()
 
 luta = jogo.luta
-jogo.jogador.AprenderHabilidade(Data.habilidadeBD[0])
+#jogo.jogador.AprenderHabilidade(Data.habilidadeBD[0])
 jogo.jogador.AprenderHabilidade(Data.habilidadeBD[1])
 #jogo.jogador.AprenderHabilidade(Data.habilidadeBD[5])
 #jogo.jogador.AprenderHabilidade(Data.habilidadeBD[2])
@@ -307,11 +307,13 @@ def Update():
                         jogo.dialogoMensagens.append("Eu achei isso aqui enquanto procurava as")
                         jogo.dialogoMensagens.append("cadeiras, talvez você queira.")
                         jogo.dialogoMensagens.append(" ")
-                        jogo.dialogoMensagens.append("Você obteve uma engrenagem")
+                        jogo.dialogoMensagens.append("Você obteve uma engrenagem!")
+                        jogo.dialogoMensagens.append("Você aprendeu: Série de Taylor!")
                         jogo.jogador.engrenagems[1] = True
+                        jogo.jogador.AprenderHabilidade(Data.habilidadeBD[4])
                         jogo.ultimoEstadoJogo = Data.EEstado.ANDANDO
                         jogo.estadoJogo = Data.EEstado.DIALOGO
-
+                        jogo.SalvarJogo()
 
                 janela.get_screen().blit(jogo.fade.surface, (0, 0))
 
@@ -346,6 +348,7 @@ def Update():
         if(luta.estadoLuta == luta.EEstadoLuta.ANIMACAO):
             if(luta.estadoAnimacao <= 1):
                 if(luta.EntrarLuta(janela, jogo.deltaTime) == 1):
+                    jogo.jogador.danoGuardado = 0
                     jogo.botaoSelecionadoLuta = Data.ELuta.ATACAR
                     luta.ResetarBotoes(jogo.lutaHUD, jogo.botaoSelecionadoLuta, jogo.posicoesBotoesLuta)
                     CalcularBotoesLuta()
@@ -542,6 +545,7 @@ def Update():
                                 elif(buff.atributos[i] == Data.Datributo["Ataque"]):
                                     modAtaque += buff.valores[i]
 
+
                         if(jogo.jogador.danoGuardado > 0):
                             luta.mensagem.append("UOOOOOOOOOOOOOOOOO!!!!")
                             luta.mensagem.append("")
@@ -642,14 +646,28 @@ def Update():
                                                         if(derivadas[i].vida == derivadas[k].vida):
                                                             hpIgual.append(derivadas[i])
                                                             break
-                                            danoExtra = 0
-                                            if(len(hpIgual) > 0):
-                                                danoExtra += int(hpIgual[0].vidaMaxima - hpIgual[0].vida)
 
-                                            for mensagem in funcao(hpIgual, danoExtra + jogo.jogador.danoGuardado):
+                                            danoExtra = []
+
+                                            if(len(hpIgual) > 0):
+                                                for inimigo in hpIgual:
+                                                    danoExtra.append( int((inimigo.vidaMaxima - inimigo.vida)))
+
+
+                                            for mensagem in funcao(hpIgual, danoExtra * int((jogo.jogador.danoGuardado + jogo.jogador.dano) / 10 )):
                                                 luta.mensagem.append(mensagem)
 
+                                        elif(funcao == Data.Taylor):
+                                            derivadas = 0
 
+                                            for inimigo in jogo.inimigosNaLuta:
+                                                if(inimigo.vida > 0):
+                                                    if inimigo.tipo == Data.tipoEntidade["Derivada"]:
+                                                        derivadas += 1
+
+                                            for mensagem in funcao([jogo.jogador], derivadas):
+                                                luta.mensagem.append(mensagem)    
+                                                                       
                                         else:
                                             for mensagem in funcao([jogo.jogador], jogo.jogador.habilidades[luta.habilidadeSelecionada].valores[i]):
                                                 luta.mensagem.append(mensagem)
@@ -837,7 +855,7 @@ def Update():
                 EscreverLutaLog(luta.mensagem)
 
         elif(luta.estadoLuta == luta.EEstadoLuta.FIM):
-            
+            jogo.SalvarJogo()
             jogo.estadoJogo = jogo.ultimoEstadoJogo
 
 
@@ -997,7 +1015,7 @@ def Fim():
     janela.draw_text("Fim", janela.width * 0.5, janela.height * 0.5, "Sprites/HUD/PressStart2P-Regular.ttf", 50 * int((1280/janela.width)), (255,255,255), )
 
 def ProfessorPirataDialogo():
-    if(jogo.jogador.habilidades.count(Data.habilidadeBD[1]) == 0):
+    if(jogo.jogador.habilidades.count(Data.habilidadeBD[2]) == 0):
         jogo.dialogoMensagens.append("Professor Pirata:")
         jogo.dialogoMensagens.append(" ")
         jogo.dialogoMensagens.append("Yarr! Escondi um tesouro neste andar!")
@@ -1021,7 +1039,7 @@ def ProfessorProvaAndar1():
     jogo.dialogoMensagens.append("Eu não sei se consigo fazer exercícios")
     jogo.dialogoMensagens.append("muito legais...")
     jogo.dialogoMensagens.append("Poderia me ajudar a testar essa lista?")
-
+    jogo.dialogoMensagens.append("Em troca, te ensino uma coisa nova.")
     jogo.escolhas.clear()
     jogo.escolhaSelecionada = 0
 
@@ -1097,7 +1115,7 @@ def EntrarBanheiroMeninas():
         return True
 
 def EntrarBanheiroMeninasCadeiras():
-    if(jogo.jogador.quests[1] == 0 or jogo.jogador.quests[1] == 2):
+    if(jogo.jogador.andar != 2 or jogo.jogador.quests[1] == 0 or jogo.jogador.quests[1] == 2):
         jogo.dialogoMensagens.append(" ")
         jogo.dialogoMensagens.append("Não parece ser uma boa ideia entrar aí...")
         jogo.ultimoEstadoJogo = Data.EEstado.ANDANDO
@@ -1110,6 +1128,7 @@ def EntrarBanheiroMeninasCadeiras():
         jogo.ultimoEstadoJogo = Data.EEstado.ANDANDO
         jogo.estadoJogo = Data.EEstado.DIALOGO
         jogo.jogador.quests[1] = 2
+        jogo.SalvarJogo()
         return True
 
 def PegarCadeiras():
@@ -1220,6 +1239,7 @@ def ChecarEvento(novaPosicaoX, novaPosicaoY):
         elif(evento == 7):
             if(jogo.jogador.quests[1] == 0):
                 jogo.jogador.quests[1] = 1
+                jogo.SalvarJogo()
 
         elif(evento == 8):
             return EntrarBanheiroMeninasCadeiras()
@@ -1230,7 +1250,6 @@ def ChecarEvento(novaPosicaoX, novaPosicaoY):
 
         elif(evento == 10):
             ChecarElevador()
-
         elif(evento == 12):
             return ProfessorListaPerdida()
         elif(evento == 13):
@@ -1308,6 +1327,8 @@ def ChecarEvento(novaPosicaoX, novaPosicaoY):
             
             return True
 
+        elif(evento == -1):
+            return True
 def ChecarElevador():
     if(jogo.jogador.andar < 4):
         engrenagens = 0
@@ -1859,6 +1880,7 @@ def PegarTesouro():
     jogo.jogador.AprenderHabilidade(Data.habilidadeBD[2])
     jogo.ultimoEstadoJogo = Data.EEstado.ANDANDO
     jogo.estadoJogo = Data.EEstado.DIALOGO
+    jogo.SalvarJogo()
 
 def PegarEngrenagem(andar):
 
@@ -1911,6 +1933,7 @@ def ProfessorListaPerdida():
         jogo.jogador.quests[2] = 1
         jogo.ultimoEstadoJogo = Data.EEstado.ANDANDO
         jogo.estadoJogo = Data.EEstado.DIALOGO
+        jogo.SalvarJogo()
     else:
         if(jogo.jogador.quests[2] < 99):
             paginas = 0
@@ -1977,6 +2000,7 @@ def ProfessorListaPerdida():
                 jogo.estadoJogo = Data.EEstado.DIALOGO
                 jogo.jogador.quests[2] = 99
                 PegarEngrenagem(2)
+                jogo.SalvarJogo()
         else:
             jogo.dialogoMensagens.append("Professor Desajeitado:")
             jogo.dialogoMensagens.append(" ")
@@ -1991,6 +2015,7 @@ def ProfessorListaPerdida():
 
 def EncontrarProva(num):
     jogo.jogador.provas[num] = True
+    jogo.SalvarJogo()
 
 def CriarAula(andar, aula):
     if(andar == 1):
@@ -2007,28 +2032,7 @@ def CriarAula(andar, aula):
                 inimigo = Data.ILimite("Limite " + chr(65 + nlimite))
                 jogo.inimigosNaLuta.append(inimigo)
 
-            i = 0
 
-            for inimigo in jogo.inimigosNaLuta:
-                if(inimigo.vida > 0):
-                    if(inimigo.tipo == Data.tipoEntidade["Limite"]):
-                            inimigo.sprite.Transformar(int(317 * (janela.width/1920)), int(497 * (janela.height/1080)))
-                            largura = (inimigo.sprite.largura / 2)
-                            altura = (inimigo.sprite.altura / 2)
-
-                            if(i == 0):
-                                inimigo.sprite.set_position( int( (0.40 * janela.width)  - largura), int( 0.65 * janela.height - altura )    )
-                            
-                            elif(i == 1):
-                                inimigo.sprite.set_position( int( (0.60 * janela.width) - largura), int( 0.65 * janela.height  - altura)    )
-
-                            elif(i == 2):
-                                inimigo.sprite.set_position( int( (0.25 * janela.width) - largura), int( 0.55 * janela.height - altura )    )
-                            
-                            elif(i == 3):
-                                inimigo.sprite.set_position( int( (0.75 * janela.width) - largura), int( 0.55 * janela.height - altura )    )
-
-                i += 1
 
             jogo.estadoJogo = Data.EEstado.LUTA
             luta.estadoLuta = luta.EEstadoLuta.ANIMACAO
@@ -2108,28 +2112,7 @@ def CriarAula(andar, aula):
             inimigo = Data.ILimite("Limite ")
             jogo.inimigosNaLuta.append(inimigo)
 
-        i = 0
 
-        for inimigo in jogo.inimigosNaLuta:
-            if(inimigo.vida > 0):
-                if(inimigo.tipo == Data.tipoEntidade["Limite"]):
-                        inimigo.sprite.Transformar(int(317 * (janela.width/1920)), int(497 * (janela.height/1080)))
-                        largura = (inimigo.sprite.largura / 2)
-                        altura = (inimigo.sprite.altura / 2)
-
-                        if(i == 0):
-                            inimigo.sprite.set_position( int( (0.40 * janela.width)  - largura), int( 0.65 * janela.height - altura )    )
-                        
-                        elif(i == 1):
-                            inimigo.sprite.set_position( int( (0.60 * janela.width) - largura), int( 0.65 * janela.height  - altura)    )
-
-                        elif(i == 2):
-                            inimigo.sprite.set_position( int( (0.25 * janela.width) - largura), int( 0.55 * janela.height - altura )    )
-                        
-                        elif(i == 3):
-                            inimigo.sprite.set_position( int( (0.75 * janela.width) - largura), int( 0.55 * janela.height - altura )    )
-
-            i += 1
 
         jogo.estadoJogo = Data.EEstado.LUTA
         luta.estadoLuta = luta.EEstadoLuta.ANIMACAO
@@ -2216,28 +2199,7 @@ def CriarAula(andar, aula):
 
             jogo.inimigosNaLuta.append(inimigo)
 
-        i = 0
 
-        for inimigo in jogo.inimigosNaLuta:
-            if(inimigo.vida > 0):
-                if(inimigo.tipo == Data.tipoEntidade["Limite"]):
-                        inimigo.sprite.Transformar(int(317 * (janela.width/1920)), int(497 * (janela.height/1080)))
-                        largura = (inimigo.sprite.largura / 2)
-                        altura = (inimigo.sprite.altura / 2)
-
-                        if(i == 0):
-                            inimigo.sprite.set_position( int( (0.40 * janela.width)  - largura), int( 0.65 * janela.height - altura )    )
-                        
-                        elif(i == 1):
-                            inimigo.sprite.set_position( int( (0.60 * janela.width) - largura), int( 0.65 * janela.height  - altura)    )
-
-                        elif(i == 2):
-                            inimigo.sprite.set_position( int( (0.25 * janela.width) - largura), int( 0.55 * janela.height - altura )    )
-                        
-                        elif(i == 3):
-                            inimigo.sprite.set_position( int( (0.75 * janela.width) - largura), int( 0.55 * janela.height - altura )    )
-
-            i += 1
 
         jogo.estadoJogo = Data.EEstado.LUTA
         luta.estadoLuta = luta.EEstadoLuta.ANIMACAO
@@ -2245,8 +2207,66 @@ def CriarAula(andar, aula):
         jogo.dialogoMensagens.append(" ")
         jogo.dialogoMensagens.append("Conteúdo revisado!")
         jogo.ultimoEstadoJogo = Data.EEstado.DIALOGO
+    
+    
+    i = 0
+
+    for inimigo in jogo.inimigosNaLuta:
+        if(inimigo.vida > 0):
+            if(inimigo.tipo == Data.tipoEntidade["Limite"]):
+                    inimigo.sprite.Transformar(int(317 * (janela.width/1920)), int(497 * (janela.height/1080)))
+                    largura = (inimigo.sprite.largura / 2)
+                    altura = (inimigo.sprite.altura / 2)
+
+                    if(i == 0):
+                        inimigo.sprite.set_position( int( (0.40 * janela.width)  - largura), int( 0.65 * janela.height - altura )    )
+                    
+                    elif(i == 1):
+                        inimigo.sprite.set_position( int( (0.60 * janela.width) - largura), int( 0.65 * janela.height  - altura)    )
+
+                    elif(i == 2):
+                        inimigo.sprite.set_position( int( (0.25 * janela.width) - largura), int( 0.55 * janela.height - altura )    )
+                    
+                    elif(i == 3):
+                        inimigo.sprite.set_position( int( (0.75 * janela.width) - largura), int( 0.55 * janela.height - altura )    )
 
 
+            elif(inimigo.tipo == Data.tipoEntidade["Derivada"]):
+                    inimigo.sprite.Transformar(int(415 * (janela.width/1920)), int(547 * (janela.height/1080)))
+                    largura = (inimigo.sprite.largura / 2)
+                    altura = (inimigo.sprite.altura / 2)
+
+                    if(i == 0):
+                        inimigo.sprite.set_position( int( (0.40 * janela.width)  - largura), int( 0.65 * janela.height - altura )    )
+                    
+                    elif(i == 1):
+                        inimigo.sprite.set_position( int( (0.60 * janela.width) - largura), int( 0.65 * janela.height  - altura)    )
+
+                    elif(i == 2):
+                        inimigo.sprite.set_position( int( (0.25 * janela.width) - largura), int( 0.55 * janela.height - altura )    )
+                    
+                    elif(i == 3):
+                        inimigo.sprite.set_position( int( (0.75 * janela.width) - largura), int( 0.55 * janela.height - altura )    )
+
+            elif(inimigo.tipo == Data.tipoEntidade["Integral"]):
+                    inimigo.sprite.Transformar(int(451 * (janela.width/1920)), int(187 * (janela.height/1080)))
+                    largura = (inimigo.sprite.largura / 2)
+                    altura = (inimigo.sprite.altura / 2)
+
+                    if(i == 0):
+                        inimigo.sprite.set_position( int( (0.40 * janela.width)  - largura), int( 0.80 * janela.height - altura )    )
+                    
+                    elif(i == 1):
+                        inimigo.sprite.set_position( int( (0.60 * janela.width) - largura), int( 0.80 * janela.height  - altura)    )
+
+                    elif(i == 2):
+                        inimigo.sprite.set_position( int( (0.25 * janela.width) - largura), int( 0.70 * janela.height - altura )    )
+                    
+                    elif(i == 3):
+                        inimigo.sprite.set_position( int( (0.75 * janela.width) - largura), int( 0.70 * janela.height - altura )    )
+
+
+        i += 1
 
     jogo.jogador.aulas[andar - 1][aula] = True
 
@@ -2264,10 +2284,10 @@ def CriarAula(andar, aula):
             jogo.dialogoMensagens.append(" ")
             jogo.dialogoMensagens.append("As revisões deram fruto...")
             jogo.dialogoMensagens.append(" ")
-            jogo.dialogoMensagens.append("Você aprendeu: Teorema do Sanduíche!")
-            jogo.jogador.AprenderHabilidade(Data.habilidadeBD[3])
-            jogo.ultimoEstadoJogo = Data.EEstado.ANDANDO
-            jogo.estadoJogo = Data.EEstado.DIALOGO
+            jogo.dialogoMensagens.append("Você aprendeu: Concentração!")
+            jogo.jogador.AprenderHabilidade(Data.habilidadeBD[0])
+            jogo.ultimoEstadoJogo = Data.EEstado.DIALOGO
+
 
         elif(andar == 2):
             jogo.dialogoMensagens.append(" ")
@@ -2277,10 +2297,10 @@ def CriarAula(andar, aula):
             jogo.dialogoMensagens.append(" ")
             jogo.dialogoMensagens.append("As revisões deram fruto...")
             jogo.dialogoMensagens.append(" ")
-            jogo.dialogoMensagens.append("Você aprendeu: Série de Taylor!")
-            jogo.jogador.AprenderHabilidade(Data.habilidadeBD[4])
-            jogo.ultimoEstadoJogo = Data.EEstado.ANDANDO
-            jogo.estadoJogo = Data.EEstado.DIALOGO
+            jogo.dialogoMensagens.append("Você aprendeu: Teorema de Rolle!")
+            jogo.jogador.AprenderHabilidade(Data.habilidadeBD[5])
+            jogo.ultimoEstadoJogo = Data.EEstado.DIALOGO
+
 
         elif(andar == 3):
             jogo.dialogoMensagens.append(" ")
@@ -2292,17 +2312,19 @@ def CriarAula(andar, aula):
             jogo.dialogoMensagens.append(" ")
             jogo.dialogoMensagens.append("Você aprendeu: Teorema Fundamental do Cálculo!")
             jogo.jogador.AprenderHabilidade(Data.habilidadeBD[6])
-            jogo.ultimoEstadoJogo = Data.EEstado.ANDANDO
-            jogo.estadoJogo = Data.EEstado.DIALOGO
+            jogo.ultimoEstadoJogo = Data.EEstado.DIALOGO
+
 
 def CalcularInteracao(interacao):
     if(interacao.interacao == 1):
         if(interacao.id == 1):
             BebedouroCurar()
+            jogo.SalvarJogo()
+
     elif(interacao.interacao == 2):
         ProfessorPirataDialogo()
     elif(interacao.interacao == 3):
-        if(jogo.jogador.habilidades.count(Data.habilidadeBD[1]) == 0):
+        if(jogo.jogador.habilidades.count(Data.habilidadeBD[2]) == 0):
             PegarTesouro()
 
     elif(interacao.interacao == 4):
@@ -2314,6 +2336,8 @@ def CalcularInteracao(interacao):
                 jogo.ultimoEstadoJogo = Data.EEstado.ANDANDO
                 jogo.estadoJogo = Data.EEstado.DIALOGO
                 PegarEngrenagem(1)
+                jogo.SalvarJogo()
+
     elif(interacao.interacao == 6):
         ProfessorCadeiras()
 
@@ -2332,6 +2356,7 @@ def CalcularInteracao(interacao):
     elif(interacao.interacao == 13):
         if(jogo.jogador.provas[0]):
             BebedouroCurar()
+            jogo.SalvarJogo()
         else:
             jogo.dialogoMensagens.append(" ")
             jogo.dialogoMensagens.append("Hmm? Parece que tem uma folha atrás do")
@@ -2344,6 +2369,7 @@ def CalcularInteracao(interacao):
             jogo.ultimoEstadoJogo = Data.EEstado.ANDANDO
             jogo.estadoJogo = Data.EEstado.DIALOGO
             EncontrarProva(0)
+            jogo.SalvarJogo()
 
     elif(interacao.interacao == 15):
         if(jogo.jogador.quests[2] == 2):
@@ -2352,7 +2378,7 @@ def CalcularInteracao(interacao):
             jogo.ultimoEstadoJogo = Data.EEstado.ANDANDO
             jogo.estadoJogo = Data.EEstado.DIALOGO
             jogo.jogador.quests[2] = 3
-
+            jogo.SalvarJogo()
     elif(interacao.interacao == 16):
             if(jogo.jogador.quests[2] == 3):
                 jogo.dialogoMensagens.append("Voz Do Almoxarifado: ")
@@ -2367,7 +2393,8 @@ def CalcularInteracao(interacao):
                 jogo.estadoJogo = Data.EEstado.DIALOGO
                 jogo.jogador.quests[2] = 4
                 EncontrarProva(2)
-            
+                jogo.SalvarJogo()
+
             return True
     
     elif(interacao.interacao == 20):
@@ -2482,6 +2509,8 @@ def SubirAndar():
         jogo.fade.surface.set_alpha(0)
         jogo.mapaAtual = Mapa.GerarMapa(jogo.jogador.andar, jogo)
         jogo.estadoJogo = Data.EEstado.ANIMACAOOVERWORLD
+        jogo.SalvarJogo()
+
     else:
         jogo.dialogoMensagens.append(" ")
         jogo.dialogoMensagens.append("A escada para o próximo andar está")
@@ -2501,6 +2530,7 @@ def DescerAndar():
     jogo.fade.surface.set_alpha(0)
     jogo.mapaAtual = Mapa.GerarMapa(jogo.jogador.andar, jogo)
     jogo.estadoJogo = Data.EEstado.ANIMACAOOVERWORLD
+    jogo.SalvarJogo()
 
 Data.escolhaBD[2].AdicionarFunc(DescerAndar)
 
@@ -2572,6 +2602,7 @@ def AcionarAlarme():
     jogo.jogador.quests[1] = 3
     jogo.ultimoEstadoJogo = Data.EEstado.ANDANDO
     jogo.estadoJogo = Data.EEstado.ANDANDO
+    jogo.SalvarJogo()
 
 Data.escolhaBD[5].AdicionarFunc(AcionarAlarme)
 

@@ -229,12 +229,17 @@ def CarregarTexturas(janela):
     parede7 = pygame.image.load('Sprites/parede3quadro2.png').convert()
     texturas.append(parede7)
 
+
+
     portabanheiro = pygame.image.load('Sprites/portabanheiro.png').convert()
     texturas.append(portabanheiro)
 
     parede1Elevador = pygame.image.load('Sprites/parede1Elevador.png').convert()
     texturas.append(portabanheiro)
-    
+
+    paredeAlarme = pygame.image.load('Sprites/alarme.png').convert()
+    texturas.append(paredeAlarme)
+
     chao1 = pygame.image.load('Sprites/chao1.png').convert()
 
     #chao1Cache = EscalarTextura(chao1, janela.height, janela)
@@ -298,6 +303,9 @@ def CarregarTexturas(janela):
 
     parede1Elevador_fatias = PrepararFatias(parede1Elevador)
     geradoresCache.append(CriarGeradorCache(parede1Elevador_fatias))
+
+    alarme_fatias = PrepararFatias(paredeAlarme)
+    geradoresCache.append(CriarGeradorCache(alarme_fatias))
 
     texturaChao = pygame.image.load('Sprites/chao1.png').convert()
     texturaTeto = pygame.image.load('Sprites/teto1.png').convert()
@@ -366,6 +374,15 @@ def CarregarTexturas(janela):
     geradorSame = CriarGeradorCacheSprite(professor)
 
     geradoresCacheSprites.append([geradorSame, geradorSame, geradorSame, geradorSame])
+
+    almo = pygame.image.load('Sprites/almoxarifado.png').convert_alpha()
+    spriteTexturas.append([almo, almo, almo, almo])
+    geradorSame = CriarGeradorCacheSprite(almo)
+
+    geradoresCacheSprites.append([geradorSame, geradorSame, geradorSame, geradorSame])
+
+
+
 
     agora2 = time.time() - agora1 
     print("Demorou " + str(agora2))
