@@ -691,7 +691,7 @@ def CalcularParede(jogadorX, jogadorY, janela, vertices, jogadorDirecao, FOV):
 
     pygame.draw.polygon(janela.get_screen(), (200, 200, 200), coordenadasPoligono)
 
-def get_lista_botoes_menu():
+def get_lista_botoes_menu(janela):
     
     Lista=[]
     
@@ -701,21 +701,38 @@ def get_lista_botoes_menu():
     Lista.append(Sprite('Sprites/botoes/sair.png'))
 
     for i in range(4):
-        Lista[i].set_position(480, 90+i*135)
+        
 
+        imagemOriginal = Lista[i].image
+        centroOriginal = Lista[i].rect.center
+        imagemCopia = pygame.transform.scale(imagemOriginal, (janela.width * 0.5, janela.height * 0.1))
+        Lista[i].rect = imagemCopia.get_rect()
+        Lista[i].rect.center = centroOriginal
+        Lista[i].image = imagemCopia
+        Lista[i].set_position(janela.width * 0.5 - ((janela.width * 0.51) / 2), (janela.height * 0.25) + (i * janela.height * 0.15) )
+        
     Lista.append(Sprite('Sprites/botoes/menos.png'))
     Lista.append(Sprite(f'Sprites/botoes/mais.png'))
     Lista.append(Sprite('Sprites/botoes/voltar.png'))
 
+    for i in range(4, 7):
+        
+        imagemOriginal = Lista[i].image
+        centroOriginal = Lista[i].rect.center
+        imagemCopia = pygame.transform.scale(imagemOriginal, (janela.width * 0.5, janela.height * 0.1))
+        Lista[i].rect = imagemCopia.get_rect()
+        Lista[i].rect.center = centroOriginal
+        Lista[i].image = imagemCopia
+
     Lista[4].set_position(400, 210)
     Lista[5].set_position(720, 210)
-    Lista[6].set_position(480, 345)
+    Lista[6].set_position(janela.width * 0.5 - ((janela.width * 0.51) / 2), (janela.height * 0.25) + (4 * janela.height * 0.15) )
 
     return Lista
 
 
 
-def get_lista_botoes_submenu():
+def get_lista_botoes_submenu(janela):
 
     Lista=[]
 
@@ -725,15 +742,31 @@ def get_lista_botoes_submenu():
     Lista.append(Sprite('Sprites/botoes/voltar_menu.png'))
 
     for i in range(4):
-        Lista[i].set_position(480, 90+i*135)
+        
+        imagemOriginal = Lista[i].image
+        centroOriginal = Lista[i].rect.center
+        imagemCopia = pygame.transform.scale(imagemOriginal, (janela.width * 0.5, janela.height * 0.1))
+        Lista[i].rect = imagemCopia.get_rect()
+        Lista[i].rect.center = centroOriginal
+        Lista[i].image = imagemCopia
+        Lista[i].set_position(janela.width * 0.5 - ((janela.width * 0.51) / 2), (janela.height * 0.25) + (i * janela.height * 0.15) )
 
     Lista.append(Sprite('Sprites/botoes/menos.png'))
     Lista.append(Sprite('Sprites/botoes/mais.png'))
     Lista.append(Sprite('Sprites/botoes/voltar.png'))
 
+    for i in range(4, 7):
+        
+        imagemOriginal = Lista[i].image
+        centroOriginal = Lista[i].rect.center
+        imagemCopia = pygame.transform.scale(imagemOriginal, (janela.width * 0.5, janela.height * 0.1))
+        Lista[i].rect = imagemCopia.get_rect()
+        Lista[i].rect.center = centroOriginal
+        Lista[i].image = imagemCopia
+
     Lista[4].set_position(400, 210)
     Lista[5].set_position(720, 210)
-    Lista[6].set_position(480, 345)
+    Lista[6].set_position(janela.width * 0.5 - ((janela.width * 0.51) / 2), (janela.height * 0.25) + (4 * janela.height * 0.15) )
 
     return Lista
 

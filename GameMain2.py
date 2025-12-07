@@ -25,8 +25,8 @@ jogo = GameInstance.Jogo(janela)
 
 jogo.Musica.musica_atual.set_repeat(True)
 jogo.Musica.musica_atual.play()
-botoes_menu=Sprites.get_lista_botoes_menu()
-botoes_submenu=Sprites.get_lista_botoes_submenu()
+botoes_menu=Sprites.get_lista_botoes_menu(janela)
+botoes_submenu=Sprites.get_lista_botoes_submenu(janela)
 display_volume=Sprites.get_diplay_volume()
 lista_efeitos=Sounds.criar_lista_efeitos()
 
@@ -61,7 +61,7 @@ def Update():
 
     jogo.Musica.atualizar_musica_mais_facil(jogo.estadoJogo) # Passível de Otimização
 
-    if (jogo.ultimoInput == 13):
+    if (jogo.ultimoInput == 13 and not (jogo.isAndando or jogo.isRodando or (jogo.estadoJogo == Data.EEstado.LUTA))):
         jogo.Musica.atualizar_musica(Data.EEstado.MAINMENU)
         ismousepressed = False
         while True:
@@ -97,7 +97,6 @@ def Update():
                             else:
                                 ismousepressed=False
                     elif (jogo.mouse.is_over_object(botoes_submenu[3])):
-                        jogo.SalvarJogo()
                         jogo.estadoJogo=Data.EEstado.MAINMENU
                         break
 
