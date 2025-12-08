@@ -67,5 +67,6 @@ def criar_lista_efeitos():
     lista.append(Sound("Soms/Efeitos/escadaria.ogg"))
     lista.append(Sound("Soms/Efeitos/movendo_cadeira.ogg"))
     lista.append(Sound("Soms/Efeitos/pegar_chaves.ogg"))
+    lista.append(Sound("Soms/Efeitos/alarme.ogg"))
 
     return lista

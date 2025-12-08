@@ -2755,6 +2755,7 @@ def RecusarProfessor():
 Data.escolhaBD[4].AdicionarFunc(RecusarProfessor)
 
 def AcionarAlarme():
+    lista_efeitos[5].play()
     jogo.jogador.quests[1] = 3
     jogo.ultimoEstadoJogo = Data.EEstado.ANDANDO
     jogo.estadoJogo = Data.EEstado.ANDANDO
