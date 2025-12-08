@@ -6,6 +6,7 @@ import PPlay
 import Data
 import pygame
 import functools
+import HUD
 
 modoParede = { "frente" : 1,
                "esquerda" : 2,
@@ -711,11 +712,13 @@ def get_lista_botoes_menu(janela):
         Lista[i].image = imagemCopia
         Lista[i].set_position(janela.width * 0.5 - ((janela.width * 0.51) / 2), (janela.height * 0.4) + (i * janela.height * 0.15) )
         
-    Lista.append(Sprite('Sprites/botoes/menos.png'))
-    Lista.append(Sprite(f'Sprites/botoes/mais.png'))
+    Lista.append(HUD.GameImageMelhor('Sprites/botoes/menos.png', 240, 310))
+    Lista[4].Transformar(320, 160)
+    Lista.append(HUD.GameImageMelhor('Sprites/botoes/mais.png', 720, 310))
+    Lista[5].Transformar(320, 160)
     Lista.append(Sprite('Sprites/botoes/voltar.png'))
 
-    for i in range(4, 7):
+    for i in range(6, 7):
         
         imagemOriginal = Lista[i].image
         centroOriginal = Lista[i].rect.center
@@ -724,8 +727,6 @@ def get_lista_botoes_menu(janela):
         Lista[i].rect.center = centroOriginal
         Lista[i].image = imagemCopia
 
-    Lista[4].set_position(400, 210)
-    Lista[5].set_position(720, 210)
     Lista[6].set_position(janela.width * 0.5 - ((janela.width * 0.51) / 2), (janela.height * 0.4) + (3 * janela.height * 0.15) )
 
     return Lista
@@ -751,11 +752,13 @@ def get_lista_botoes_submenu(janela):
         Lista[i].image = imagemCopia
         Lista[i].set_position(janela.width * 0.5 - ((janela.width * 0.51) / 2), (janela.height * 0.4) + (i * janela.height * 0.15) )
 
-    Lista.append(Sprite('Sprites/botoes/menos.png'))
-    Lista.append(Sprite('Sprites/botoes/mais.png'))
+    Lista.append(HUD.GameImageMelhor('Sprites/botoes/menos.png', 240, 310))
+    Lista[4].Transformar(320, 160)
+    Lista.append(HUD.GameImageMelhor('Sprites/botoes/mais.png', 720, 310))
+    Lista[5].Transformar(320, 160)
     Lista.append(Sprite('Sprites/botoes/voltar.png'))
 
-    for i in range(4, 7):
+    for i in range(6, 7):
         
         imagemOriginal = Lista[i].image
         centroOriginal = Lista[i].rect.center
@@ -764,32 +767,32 @@ def get_lista_botoes_submenu(janela):
         Lista[i].rect.center = centroOriginal
         Lista[i].image = imagemCopia
 
-    Lista[4].set_position(400, 210)
-    Lista[5].set_position(720, 210)
     Lista[6].set_position(janela.width * 0.5 - ((janela.width * 0.51) / 2), (janela.height * 0.4) + (3 * janela.height * 0.15) )
+
+    Lista.append(HUD.GameImageMelhor('Sprites/botoes/controles_display.png', 440, 280))
+    Lista[7].Transformar(400, 300)
 
     return Lista
 
-def get_diplay_volume():
+def get_diplay_volume(janela):
 
     Lista=[]
 
-    Lista.append(Sprite('Sprites/botoes/Display/n0.png'))
-    Lista.append(Sprite('Sprites/botoes/Display/n1.png'))
-    Lista.append(Sprite('Sprites/botoes/Display/n2.png'))
-    Lista.append(Sprite('Sprites/botoes/Display/n3.png'))
-    Lista.append(Sprite('Sprites/botoes/Display/n4.png'))
-    Lista.append(Sprite('Sprites/botoes/Display/n5.png'))
-    Lista.append(Sprite('Sprites/botoes/Display/n6.png'))
-    Lista.append(Sprite('Sprites/botoes/Display/n7.png'))
-    Lista.append(Sprite('Sprites/botoes/Display/n8.png'))
-    Lista.append(Sprite('Sprites/botoes/Display/n9.png'))
-    Lista.append(Sprite('Sprites/botoes/Display/n10.png'))
+    Lista.append(HUD.GameImageMelhor('Sprites/botoes/Display/n0.png', 560, 350))
+    Lista.append(HUD.GameImageMelhor('Sprites/botoes/Display/n1.png', 560, 350))
+    Lista.append(HUD.GameImageMelhor('Sprites/botoes/Display/n2.png', 560, 350))
+    Lista.append(HUD.GameImageMelhor('Sprites/botoes/Display/n3.png', 560, 350))
+    Lista.append(HUD.GameImageMelhor('Sprites/botoes/Display/n4.png', 560, 350))
+    Lista.append(HUD.GameImageMelhor('Sprites/botoes/Display/n5.png', 560, 350))
+    Lista.append(HUD.GameImageMelhor('Sprites/botoes/Display/n6.png', 560, 350))
+    Lista.append(HUD.GameImageMelhor('Sprites/botoes/Display/n7.png', 560, 350))
+    Lista.append(HUD.GameImageMelhor('Sprites/botoes/Display/n8.png', 560, 350))
+    Lista.append(HUD.GameImageMelhor('Sprites/botoes/Display/n9.png', 560, 350))
+    Lista.append(HUD.GameImageMelhor('Sprites/botoes/Display/n10.png', 560, 350))
 
     for i in range(11):
-        Lista[i].set_position(560, 250)
+        Lista[i].Transformar(160, 160)
     
-    Lista.append(Sprite('Sprites/botoes/Display/volume.png'))
-    Lista[11].set_position(560, 210)
-
+    Lista.append(HUD.GameImageMelhor('Sprites/botoes/Display/volume.png', 560, 310))
+    Lista[11].Transformar(160, 40)
     return Lista

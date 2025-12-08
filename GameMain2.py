@@ -27,7 +27,7 @@ jogo.Musica.musica_atual.set_repeat(True)
 jogo.Musica.musica_atual.play()
 botoes_menu=Sprites.get_lista_botoes_menu(janela)
 botoes_submenu=Sprites.get_lista_botoes_submenu(janela)
-display_volume=Sprites.get_diplay_volume()
+display_volume=Sprites.get_diplay_volume(janela)
 lista_efeitos=Sounds.criar_lista_efeitos()
 
 luta = jogo.luta
@@ -164,25 +164,6 @@ def Update():
                 ChecarInteracao()
                 jogo.botaoSolto = False
                 jogo.ultimoMovimentoBotao = time.time()
-
-        if(jogo.ultimoInput == 9):
-            ComecarLuta()
-
-            
-        if(jogo.ultimoInput == 10 and jogo.botaoSolto):
-
-            jogo.botaoSolto = False
-            jogo.jogador.TomarDano(5)
-
-        if(jogo.ultimoInput == 11 and jogo.botaoSolto):
-
-            jogo.botaoSolto = False
-            jogo.SalvarJogo()
-        
-        if(jogo.ultimoInput == 12 and jogo.botaoSolto):
-
-            jogo.botaoSolto = False
-            CarregarJogo()
 
 
         RenderizarMapa()

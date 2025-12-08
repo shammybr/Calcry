@@ -6,7 +6,7 @@ import pygame
 
 
 class GameImageMelhor(PPlay.gameimage.GameImage):
-    def __init__(self,imagem, x, y):
+    def __init__(self, imagem, x, y):
         super().__init__(imagem)
 
         self.imagemOriginal = self.image

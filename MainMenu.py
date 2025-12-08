@@ -43,7 +43,8 @@ class SubMenu():
         janela.update()
     
     def DesenharControles(self, janela, lista):
-
+        self.background.draw()
         lista[6].draw()
+        lista[7].draw()
         janela.update()
 
