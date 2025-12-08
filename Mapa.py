@@ -704,7 +704,7 @@ def RenderizarSprites(janela, jogador, zBuffer, mapaObjetos):
                     elif(objeto.oeste):
                         posicao = 0
                     
-            # Check if the displacement on the Y-axis is dominant (or equal)
+           
             else: # abs(rel_y) >= abs(rel_x)
                 if distY > 0:
                     #return "SUL"
@@ -740,41 +740,34 @@ def RenderizarSprites(janela, jogador, zBuffer, mapaObjetos):
             if(distancia_sq > 0.1):
                 sprites_a_renderizar.append((distancia_sq, spriteX, spriteY, tex_index - 99, posicao, largura, altura))
 
-    # Sort Sprites: Farthest to Closest
+   
     sprites_a_renderizar.sort(key=lambda item: item[0], reverse=True) 
 
-    # 2. Render Sorted Sprites with Z-Buffer Clipping
-    # Define a small tolerance for the clip check to account for floating point errors
+
     EPSILON = 0.1 
 
     for distancia_sq, spriteX, spriteY, tex_index, posicao, largura, altura in sprites_a_renderizar:
         
-        # --- A. Transformation Math (World to Camera Space) ---
-        
-        # Vector from player to sprite center
+
         relativeX = spriteX - jogador.x
         relativeY = spriteY - jogador.y
         
-        # Matrix determinant inverse
+      
         invDet = 1.0 / (jogador.planeX * jogador.dirY - jogador.dirX * jogador.planeY)
 
-        # Transformed coordinates (Camera Space)
-        # transformX: determines horizontal position (left/right)
-        # transformY: determines distance/depth (forward/back). Must be > 0.
+
         transformX = invDet * (jogador.dirY * relativeX - jogador.dirX * relativeY)
         transformY = invDet * (-jogador.planeY * relativeX + jogador.planeX * relativeY)
         
-        # --- B. Early Clipping & Size Calculation ---
-        
-        # Clip if sprite is behind camera or too close to avoid division by zero/instability
+
         if transformY <= EPSILON:
             continue
             
-        # Screen position of the sprite's center (Perspective projection)
+
         spriteScreenX = int((janela.width / 2) * (1 + transformX / transformY))
         
 
-        # Projected Height and Width (with Aspect Ratio)
+
  
 
 
@@ -784,81 +777,67 @@ def RenderizarSprites(janela, jogador, zBuffer, mapaObjetos):
         spriteHeight = abs(int((janela.height / transformY) * altura))    
         spriteWidth = int(spriteHeight * (TexW / TexH))
         
-        # 1. Calculate projected unit height (World Height 1.0)
+
         unit_projected_height = abs(int(janela.height / transformY))
 
-        # 2. Calculate projected sprite height (Scaled by World Height factor)
         spriteHeight = abs(int(unit_projected_height * altura))
 
-        # 3. Calculate the Y-position of the sprite's top edge.
-        # We anchor the bottom of the sprite to the ground plane (horizon + half unit height) 
-        # and subtract the sprite's full height.
 
-        # Ground plane position on screen (vertical center of the entire world unit):
         ground_level_y = janela.height // 2 + (unit_projected_height // 2)
 
-        # Start drawing from the top of the sprite, aligned to the ground level:
+
         drawStartY = ground_level_y - spriteHeight
 
         drawStartX = spriteScreenX - spriteWidth // 2
         drawEndX = drawStartX + spriteWidth
 
-        # --- C. Optimized Caching ---
-        
-        # Assuming you use index 1 as the test generator:
+
+
         get_scaled_sprite = Sprites.geradoresCacheSprites[tex_index][posicao]
         scaled_sprite = get_scaled_sprite(spriteWidth, spriteHeight)
 
-        # --- D. Z-Buffer and Screen Clipping ---
-        
-        # 1. Define safe screen iteration range (to prevent IndexError)
+
         start_loop_x = max(0, drawStartX)
         end_loop_x = min(janela.width, drawEndX)
-        
-        # 2. Initialize clip boundaries on the SCALED SPRITE's surface (0 to spriteWidth)
-        # This translates the screen clip (start_loop_x) into the sprite texture coordinate.
+
         final_clip_start = start_loop_x - drawStartX 
         final_clip_end = end_loop_x - drawStartX 
 
-        # A. Left-side Z-Buffer Clipping (Find first visible column)
+
         for stripe_x in range(start_loop_x, end_loop_x):
-            # Check if sprite distance is less than the wall distance (closer to player)
+           
             if transformY < zBuffer[stripe_x]:
-                break # Found the first visible column (stripe_x)
+                break
             else:
-                # Wall is closer or at the same depth. Increment sprite coordinate start.
+              
                 final_clip_start += 1 
 
-        # If the entire sprite was clipped on the left, skip drawing
+        
         if final_clip_start >= final_clip_end:
              continue
 
-        # B. Right-side Z-Buffer Clipping (Find last visible column)
-        # We only need to check columns from the right edge up to the final_clip_start found above.
-        
-        # We iterate from right to left (end_loop_x - 1) down to (start_loop_x + final_clip_start)
+
         for stripe_x in range(end_loop_x - 1, start_loop_x + final_clip_start - 1, -1):
             
             if transformY < zBuffer[stripe_x]:
-                # Found the last visible SCREEN column (stripe_x). 
-                # Convert this back to the SCALED SPRITE column index (final_clip_end).
+
                 final_clip_end = stripe_x - drawStartX + 1 
-                break # Stop searching rightward
+                break 
             else:
-                # Wall is closer. Decrement the sprite coordinate end.
+               
                 final_clip_end -= 1
 
-        # --- E. Final Blit ---
+
         
         if final_clip_end > final_clip_start:
-            # Create the visible rectangle on the CACHED scaled surface
+           
             visible_width = final_clip_end - final_clip_start
             visible_rect = pygame.Rect(final_clip_start, 0, visible_width, spriteHeight)
             
-            # Get the visible part
+          
             visible_sprite_part = scaled_sprite.subsurface(visible_rect)
             
-            # Calculate the final screen position (adjust drawStartX by the clip offset)
+         
             final_draw_x = drawStartX + final_clip_start 
 
             janela.get_screen().blit(visible_sprite_part, (final_draw_x, drawStartY))
@@ -1047,36 +1026,30 @@ def RenderizarMapa3D(janela, jogador):
         QUANTIZE_STEP = 2
         snapped_key = (int(alturaDaLinha) // QUANTIZE_STEP) * QUANTIZE_STEP
 
-        # --- This is the new, smart-caching logic ---
+
                 # acha a coluna da textura para desenhar (porcentagem de onde está na parede * largura da imagem)
         textura = Sprites.texturas[hit]
 
         texX = int(wallX * float(textura.get_width()))
         
         try:
-            # 1. Get the correct generator for this column (based on texX)
+
 
             get_slice_from_cache = Sprites.geradoresCache[hit][texX]
 
-            # 2. Ask it for the slice.
-            #    The @lru_cache automatically does all the work:
-            #    - Is (altura_key) in memory? If YES, return it instantly.
-            #    - If NO:
-            #      - Is the cache full (512 items)? If YES, throw out the oldest.
-            #      - Run the function (pygame.transform.scale).
-            #      - Save the new slice and return it.
+
             pedacoEscalado = get_slice_from_cache(snapped_key)
 
-            # 3. Blit the slice
+
             janela.get_screen().blit(pedacoEscalado, (coluna, comecoDaLinha))
 
         except IndexError:
             print("error1")
-            # A safety catch in case texX is out of bounds
+
             pass
         except ValueError:
             print("error2")
-            # A safety catch for altura_key being 0 or negative
+
             pass
 
     RenderizarSprites(janela, jogador, zBuffer, mapaObjetos)
@@ -1242,46 +1215,43 @@ def RenderizarMapa3DLowPoly(janela, janelaAltura, janelaLargura, jogador):
 
 
 
-            # Find the exact world coordinate of the wall where it meets the floor.
+
         if horizontal == 0 and direcaoRaioX > 0:
-            # Ray hit a WEST-facing wall.
+            # WEST
             floorXWall = mapaX
             floorYWall = mapaY + wallX
         elif horizontal == 0 and direcaoRaioX < 0:
-            # Ray hit an EAST-facing wall.
+            # EAST
             floorXWall = mapaX + 1.0
             floorYWall = mapaY + wallX
         elif horizontal == 1 and direcaoRaioY > 0:
-            # Ray hit a NORTH-facing wall.
+            # nORTH
             floorXWall = mapaX + wallX
             floorYWall = mapaY
         else: # horizontal == 1 and direcaoRaioY < 0
-            # Ray hit a SOUTH-facing wall.
+            # SOUTH
             floorXWall = mapaX + wallX
             floorYWall = mapaY + 1.0
 
-        # Loop from the bottom of the wall to the bottom of the screen
+
         for y in range(int(finalDaLinha) , janelaAltura + 2):
-            # 1. Calculate the perspective-correct distance from the camera to this floor pixel.
+            
             current_dist = janelaAltura / (2.0 * y - janelaAltura)
             
-            # 2. Find the real-world (x,y) coordinates by interpolating between the player
-            #    and the wall reference point. This creates the perspective effect.
+           
             weight = current_dist / distanciaPerpendicular
             current_floor_x = weight * floorXWall + (1.0 - weight) * jogador.x
             current_floor_y = weight * floorYWall + (1.0 - weight) * jogador.y
             
-            # 3. Get the corresponding coordinates for the floor texture.
-            #    The '%' operator makes the texture tile seamlessly.
+
             floor_tex_x = int(current_floor_x * texturaChao.get_width()) % texturaChao.get_width()
             floor_tex_y = int(current_floor_y * texturaChao.get_height()) % texturaChao.get_height()
             
-            # 4. Get the color from the texture and draw the floor pixel.
-            #    (Assuming you've loaded 'floor_texture' and 'ceiling_texture')
+
             floor_color = texturaChao.get_at((floor_tex_x, floor_tex_y))
             janela.set_at((coluna, y - 1), floor_color)
 
-            # 5. Symmetrically draw the ceiling pixel.
+
             ceiling_color = texturaTeto.get_at((floor_tex_x, floor_tex_y))
             janela.set_at((coluna, janelaAltura - y), ceiling_color)
 
@@ -1430,13 +1400,13 @@ def RenderizarMapa3DLowPoly2(janela, janelaAltura, janelaLargura, jogador):
 
 
 
-         # Calculate where exactly the wall was hit
-        if horizontal == 0: # A vertical wall
+
+        if horizontal == 0: # vertical
             wallX = jogador.y + distanciaPerpendicular * direcaoRaioY
-        else: # A horizontal wall
+        else: # horizontal
             wallX = jogador.x + distanciaPerpendicular * direcaoRaioX
         
-        # Get the fractional part of wallX
+
         wallX -= math.floor(wallX)
         
 
@@ -1445,19 +1415,19 @@ def RenderizarMapa3DLowPoly2(janela, janelaAltura, janelaLargura, jogador):
 
 
         if horizontal == 0 and direcaoRaioX > 0:
-            # WEST-facing wall.
+
             floorXWall = mapaX
             floorYWall = mapaY + wallX
         elif horizontal == 0 and direcaoRaioX < 0:
-            # EAST-facing wall.
+
             floorXWall = mapaX + 1.0
             floorYWall = mapaY + wallX
         elif horizontal == 1 and direcaoRaioY > 0:
-            # NORTH-facing wall.
+
             floorXWall = mapaX + wallX
             floorYWall = mapaY
-        else: # horizontal == 1 and direcaoRaioY < 0
-            # SOUTH-facing wall.
+        else:
+
             floorXWall = mapaX + wallX
             floorYWall = mapaY + 1.0
 
@@ -1481,28 +1451,24 @@ def RenderizarMapa3DLowPoly2(janela, janelaAltura, janelaLargura, jogador):
         current_dist = janelaAltura / (2.0 * y_range - janelaAltura)
         weight = current_dist / distanciaPerpendicular
 
-        # 3. Calcule as coordenadas do mundo real para TODOS os pixels
+
         current_floor_x = weight * floorXWall + (1.0 - weight) * jogador.x
         current_floor_y = weight * floorYWall + (1.0 - weight) * jogador.y
 
-        # 4. Calcule as coordenadas da textura para TODOS os pixels
+
         floor_tex_x = (current_floor_x * tex_width).astype(int) % tex_width
         floor_tex_y = (current_floor_y * tex_height).astype(int) % tex_height
 
         ceil_tex_x = (current_floor_x * tex_width).astype(int) % texturaTeto_arr.shape[1]
         ceil_tex_y = (current_floor_y * tex_height).astype(int) % texturaTeto_arr.shape[0]
 
-        # 5. Pegue as cores da textura para TODOS os pixels de uma vez
-        #    Isso é chamado de "advanced indexing"
+
         floor_colors = texturaChao_arr[floor_tex_y, floor_tex_x]
         ceiling_colors = texturaTeto_arr[ceil_tex_y, ceil_tex_x]
 
-        # 6. Escreva TODAS as cores no array da janela de uma vez
-        
-        # Escreve o chão
+
         pixels_janela[coluna, y_range] = floor_colors
-        
-        # Escreve o teto (simetricamente)
+
         y_ceiling_range = janelaAltura - 1 - y_range
         pixels_janela[coluna, y_ceiling_range] = ceiling_colors
 

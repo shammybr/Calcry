@@ -39,6 +39,8 @@ xpProximoLevel = { 1 : 100,
                        8 : 400,
                        9 : 450,
                        10 : 500,
+                       11 : 550,
+                       12 : 600,
                        
 }
 
@@ -52,6 +54,8 @@ statusPorLevel = { 1: [10, 50, 10],
                    8: [10, 50, 10],
                    9: [10, 50, 10],
                    10: [10, 50, 10],
+                   11: [10, 50, 10],
+                   12: [10, 50, 10],
 
 
 }
@@ -414,7 +418,7 @@ def TFC(entidades, valores):
     mensagens = []
 
     for entidade in entidades:
-        entidade.buffs.append(Buff("TFC", 5, [], [valores], 5))
+        entidade.buffs.append(Buff("TFC", 5, [], [valores], 10))
         mensagens.append("Cada problema resolvido te revigora!")
 
     return mensagens
@@ -435,7 +439,7 @@ habilidadeBD = [ Habilidade("Concentração", 1, [40, 25, 10], ["Concentre-se na
                  Habilidade("T. Sanduíche", 4, [20, 0], ["Resolve os limites!", "Inverte o dano extra que todos os limites possuem."], False, [Sanduiche]),
                  Habilidade("Série d.Taylor", 5, [30, 0], ["Expanda seu poder!", "Aumenta o seu dano de acordo com o número de derivadas."], False, [Taylor]),
                  Habilidade("T. Rolle", 6, [30, 0], ["Teorema de Rolle!", "Dano em derivadas com o mesmo HP (dano*HP faltando)."], False, [Rolle]),
-                 Habilidade("T.F.C", 7, [80, 0], ["Teorema Fundamental do Cálculo!", "Rouba vida em todo ataque por 3 turnos."], False, [TFC]),
+                 Habilidade("T.F.C", 7, [80, 0], ["Teorema Fundamental do Cálculo!", "Rouba vida em todo ataque por 10 turnos."], False, [TFC]),
 
 ]
 

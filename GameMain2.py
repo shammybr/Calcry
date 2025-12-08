@@ -32,7 +32,7 @@ lista_efeitos=Sounds.criar_lista_efeitos()
 
 luta = jogo.luta
 jogo.jogador.AprenderHabilidade(Data.habilidadeBD[0])
-jogo.jogador.AprenderHabilidade(Data.habilidadeBD[1])
+#jogo.jogador.AprenderHabilidade(Data.habilidadeBD[1])
 #jogo.jogador.AprenderHabilidade(Data.habilidadeBD[6])
 #jogo.jogador.AprenderHabilidade(Data.habilidadeBD[5])
 #jogo.jogador.AprenderHabilidade(Data.habilidadeBD[2])
@@ -354,6 +354,7 @@ def Update():
             if(luta.estadoAnimacao <= 1):
                 if(luta.EntrarLuta(janela, jogo.deltaTime) == 1):
                     jogo.jogador.danoGuardado = 0
+                    jogo.jogador.buffs.clear()
                     jogo.botaoSelecionadoLuta = Data.ELuta.ATACAR
                     luta.ResetarBotoes(jogo.lutaHUD, jogo.botaoSelecionadoLuta, jogo.posicoesBotoesLuta)
                     CalcularBotoesLuta()
@@ -2406,8 +2407,8 @@ def CriarAula(andar, aula):
             jogo.dialogoMensagens.append(" ")
             jogo.dialogoMensagens.append("As revisões deram fruto...")
             jogo.dialogoMensagens.append(" ")
-            jogo.dialogoMensagens.append("Você aprendeu: Concentração!")
-            jogo.jogador.AprenderHabilidade(Data.habilidadeBD[0])
+            jogo.dialogoMensagens.append("Você aprendeu: Meditação!")
+            jogo.jogador.AprenderHabilidade(Data.habilidadeBD[1])
             jogo.ultimoEstadoJogo = Data.EEstado.DIALOGO
 
 
@@ -2432,7 +2433,8 @@ def CriarAula(andar, aula):
             jogo.dialogoMensagens.append(" ")
             jogo.dialogoMensagens.append("As revisões deram fruto...")
             jogo.dialogoMensagens.append(" ")
-            jogo.dialogoMensagens.append("Você aprendeu: Teorema Fundamental do Cálculo!")
+            jogo.dialogoMensagens.append("Você aprendeu: Teorema Fundamental")
+            jogo.dialogoMensagens.append("do Cálculo!")
             jogo.jogador.AprenderHabilidade(Data.habilidadeBD[6])
             jogo.ultimoEstadoJogo = Data.EEstado.DIALOGO
 
