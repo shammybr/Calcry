@@ -322,7 +322,7 @@ def Update():
         else:
                 GameOverScreen()
                 jogo.fade.FadeBlack()
-                if jogo.ultimoInput==5:
+                if jogo.ultimoInput==5 or jogo.ultimoInput==6 or jogo.ultimoInput==13:
                     CarregarJogo()
                     
 
