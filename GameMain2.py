@@ -322,6 +322,9 @@ def Update():
         else:
                 GameOverScreen()
                 jogo.fade.FadeBlack()
+                if jogo.ultimoInput==5:
+                    CarregarJogo()
+                    
 
     elif(jogo.estadoJogo == Data.EEstado.FINALJOGO):
 
@@ -916,7 +919,6 @@ def Update():
     if(jogo.segundo > 1):
 
         print(jogo.numeroFrames)
-        print(jogo.jogador.quests[2])
       # print(f"Direção: {jogo.jogador.direcao}")
         jogo.numeroFrames = 0
         jogo.segundo -= 1
@@ -2784,6 +2786,7 @@ def UpdateTest():
 def GameOverScreen():
     janela.get_screen().blit(jogo.fade.surface, (0, 0))
     janela.draw_text("Sua jornada termina aqui..." , janela.width * 0.5  - int((26/2) * 30 * int((1280/janela.width))), janela.height * 0.3, "Sprites/HUD/PressStart2P-Regular.ttf", 30 * int((1280/janela.width)), (255,255,255), )
+
 
 def GameOver():
 
